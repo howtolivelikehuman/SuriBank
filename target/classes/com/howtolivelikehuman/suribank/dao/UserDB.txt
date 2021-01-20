@@ -4,12 +4,12 @@ pw = howtolivelikehuman;
 
 CREATE TABLE user(
 	_no Int PRIMARY KEY AUTO_INCREMENT,
-	id CHAR(10) NOT NULL,
+	id CHAR(20) NOT NULL,
 	password CHAR(20) NOT NULL,
 	nickname VARCHAR(20) NOT NULL,
 	name VARCHAR(8) NOT NULL,
 	email VARCHAR(30) NOT NULL,
-	type CHAR(2) default 'T1'
+	type CHAR(2) default 'T1',
 	inDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )
 

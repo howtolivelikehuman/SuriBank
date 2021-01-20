@@ -30,13 +30,12 @@
 	<!-- sqlSessionFactory --> 
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
-		<property name="configLocation" value="classpath:/mybatis/mybatisConfig.xml" />
-		<property name="mapperLocations" value="classpath:/mybatis/mybatisMapper.xml" />
+		<property name="mapperLocations" value="classpath:com/howtolivelikehuman/suribank/dao/mapper/*.xml" />
 	</bean>
 	
 	<!-- SqlSessionTemplate -->
-	<bean id="sqlSessoinTemplate" class="org.mybatis.spring.SqlSessionTemplate">
-		<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory" />
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactory" />
 	</bean>
 	
 	

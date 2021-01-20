@@ -10,7 +10,7 @@
 <html>
 
 <body>
-	<form class="form-signUp" name = "joinForm" method = "post" action = "/suribank/signup">
+	<form class="form-signUp" name = "joinForm" method = "post" action = "/suribank/user/signup">
 		<div class="id-form-con">
 			<input class="input" type = "text" name ="id" placeholder="아이디를 입력하세요." required>
 			<input class="btn" type = "button" value = "중복확인"">

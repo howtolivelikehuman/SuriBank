@@ -2,7 +2,7 @@ package com.howtolivelikehuman.suribank.dto;
 
 import java.sql.Timestamp;
 
-public class User {	
+public class UserVO {	
 	int no;
 	String id;
 	String password;
@@ -13,11 +13,11 @@ public class User {
 	String type;	
 	Timestamp inDate;
 	
-	public User() {
+	public UserVO() {
 		
 	}
 	
-	public User(String id, String password, String name, String nickname, 
+	public UserVO(String id, String password, String name, String nickname, 
 			String email, String type, Timestamp inDate) {
 		this.id = id;
 		this.password = password;
