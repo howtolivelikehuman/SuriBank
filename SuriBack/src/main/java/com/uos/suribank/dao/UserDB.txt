@@ -1,0 +1,29 @@
+Schema = suribank;
+id = suriadmin;
+pw = howtolivelikehuman;
+
+CREATE TABLE user(
+	_no Int PRIMARY KEY AUTO_INCREMENT,
+	id CHAR(20) NOT NULL,
+	password CHAR(20) NOT NULL,
+	nickname VARCHAR(20) NOT NULL,
+	name VARCHAR(8) NOT NULL,
+	email VARCHAR(30) NOT NULL,
+	type CHAR(2) default 'T1',
+	registerdate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	point int default 0
+)
+
+���� content ����
+<Resource 
+	auth = "Container"
+	name = "jdbc/mysql"
+	type = "javax.sql.DataSource"
+	driverClassName = "com.mysql.cj.jdbc.Driver"
+	url = "jdbc:mysql://127.0.0.1:3306/suribank?serverTimezone=UTC"
+	username = "suriadmin"
+	password = "howtolivelikehuman"
+	maxTotal="20"
+	maActive="20"
+	maxIdle="3"
+	maxWaitMillis = "-1"/>
