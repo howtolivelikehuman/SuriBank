@@ -11,9 +11,13 @@ public class UserVO implements Serializable{
 	String name;
 	String nickname;
 	String email;
+	String major;
 	//T1 is the lowest. T5 is admin
 	String type;	
 	String registerdate;
 	int point;
 	
+	public String getId(){
+		return this.id;
+	}
 }

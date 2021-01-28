@@ -11,7 +11,7 @@
 	
 	<!--  회원가입 쿼리 -->
 	<insert id="signup" parameterType="com.uos.suribank.dto.UserVO">
-		insert into user (id, password, name, nickname, email) values ( #{id}, #{password}, #{name}, #{nickname} , #{email})
+		insert into user (id, password, name, nickname, email, major) values ( #{id}, #{password}, #{name}, #{nickname} , #{email}, #{major})
 	</insert>
 	
 	<!-- ID 중복확인 쿼리 -->
