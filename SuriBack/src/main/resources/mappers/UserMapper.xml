@@ -21,7 +21,7 @@
 	
 	<!-- 전체 유저 받아오기 -->
 	<select id="getAllUsers" parameterType="com.uos.suribank.dto.UserVO" resultType = "com.uos.suribank.dto.UserVO">
-		select _no, id, password, name, nickname, email, type, date_format(registerdate, '%Y.%m.%d %H:%i:%s')as registerdate, point from user
+		select _no, id, password, name, nickname, email, major, type, date_format(registerdate, '%Y.%m.%d %H:%i:%s')as registerdate, point from user
 	</select>
 
 </mapper>

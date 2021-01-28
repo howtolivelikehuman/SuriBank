@@ -1,7 +1,7 @@
 package com.uos.suribank.dto;
 
 import java.io.Serializable;
-import lombok.Data;
+import lombok.*;
 
 @Data
 public class UserVO implements Serializable{
@@ -16,8 +16,4 @@ public class UserVO implements Serializable{
 	String type;	
 	String registerdate;
 	int point;
-	
-	public String getId(){
-		return this.id;
-	}
 }
