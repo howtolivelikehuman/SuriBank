@@ -10,20 +10,7 @@ CREATE TABLE user(
 	name VARCHAR(8) NOT NULL,
 	email VARCHAR(30) NOT NULL,
 	type CHAR(2) default 'T1',
+	major VARCHAR(20),
 	registerdate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	point int default 0
 )
-
-���� content ����
-<Resource 
-	auth = "Container"
-	name = "jdbc/mysql"
-	type = "javax.sql.DataSource"
-	driverClassName = "com.mysql.cj.jdbc.Driver"
-	url = "jdbc:mysql://127.0.0.1:3306/suribank?serverTimezone=UTC"
-	username = "suriadmin"
-	password = "howtolivelikehuman"
-	maxTotal="20"
-	maActive="20"
-	maxIdle="3"
-	maxWaitMillis = "-1"/>
