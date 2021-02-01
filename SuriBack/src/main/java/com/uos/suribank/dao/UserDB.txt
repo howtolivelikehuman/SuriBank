@@ -9,6 +9,7 @@ CREATE TABLE user(
 	name VARCHAR(8) NOT NULL,
 	nickname VARCHAR(20) NOT NULL,
 	email VARCHAR(30) NOT NULL,
+	major VARCHAR(20),
 	type CHAR(2) default 'T1',
 	major VARCHAR(20),
 	registerdate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
