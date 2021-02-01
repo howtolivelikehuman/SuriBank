@@ -20,9 +20,9 @@ class EditInfo extends Component{
         this.props.setData(name, value)
     }
     edit_handler = () => {
-        //console.log(this.state.data)
+        console.log(this.props.data)
         var id = '1' //test용
-        api.put(`/user/${id}`, this.state.data)
+        api.put(`/user/${id}`, this.props.data)
         .then(res => {
             console.log(res);
             if(res.status==200){
