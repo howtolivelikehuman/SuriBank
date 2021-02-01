@@ -21,7 +21,8 @@
 
 	<!-- 개인정보 받아오기 -->
 	<select id="getInfo" parameterType="String" resultType="com.uos.suribank.dto.UserVO">
-		select _no, id, name, nickname, email, type, major, date_format(registerdate, '%Y.%m.%d %H:%i:%s')as registerdate, point from user where id = #{id}
+
+		select id, name, nickname, email, type, major, date_format(registerdate, '%Y.%m.%d %H:%i:%s')as registerdate, point from user where id = #{id}
 	</select>
 
 	<!-- 탈퇴 -->
