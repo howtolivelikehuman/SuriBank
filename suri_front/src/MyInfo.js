@@ -7,7 +7,7 @@ import EditInfo from './EditInfo'
 class MyInfo extends Component{
     state={
         data:null,
-        id:"1", //test용
+        id:"admin", //test용
         modalOpen:false,
     }
 

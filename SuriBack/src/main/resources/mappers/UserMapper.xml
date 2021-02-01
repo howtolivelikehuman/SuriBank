@@ -31,7 +31,15 @@
 
 	<!-- 수정 -->
 	<update id="updateInfo" parameterType="com.uos.suribank.dto.UserVO">
-		update user set password = #{password}, name = #{name}, nickname = #{nickname}, email = #{email}, major = #{major} where id = #{id}
+		update user 
+		<set> 
+			<if test="passsord != null"> password = #{password}, </if>
+			<if test="name != null"> name = #{name},  </if>
+			<if test="nickname != null"> nickname = #{nickname},  </if>
+			<if test="email != null"> email = #{email},  </if>
+			<if test="major != null"> major = #{major} </if>
+		</set>
+		where id = #{id}
 	</update>
 	
 	<!-- 전체 유저 받아오기 -->

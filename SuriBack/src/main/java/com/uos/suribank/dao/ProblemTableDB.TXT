@@ -1,0 +1,9 @@
+CREATE TABLE problemtable(
+	_no Int PRIMARY KEY AUTO_INCREMENT,
+	title VACHAR(30) NOT NULL,
+	uploader CHAR(20) NOT NULL,
+    subject VACHAR(30) NOT NULL,
+    score int default 0,
+    hit int default 0,
+	registerdate TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)

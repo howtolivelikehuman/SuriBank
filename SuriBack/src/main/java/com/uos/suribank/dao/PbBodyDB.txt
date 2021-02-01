@@ -1,0 +1,6 @@
+CREATE TABLE pbmbody(
+	pb_no INT PRIMARY KEY AUTO_INCREMENT,
+    problem VARCHAR NOT NULL,
+    answer VARCHAR NOT NULL,
+    FOREIGN KEY (pb_no) REFERENCES user (_no) ON DELETE CASCADE
+)
