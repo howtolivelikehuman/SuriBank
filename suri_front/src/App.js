@@ -2,6 +2,7 @@
 import React,{Component} from 'react'
 import Login from './Login'
 import Main from './Main'
+import MyInfo from './MyInfo'
 import {
   BrowserRouter as Router,
   Switch,
@@ -15,6 +16,7 @@ class App extends Component{
         <Switch>
           <Route exact path="/" component={Login} />
           <Route exact path="/main" component={Main}/>
+          <Route exact path="/myInfo" component={MyInfo}/>
         </Switch>
       </Router>  
     )
