@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 import Modal from 'react-modal'
 import api from './API'
-
-
-
-
 class Login extends Component{
     state={
         modalOpen:false,   
@@ -12,7 +8,7 @@ class Login extends Component{
         password:"",
         name:"",
         nickname:"",
-        major:"",
+        major:"컴퓨터과학부",
         email:"",
         Login_id:"",
         Login_pw:"",
@@ -31,47 +27,42 @@ class Login extends Component{
     }
     signup_handler=()=>{    
 
-        fetch('http://localhost/api/user/signup', {
+        console.log(this.state.email, this.state.id, this.state.password, this.state.name, this.state.major, this.state.nickname)
+        fetch('http://localhost:8081/api/user/signup', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(
                 {
-                    result_code: "200",
-                    description: "OK",
-                    data: 
-                        {
-                            email:this.state.email,
-                            id:this.state.id,
-                            password:this.state.password,
-                            name:this.state.name,
-                            major:this.state.major,
-                            nickname:this.state.nickname,
-                        
-                        }
+                    email:this.state.email,
+                    id:this.state.id,
+                    password:this.state.password,
+                    name:this.state.name,
+                    major:this.state.major,
+                    nickname:this.state.nickname,
+ 
                 }
             )
         })
-        .then(res => res.json())
         .then(res=>{
-            console.log(res)
+            //console.log(res)
 
-            if(res.message=="OK")
-            alert("회원가입이 완료되었습니다!")
+            if(res.status==200)
+                alert("회원가입이 완료되었습니다!")
             else alert("회원가입 실패")
             this.close_signup_modal()
         })
     }
     login_click_handler=()=>{
 
-        this.props.history.push('/main')
+        //this.props.history.push('/main')
         //this.props.history.push('/main_manager')
 
         const id = document.getElementsByName("Login_id")[0].value;
         const password = document.getElementsByName("Login_pw")[0].value;
         console.log(id, password)
-        fetch('http://localhost/api/user/login', {
+        fetch('http://localhost:8081/api/user/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -83,19 +74,16 @@ class Login extends Component{
                 }
             )
         })
-        .then(res => res.json())
         .then(res=>{
             console.log(res)
 
-            if(res.message == "OK"){
+            if(res.status == 200){
                 alert("로그인 성공!")
                 
                 //link to main
-                api.get(`/user`)
-
-                .then(
-                    this.props.history.push('/main')
-                )
+                //api.get(`/user`)
+                this.props.history.push('/main')
+                
             }
             else{
                 alert("아이디/비밀번호를 확인해주세요")
