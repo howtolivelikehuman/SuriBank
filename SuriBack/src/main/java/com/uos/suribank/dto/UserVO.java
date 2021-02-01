@@ -32,5 +32,4 @@ public class UserVO implements Serializable{
 	String type;	
 	String registerdate;
 	int point;
-	
 }

@@ -4,6 +4,7 @@ import api from './API'
 
 
 
+
 class Login extends Component{
     state={
         modalOpen:false,   
@@ -29,6 +30,7 @@ class Login extends Component{
         this.setState({[name]:value})
     }
     signup_handler=()=>{    
+
         fetch('http://localhost/api/user/signup', {
             method: 'POST',
             headers: {
@@ -54,6 +56,7 @@ class Login extends Component{
         .then(res => res.json())
         .then(res=>{
             console.log(res)
+
             if(res.message=="OK")
             alert("회원가입이 완료되었습니다!")
             else alert("회원가입 실패")
@@ -61,6 +64,7 @@ class Login extends Component{
         })
     }
     login_click_handler=()=>{
+
         this.props.history.push('/main')
         //this.props.history.push('/main_manager')
 
@@ -82,11 +86,13 @@ class Login extends Component{
         .then(res => res.json())
         .then(res=>{
             console.log(res)
+
             if(res.message == "OK"){
                 alert("로그인 성공!")
                 
                 //link to main
                 api.get(`/user`)
+
                 .then(
                     this.props.history.push('/main')
                 )
@@ -128,6 +134,7 @@ class Login extends Component{
                                 <input name="Login_pw" className="loginPw form-control input_e" type="password" placeholder="password"/>
                             </div>
                             <div className="row justify-content-center my-3 px-3"> 
+
                                 <button className="loginBtn btn btn-secondary btn-lg btn-block" onClick={()=>this.login_click_handler()}>Login</button>
                             </div>
                             <div className="row justify-content-center my-3 px-3"> 
@@ -177,11 +184,10 @@ class Login extends Component{
                     
 
                                     </div>
-                                <div className="modal-footer">
-                                    <button className="btn btn-secondary"onClick={()=>this.signup_handler()}>sign up</button>
-                                </div>
+                                    <div className="modal-footer">
+                                        <button className="btn btn-secondary"onClick={()=>this.signup_handler()}>sign up</button>
                                     </div>
-
+                                </div>
                             </div>
                         </Modal>
                     </article>

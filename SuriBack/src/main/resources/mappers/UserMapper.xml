@@ -37,6 +37,7 @@
 	<!-- 전체 유저 받아오기 -->
 	<select id="getAllUsers" resultType = "com.uos.suribank.dto.UserVO">
 		select _no, id, password, name, nickname, email, type, major, date_format(registerdate, '%Y.%m.%d %H:%i:%s')as registerdate, point from user
+
 	</select>
 
 
