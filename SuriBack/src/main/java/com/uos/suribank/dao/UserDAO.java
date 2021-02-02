@@ -2,17 +2,17 @@ package com.uos.suribank.dao;
 
 import java.util.List;
 
-import com.uos.suribank.dto.UserVO;
+import com.uos.suribank.dto.User;
 
 public interface UserDAO {
-	public UserVO login(UserVO user) throws Exception;
-	public int signup(UserVO user);
+	public User login(User user) throws Exception;
+	public int signup(User user);
 	public int checkId(String id);
 	
 	//전체 유저리스트 받아오기
-	public List<UserVO> getAllUsers();
+	public List<User> getAllUsers();
 
-	public UserVO getInfo(String id);
-	public int deleteInfo(UserVO user);
-	public int updateInfo(UserVO user);
+	public User getInfo(String id);
+	public int deleteInfo(User user);
+	public int updateInfo(User user);
 }

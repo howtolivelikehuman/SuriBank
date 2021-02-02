@@ -18,8 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.uos.suribank.dao.UserDAO;
-import com.uos.suribank.dto.UserVO;
+import com.uos.suribank.dto.User;
 import com.uos.suribank.exception.UserNotFoundException;
+import com.uos.suribank.repository.UserRepository;
 
 
 @RestController
@@ -28,16 +29,24 @@ import com.uos.suribank.exception.UserNotFoundException;
 public class UserController {
 
 	@Autowired
+	private UserRepository userRepository;
+
+	@GetMapping("/userlist")
+	public List<User> userlist(){
+		return userRepository.findAll();
+	}
+
+	/*@Autowired
 	UserDAO userDAO;
 
 	private String message;
 	private HttpStatus status;
 
 	@PostMapping(value = "/login")
-	public ResponseEntity<?> login(@RequestBody UserVO vo) {
+	public ResponseEntity<?> login(@RequestBody User vo) {
 
 		try {
-			UserVO user = userDAO.login(vo);
+			User user = userDAO.login(vo);
 			if (user == null) {
 				message = "로그인에 실패하였습니다. 계정을 한번더 확인해주세요";
 				status = HttpStatus.NO_CONTENT;
@@ -82,7 +91,7 @@ public class UserController {
 	}
 
 	@PostMapping("/signup")
-	public ResponseEntity<?> signup(@RequestBody UserVO vo) {
+	public ResponseEntity<?> signup(@RequestBody User vo) {
 		// 아이디 한번 더 검사
 		int checkId = userDAO.checkId(vo.getId());
 
@@ -99,14 +108,14 @@ public class UserController {
 
 	//조회
 	@GetMapping(path = "/{id}")
-	public EntityModel<UserVO> getInfo(@PathVariable String id) {
+	public EntityModel<User> getInfo(@PathVariable String id) {
 
-		UserVO user = userDAO.getInfo(id);
+		User user = userDAO.getInfo(id);
 
 		if(user == null){
 			throw new UserNotFoundException(String.format("ID[%s] not found", id));
 		}
-		EntityModel<UserVO> model = new EntityModel<>(user);
+		EntityModel<User> model = new EntityModel<>(user);
 		//HateOAS
 		//WebMvcLinkBuilder linkTo = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).userlist());
 		//model.add(linkTo.withRel("userlist"));
@@ -116,7 +125,7 @@ public class UserController {
 
 	//수정
 	@PutMapping(path = "/{id}")
-	public ResponseEntity<?> updateInfo(@PathVariable String id, @RequestBody UserVO user){
+	public ResponseEntity<?> updateInfo(@PathVariable String id, @RequestBody User user){
 		user.setId(id);
 		int result = userDAO.updateInfo(user);
 
@@ -130,7 +139,7 @@ public class UserController {
 
 	//삭제
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> deleteInfo(@RequestBody UserVO user){
+	public ResponseEntity<?> deleteInfo(@RequestBody User user){
 		int result = userDAO.deleteInfo(user);
 
 		if(result == 0){
@@ -140,12 +149,5 @@ public class UserController {
 			status = HttpStatus.OK;
 			return new ResponseEntity<>(status);
 		}
-	}
-
-	@GetMapping("/userlist")
-	public List<UserVO> userlist(){
-		return userDAO.getAllUsers();
-	}
-
-	
+	}*/
 }

@@ -16,7 +16,7 @@ public class SuriBackApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SuriBackApplication.class, args);
 	}
-	
+	/*
 	//전체에서 활용할 수 있도록 초기화
 	@Bean
 	public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
@@ -28,5 +28,6 @@ public class SuriBackApplication {
 		
 		return sessionFactory.getObject();
 	}
+	*/
 
 }
