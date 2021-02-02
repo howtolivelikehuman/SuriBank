@@ -1,4 +1,4 @@
-CREATE TABLE problemtable(
+CREATE TABLE pbtable(
 	_no Int PRIMARY KEY AUTO_INCREMENT,
 	title VACHAR(30) NOT NULL,
 	uploader CHAR(20) NOT NULL,

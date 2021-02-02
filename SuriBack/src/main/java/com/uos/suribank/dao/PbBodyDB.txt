@@ -1,4 +1,4 @@
-CREATE TABLE pbmbody(
+CREATE TABLE pbbody(
 	pb_no INT PRIMARY KEY AUTO_INCREMENT,
     problem VARCHAR NOT NULL,
     answer VARCHAR NOT NULL,

@@ -1,0 +1,7 @@
+CREATE TABLE pbbody(
+    _no INT PRIMARY KEY,
+	pb_no INT NOT NULL,
+    type INT NOT NULL,
+    link VARCHAR(30) NOT NULL,
+    FOREIGN KEY (pb_no) REFERENCES user (_no) ON DELETE CASCADE
+)

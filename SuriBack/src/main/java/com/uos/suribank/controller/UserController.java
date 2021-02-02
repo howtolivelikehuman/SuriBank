@@ -1,10 +1,11 @@
 package com.uos.suribank.controller;
 
-import java.net.URI;
 import java.util.List;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,11 +16,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.uos.suribank.dao.UserDAO;
 import com.uos.suribank.dto.UserVO;
 import com.uos.suribank.exception.UserNotFoundException;
+
 
 @RestController
 @MapperScan(basePackages = "com.uos.suribank.dao")
@@ -98,18 +99,19 @@ public class UserController {
 
 	//조회
 	@GetMapping(path = "/{id}")
-	public ResponseEntity<UserVO> getInfo(@PathVariable String id) {
+	public EntityModel<UserVO> getInfo(@PathVariable String id) {
 
 		UserVO user = userDAO.getInfo(id);
 
 		if(user == null){
 			throw new UserNotFoundException(String.format("ID[%s] not found", id));
 		}
-		else{
-			// message = "환영합니다 !"
-			status = HttpStatus.OK;
-			return new ResponseEntity<>(user,status);
-		}
+		EntityModel<UserVO> model = new EntityModel<>(user);
+		//HateOAS
+		//WebMvcLinkBuilder linkTo = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).userlist());
+		//model.add(linkTo.withRel("userlist"));
+		//status = HttpStatus.OK;
+		return model;
 	}
 
 	//수정
