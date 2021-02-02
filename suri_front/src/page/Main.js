@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Modal from 'react-modal'
-import api from './API'
-import Header from './Header'
+import api from '../util/API'
+import Header from '../component/Header'
 
 
 class Main extends Component{

@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import api from './API'
-import SubHeader from './SubHeader'
-import InfoElement from './InfoElement'
-import EditInfo from './EditInfo'
+import api from '../util/API'
+import SubHeader from '../component/SubHeader'
+import InfoElement from '../component/InfoElement'
+import EditInfo from '../component/EditInfo'
 
 class MyInfo extends Component{
     state={

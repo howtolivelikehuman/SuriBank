@@ -1,8 +1,8 @@
 
 import React,{Component} from 'react'
-import Login from './Login'
-import Main from './Main'
-import MyInfo from './MyInfo'
+import Login from './page/Login'
+import Main from './page/Main'
+import MyInfo from './page/MyInfo'
 import {
   BrowserRouter as Router,
   Switch,

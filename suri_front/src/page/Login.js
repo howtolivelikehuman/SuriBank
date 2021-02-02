@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Modal from 'react-modal'
-import api from './API'
+import api from '../util/API'
 class Login extends Component{
     state={
         modalOpen:false,   

@@ -9,7 +9,7 @@ function InfoElement({k, v}){
                     {k}
                 </div>
                 <div className="col-sm-5 value">
-                    {v}
+                    <input>{v}</input>
                 </div>
             </div>
         )
