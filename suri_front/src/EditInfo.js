@@ -23,6 +23,7 @@ class EditInfo extends Component{
         //console.log(this.state.data)
         var id = 'admin' //test용
         api.put(`/user/${id}`, this.state.data)
+
         .then(res => {
             console.log(res);
             if(res.status==200){
