@@ -2,6 +2,9 @@ package com.uos.suribank.exception;
 
 import java.util.Date;
 
+import com.uos.suribank.exception.UserNotFoundException;
+import com.uos.suribank.exception.DuplicateException;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +40,14 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
             HttpHeaders headers, HttpStatus status, WebRequest request) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), "Validation Error" ,ex.getBindingResult().toString()); 
         return new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DuplicateException.class)
+    protected ResponseEntity<Object> handleDuplicateExceptions(Exception e, WebRequest request) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), e.getMessage(),
+                request.getDescription(false));
+
+        return new ResponseEntity(exceptionResponse, HttpStatus.CONFLICT);
     }
 
 }

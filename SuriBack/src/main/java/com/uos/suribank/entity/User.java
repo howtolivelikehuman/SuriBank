@@ -1,4 +1,4 @@
-package com.uos.suribank.dto;
+package com.uos.suribank.entity;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -11,9 +11,11 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,6 +26,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table
+@DynamicUpdate
+@DynamicInsert
 public class User implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -33,20 +37,20 @@ public class User implements Serializable{
 	@Column(updatable = false, nullable = false, columnDefinition = "INT(11)")
 	private Long no;
 
-	@Size(min=4, max=30, message = "id는 4~20자로 입력해야 합니다.")
+	
 	@Column(length  = 30, nullable = false, unique = true, columnDefinition = "CHAR(30)")
 	String id;
 
-	//@Size(min=8, max=20, message = "password는 8~20자로 입력해야 합니다.")
+	
 	@Column(length  = 20, nullable = false, columnDefinition = "CHAR(20)")
 	String password;
 
-	@Size(min=2, max=8, message = "이름은 2~8자로 입력해야 합니다.")
+	
 	@Column(length  = 8, nullable = false)
 	String name;
 
-	@Size(min=1, max=20, message = "별명은 1~20자로 입력해야 합니다.")
-	@Column(length  = 20, nullable = false)
+	
+	@Column(length  = 20, nullable = false, unique = true)
 	String nickname;
 
 	@Column(length  = 20)
