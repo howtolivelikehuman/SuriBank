@@ -1,7 +1,7 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
 import { IoPersonCircle } from "react-icons/io5";
-import logo from './img/logo.png'
+import logo from '../img/logo.png'
 
 class Header extends React.Component {
     //document.getElementById('info_img').addEventListener('click', () => this.props.history.push('/myInfo') )
