@@ -8,14 +8,8 @@ class Header extends React.Component {
     //document.getElementById('main_img').addEventListener('click', () => this.props.history.push('/main') )
     render(){
         return(
-            <div className="container-fluid">
-                <Link to='/myInfo' className="d-flex flex-row-reverse">
-                    <IoPersonCircle id="info_img" className="mt-3 col-md-2"></IoPersonCircle>
-                </Link>
-                <Link to='/main' className="title_wrapper row">
-                    <img className="w-100 mx-auto" id="main_img" src={logo} href="./main"/>
-                </Link>
-
+            <div className="container-fluid mt-10">
+                <img className="w-100 mx-auto" id="main_img" src={logo}/>
             </div>
         )
     }

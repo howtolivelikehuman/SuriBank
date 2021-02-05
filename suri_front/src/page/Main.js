@@ -1,18 +1,105 @@
 import React, { Component } from 'react';
 import Modal from 'react-modal'
 import api from '../util/API'
-import Header from '../component/Header'
-
+import SubHeader from '../component/SubHeader'
 
 class Main extends Component{
+    state={
+        now_page:1,
+        total_page: 5,
+        type:"ALL",
+        subject:"ALL"
+    }
+    get_problem_list_data_for_test = () => {
+        let problem=[
+            {
+                pb_id:"1", 
+                pb_title:"첫 번째 문제 예제", 
+                subject:"수미방", 
+                uploader:"카와잇규짱", 
+                score:3
+            },
+            {
+                pb_id:"2", 
+                pb_title:"디비에 빨리 문제 테이블 만들쟈", 
+                subject:"데이터베이스설계", 
+                uploader:"엄대장", 
+                score:5
+            },
+            {
+                pb_id:"3", 
+                pb_title:"오늘 야식은 치킨이닭", 
+                subject:"웹정보시스템", 
+                uploader:"문초코", 
+                score:1
+            },
+        ]
+
+        return this.set_problem_list(problem)
+    }
+
+    get_problem_list_data = () =>{
+        api
+        .get('/problem',
+        {
+            "filter": {
+                "type": this.state.type,
+                "subject": this.state.subject,
+            },
+            "pagination": {
+                "total_pages": this.state.total_page,
+                "total_elements": 1,
+                "current_page": this.state.now_page,
+                "current_elements": 1
+            }
+        })
+        .then(res => {
+            if(res.status!=200){
+                alert("문제 불러오기 실패")
+                console.log(res)
+                return null
+            }
+            else{
+                return this.set_problem_list(res.data)
+            }
+        })
+    }
+
+    set_problem_list = (data) => {
+        let problem_list = []
+        problem_list = data.map(problem => {
+            return(
+                <a href="#" className="list-group-item list-group-item-action">
+                    <div className="row">
+                    <div className="col-1">{problem.pb_id}</div>
+                    <div className="col-4">{problem.pb_title}</div>
+                    <div className="col-4">{problem.subject}</div>
+                    <div className="col-2">{problem.uploader}</div>
+                    <div className="col-1">{problem.score}</div>
+                    </div>
+                </a>
+            )
+        })
+
+        return problem_list
+    }
+    
+
     render(){
+        let page=[]
+        var tot_page=this.state.total_page
+        for(let i = 1; i<=tot_page; i++){
+            if(this.state.now_page==i)
+                page.push(<li className="page-item active" onClick={()=>this.setState({now_page:i})}><a className="page-link" href="javascript:void(0);">{i}</a></li>)
+            else 
+                page.push(<li className="page-item" onClick={()=>this.setState({now_page:i})}><a className="page-link" href="javascript:void(0);">{i}</a></li>)
+        }
         return(
             <div className="container-fluid">
-                <Header />
+                <SubHeader />
                 <div className="main_body row">
                     <nav id="sidebar" className="col-md-3 mx-3">
                         <div className="sidebar-header">
-                            <h3>Filter</h3>
                         </div>
                         <div className="filter card">
                             <div className="filter_header card-header">
@@ -54,14 +141,43 @@ class Main extends Component{
                         </div>
                     </nav>
                     <div className="col-md-8" id="content">
-                        <nav className="navbar navbar-expand-lg navbar-light bg-light">
-                            <div className="container-fluid">
-                                <span>-------- Nav bar ---------</span>
-                            </div>
+                        <nav className="navbar navbar-expand-sm navbar-light bg-light">
+                            <ul class="navbar-nav">
+                                <li class="nav-item">
+                                <a class="nav-link" href="#">nav 1</a>
+                                </li>
+                                <li class="nav-item">
+                                <a class="nav-link" href="#">nav 2</a>
+                                </li>
+                                <li class="nav-item">
+                                <a class="nav-link" href="#">nav 3</a>
+                                </li>                                
+                                <li class="nav-item">
+                                <a class="nav-link" href="#">nav 4</a>
+                                </li>
+                            </ul>
                         </nav>
+                        <div>
+                            <ul class="list-group list-group-flush">
+                            <div className="list-group-item">
+                                <div className="row">
+                                <div className="col-1">#</div>
+                                <div className="col-4">title</div>
+                                <div className="col-4">subject</div>
+                                <div className="col-2">uploader</div>
+                                <div className="col-1">score</div>
+                                </div>
+                            </div>
+                                {this.get_problem_list_data_for_test()}
+                            </ul>
 
+                        </div>
                         <div className="my-10"> 
-                            <ul>--------- problem list --------- </ul>
+                            <ul class="pagination justify-content-center">
+                                <li className="page-item"><a className="page-link" href="javascript:void(0);">Previous</a></li>
+                                {page}
+                                <li className="page-item"><a className="page-link" href="javascript:void(0);">Next</a></li>
+                            </ul>
                         </div>
                     </div>
 
@@ -71,5 +187,7 @@ class Main extends Component{
     }
 
 }
+
+
 
 export default Main

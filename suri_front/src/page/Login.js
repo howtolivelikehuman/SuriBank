@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import Modal from 'react-modal'
+import Header from '../component/Header';
+import '../css/login.sass'
 import api from '../util/API'
+
 class Login extends Component{
     state={
         modalOpen:false,   
@@ -102,16 +105,11 @@ class Login extends Component{
         return(
          
             <div className="container">            
-                <div className="header mb-1000">
-                    <h1 className="title">
-                        Suri Bank
-                    </h1>
-                </div>
-                
-                <div className="card login_wrapper m-10"> 
-                    <article className="card-body row justify-content-center my-auto col-lg-2">
-                        <div className="col-lg-10 col-12 my-3">
-                            <h4 className="card-title text-center mb-1">Log in</h4><hr></hr>   
+                <Header/>
+                <div className="row">
+                    <div className="col-6 card login_wrapper m-auto"> 
+                        <div className="my-3">
+                            <h4 className="card-title text-center mb-1">Login</h4><hr></hr>   
                             <div className="form-group">
                                 <label className="form-control-label text-muted">Username</label>
                                 <input name="Login_id" className="loginId input_e form-control" type="text" placeholder="ID" />
@@ -178,7 +176,7 @@ class Login extends Component{
                                 </div>
                             </div>
                         </Modal>
-                    </article>
+                    </div>
                 </div>
             </div>
         )
