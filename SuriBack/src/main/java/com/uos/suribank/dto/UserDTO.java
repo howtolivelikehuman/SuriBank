@@ -5,9 +5,7 @@ import java.util.Date;
 
 import javax.validation.constraints.Size;
 
-import com.uos.suribank.entity.User;
-
-import org.modelmapper.ModelMapper;
+import com.fasterxml.jackson.annotation.JsonFilter;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,9 +27,11 @@ public class UserDTO implements Serializable{
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
+    //@JsonFilter("userInfo")
     public static class infoDTO{
         private Long no;
         String id;
+        //String password;
         String name;
         String nickname;
         String major;

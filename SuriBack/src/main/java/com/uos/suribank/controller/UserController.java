@@ -1,10 +1,12 @@
 package com.uos.suribank.controller;
 
-import java.net.URI;
-import java.util.List;
-
 import javax.validation.Valid;
 
+import com.fasterxml.jackson.databind.ser.FilterProvider;
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+
+import org.springframework.http.converter.json.MappingJacksonValue;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,9 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.uos.suribank.dto.UserDTO.infoDTO;
 import com.uos.suribank.dto.UserDTO.loginDTO;
@@ -33,35 +33,27 @@ import com.uos.suribank.exception.UserNotFoundException;
 import com.uos.suribank.exception.DuplicateException;
 
 @RestController
-@MapperScan(basePackages = "com.uos.suribank.dao")
 @RequestMapping(value = "/api/user")
 public class UserController {
 
 	@Autowired
-	private UserRepository userRepository;
-
-	@Autowired
 	private UserService userService;
-
-	private HttpStatus status;
-
-	@GetMapping("/userlist")
-	public List<User> userlist(){
-		return userRepository.findAll();
-	}
 
 	//조회
 	@GetMapping(path = "/{no}")
-	public ResponseEntity<infoDTO> getInfo(@PathVariable Long no) {
+	public ResponseEntity<?> getInfo(@PathVariable Long no) {
 		
 		infoDTO info = userService.getInfo(no);
 
 		if(info == null){
 			throw new UserNotFoundException(String.format("ID[%s] not found", no));
 		}
-		else{
-			return ResponseEntity.ok(info);
-		}
+		/*SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.filterOutAllExcept("no","id","name","nickname","major","type","registerdate","point");
+        FilterProvider filters = new SimpleFilterProvider().addFilter("userInfo", filter);
+        MappingJacksonValue mapping = new MappingJacksonValue(info);
+        mapping.setFilters(filters);
+		return ResponseEntity.ok(mapping);*/
+		return ResponseEntity.ok(info);
 	}
 
 	//삭제

@@ -1,20 +1,17 @@
 package com.uos.suribank.service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaUpdate;
-import javax.persistence.criteria.Root;
-
-import com.uos.suribank.dto.UserDTO.infoDTO;
-import com.uos.suribank.dto.UserDTO.loginDTO;
-import com.uos.suribank.dto.UserDTO.signupDTO;
-import com.uos.suribank.dto.UserDTO.updateDTO;
+import com.uos.suribank.dto.UserDTO.*;
 import com.uos.suribank.entity.User;
 import com.uos.suribank.repository.UserRepository;
+import com.uos.suribank.config.MapperConfig;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 
 @Service
 public class UserService {
@@ -26,7 +23,7 @@ public class UserService {
     private ModelMapper modelMapper;
 
     public infoDTO getInfo(Long id) {
-        Optional<User> user = userRepository.findById(id);
+        Optional<User> user = userRepository.findById(id); 
         if (!user.isPresent()) {
             return null;
         } else {
@@ -52,7 +49,6 @@ public class UserService {
     }
 
     public boolean checkId(String id) {
-        System.out.println(id);
         return userRepository.existsById(id);
     }
 
@@ -62,9 +58,13 @@ public class UserService {
     }
 
     public User update(updateDTO udto, Long no){
+        User usr = null;
         Optional<User> existing = userRepository.findById(no);
-        checkUpdate(existing.get(), udto);
-        return userRepository.save(existing.get());
+        if(existing.isPresent()){
+            checkUpdate(existing.get(), udto);
+            usr = userRepository.save(existing.get());
+        }
+        return usr;
     }
 
     public void checkUpdate(User O, updateDTO udto){
@@ -80,5 +80,17 @@ public class UserService {
         if(udto.getNickname() != null){
             O.setNickname(udto.getNickname());
         }
+    }
+
+    public List<infoDTO> getUserList(){
+        return  mapList(userRepository.findAll(), infoDTO.class);
+        
+    }
+    
+    public <S, T>List<T> mapList(List<S> source, Class<T> targetClass) {
+        return source
+          .stream()
+          .map(element -> modelMapper.map(element, targetClass))
+          .collect(Collectors.toList());
     }
 }

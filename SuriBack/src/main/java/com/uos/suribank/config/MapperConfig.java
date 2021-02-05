@@ -1,5 +1,8 @@
 package com.uos.suribank.config;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
@@ -7,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class MapperConfig {
-    private final ModelMapper modelMapper = new ModelMapper();
+    private static ModelMapper modelMapper = new ModelMapper();
     
     @Bean
     public ModelMapper modelMapper(){
@@ -16,4 +19,6 @@ public class MapperConfig {
         .setSkipNullEnabled(true);
         return modelMapper;
     }
+
+   
 }
