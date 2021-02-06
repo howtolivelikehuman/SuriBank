@@ -35,17 +35,20 @@ public class ProblemTable{
     @Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(updatable = false, nullable = false, columnDefinition = "INT(11)")
-    private Long no;
+    private Long id;
     
     @Column(length  = 30, nullable = false)
     String title;
     
     @ManyToOne
-    @JoinColumn(name = "uploader_no", referencedColumnName="no")
+    @JoinColumn(name = "uploader_id", referencedColumnName="id")
     private User user;
 
     @Column(length  = 30)
     String subject;
+
+    @Column(length = 50)
+    String explanation;
 
     @Column(nullable = false, columnDefinition = "Float(3,2) DEFAULT 0")
     float score;

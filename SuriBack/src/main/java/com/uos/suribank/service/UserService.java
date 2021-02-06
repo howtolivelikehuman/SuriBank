@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import com.uos.suribank.dto.UserDTO.*;
 import com.uos.suribank.entity.User;
 import com.uos.suribank.repository.UserRepository;
-import com.uos.suribank.config.MapperConfig;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,25 +30,25 @@ public class UserService {
         }
     }
 
-    public int deleteInfo(Long no) {
+    public int deleteInfo(Long id) {
         int result = 0;
 
-        if (userRepository.existsById(no)) {
+        if (userRepository.existsById(id)) {
             result = 0;
         } else {
-            userRepository.deleteById(no);
+            userRepository.deleteById(id);
             result = 1;
         }
         return result;
     }
 
     public boolean login(loginDTO ldto) {
-        return userRepository.existsByIdAndPassword(ldto.getId(), ldto.getPassword());
+        return userRepository.existsByEmailAndPassword(ldto.getEmail(), ldto.getPassword());
 
     }
 
     public boolean checkId(String id) {
-        return userRepository.existsById(id);
+        return userRepository.existsByEmail(id);
     }
 
     public User singup(signupDTO sdto) {
@@ -57,9 +56,9 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User update(updateDTO udto, Long no){
+    public User update(updateDTO udto, Long id){
         User usr = null;
-        Optional<User> existing = userRepository.findById(no);
+        Optional<User> existing = userRepository.findById(id);
         if(existing.isPresent()){
             checkUpdate(existing.get(), udto);
             usr = userRepository.save(existing.get());

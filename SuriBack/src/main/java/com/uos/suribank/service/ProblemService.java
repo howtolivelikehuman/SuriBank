@@ -4,10 +4,13 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.parsing.Problem;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.uos.suribank.dto.ProblemDTO.problemInfoDTO;
+import com.uos.suribank.dto.ProblemDTO.problemTableDTO;
 import com.uos.suribank.entity.ProblemTable;
 import com.uos.suribank.repository.ProblemRepository;
 
@@ -20,14 +23,26 @@ public class ProblemService {
     @Autowired
     private ModelMapper modelMapper;
 
-    public Page<problemInfoDTO> getPage(Pageable pageable){
+    public problemTableDTO getPage(Pageable pageable){
         Page<ProblemTable> pg = problemRepository.findAll(pageable);
 
         Page<problemInfoDTO> map = pg.map(ProblemTable -> new problemInfoDTO(
-            ProblemTable.getNo(), ProblemTable.getTitle(), ProblemTable.getSubject(),
-            ProblemTable.getUser().getNickname(), ProblemTable.getScore(), ProblemTable.getHit()));
+            ProblemTable.getId(), ProblemTable.getTitle(), 
+            ProblemTable.getSubject(), ProblemTable.getUser().getNickname(),
+            ProblemTable.getExplanation(),
+            ProblemTable.getScore(), ProblemTable.getHit()));
+
+        //mapping
+        problemTableDTO pTableDTO= new problemTableDTO();
+        pTableDTO.setProbleminfo(map.getContent());
+        pTableDTO.setTotalElements(map.getTotalElements());
+        pTableDTO.setNumberofElements(map.getNumberOfElements());
+        pTableDTO.setTotalPages(map.getTotalPages());
+        pTableDTO.setSize(map.getSize());
+        pTableDTO.setSort(map.getSort().toString());
 
 
-        return map;
+
+        return pTableDTO;
     }
 }
