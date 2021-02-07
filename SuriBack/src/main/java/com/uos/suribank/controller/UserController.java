@@ -2,14 +2,7 @@ package com.uos.suribank.controller;
 
 import javax.validation.Valid;
 
-import com.fasterxml.jackson.databind.ser.FilterProvider;
-import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-
-import org.springframework.http.converter.json.MappingJacksonValue;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,9 +17,6 @@ import com.uos.suribank.dto.UserDTO.infoDTO;
 import com.uos.suribank.dto.UserDTO.loginDTO;
 import com.uos.suribank.dto.UserDTO.signupDTO;
 import com.uos.suribank.dto.UserDTO.updateDTO;
-import com.uos.suribank.entity.User;
-
-import com.uos.suribank.repository.UserRepository;
 import com.uos.suribank.service.UserService;
 
 import com.uos.suribank.exception.UserNotFoundException;
@@ -40,13 +30,13 @@ public class UserController {
 	private UserService userService;
 
 	//조회
-	@GetMapping(path = "/{no}")
-	public ResponseEntity<?> getInfo(@PathVariable Long no) {
+	@GetMapping(path = "/{id}")
+	public ResponseEntity<?> getInfo(@PathVariable Long id) {
 		
-		infoDTO info = userService.getInfo(no);
+		infoDTO info = userService.getInfo(id);
 
 		if(info == null){
-			throw new UserNotFoundException(String.format("ID[%s] not found", no));
+			throw new UserNotFoundException(String.format("ID[%s] not found", id));
 		}
 		/*SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.filterOutAllExcept("no","id","name","nickname","major","type","registerdate","point");
         FilterProvider filters = new SimpleFilterProvider().addFilter("userInfo", filter);
@@ -57,19 +47,19 @@ public class UserController {
 	}
 
 	//삭제
-	@DeleteMapping("/{no}")
-	public void deleteInfo(@PathVariable Long no) {
-		int result = userService.deleteInfo(no);
+	@DeleteMapping("/{id}")
+	public void deleteInfo(@PathVariable Long id) {
+		int result = userService.deleteInfo(id);
 		if( result == 0){
-			throw new UserNotFoundException(String.format("ID[%s] not found", no));
+			throw new UserNotFoundException(String.format("ID[%s] not found", id));
 		}
 	}
 
 	//수정
-	@PutMapping(path = "/{no}")
-	public void updateInfo(@PathVariable Long no, @Valid @RequestBody updateDTO udto){
+	@PutMapping(path = "/{id}")
+	public void updateInfo(@PathVariable Long id, @Valid @RequestBody updateDTO udto){
 		
-		if(userService.update(udto, no) == null){
+		if(userService.update(udto, id) == null){
 			throw new UserNotFoundException("Error Occurs");
 		}
 	}
@@ -88,8 +78,7 @@ public class UserController {
 	//아이디 검사
 	@PostMapping(value = "checkId")
 	public void checkId(@RequestBody loginDTO ldto) {
-		System.out.println(ldto.getId());
-		boolean result = userService.checkId(ldto.getId());
+		boolean result = userService.checkId(ldto.getEmail());
 
 		//loginfailed
 		if(result){
@@ -102,7 +91,7 @@ public class UserController {
 	public void signup(@Valid @RequestBody signupDTO sdto) {
 		
 		// 아이디 한번 더 검사
-		userService.checkId(sdto.getId());
+		userService.checkId(sdto.getEmail());
 
 		if(userService.singup(sdto) == null){
 			throw new UserNotFoundException("Error Occurs");

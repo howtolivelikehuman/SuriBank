@@ -34,12 +34,12 @@ public class User implements Serializable{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(updatable = false, nullable = false, columnDefinition = "INT(11)")
-	private Long no;
+	@Column(updatable = false, nullable = false)
+	private Long id;
 
 	
 	@Column(length  = 30, nullable = false, unique = true, columnDefinition = "CHAR(30)")
-	String id;
+	String email;
 
 	
 	@Column(length  = 20, nullable = false, columnDefinition = "CHAR(20)")

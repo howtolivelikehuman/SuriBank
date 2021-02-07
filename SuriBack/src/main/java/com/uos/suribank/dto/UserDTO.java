@@ -5,8 +5,6 @@ import java.util.Date;
 
 import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,7 +18,7 @@ public class UserDTO implements Serializable{
     @AllArgsConstructor
     @NoArgsConstructor
     public static class loginDTO{
-        String id;
+        String email;
         String password;
     }
 
@@ -29,8 +27,8 @@ public class UserDTO implements Serializable{
     @NoArgsConstructor
     //@JsonFilter("userInfo")
     public static class infoDTO{
-        private Long no;
-        String id;
+        private Long id;
+        String email;
         //String password;
         String name;
         String nickname;
@@ -46,7 +44,7 @@ public class UserDTO implements Serializable{
     public static class signupDTO{
         
         @Size(min=4, max=30, message = "id는 4~20자로 입력해야 합니다.")
-        String id;
+        String email;
 
         //@Size(min=8, max=20, message = "password는 8~20자로 입력해야 합니다.")
         String password;

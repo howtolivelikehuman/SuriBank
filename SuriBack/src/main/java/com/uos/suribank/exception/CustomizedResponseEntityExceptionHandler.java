@@ -1,10 +1,6 @@
 package com.uos.suribank.exception;
 
 import java.util.Date;
-
-import com.uos.suribank.exception.UserNotFoundException;
-import com.uos.suribank.exception.DuplicateException;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
