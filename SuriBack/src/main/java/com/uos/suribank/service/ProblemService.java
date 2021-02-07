@@ -33,15 +33,13 @@ public class ProblemService {
             ProblemTable.getScore(), ProblemTable.getHit()));
 
         //mapping
-        problemTableDTO pTableDTO= new problemTableDTO();
-        pTableDTO.setProbleminfo(map.getContent());
-        pTableDTO.setTotalElements(map.getTotalElements());
-        pTableDTO.setNumberofElements(map.getNumberOfElements());
-        pTableDTO.setTotalPages(map.getTotalPages());
-        pTableDTO.setSize(map.getSize());
-        pTableDTO.setSort(map.getSort().toString());
-
-
+        problemTableDTO pTableDTO= new problemTableDTO(map.getContent(), 
+        map.getTotalElements(), 
+        map.getNumberOfElements(), 
+        map.getTotalPages(),
+        map.getNumber(),
+        map.getSize(),
+        map.getSort().toString());
 
         return pTableDTO;
     }

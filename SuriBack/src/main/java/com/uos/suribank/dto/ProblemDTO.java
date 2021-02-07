@@ -29,10 +29,10 @@ public class ProblemDTO{
     public static class problemTableDTO{
         List<problemInfoDTO> probleminfo;
         Long totalElements;
-        int totalPages;
-        int size;
-        int page;
         int numberofElements;
+        int totalPages;
+        int page;
+        int size;
         String sort;
     }
 }
