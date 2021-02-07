@@ -2,12 +2,10 @@ import React, { Component } from 'react'
 import api from '../util/API'
 import SubHeader from '../component/SubHeader'
 import InfoElement from '../component/InfoElement'
-import EditInfo from '../component/EditInfo'
-
 class MyInfo extends Component{
     state={
         data:null,
-        id:"admin", //test
+        no:"1", //test
         modalOpen:false,
         editable_list: [
             'name', 'password', 'nickname', 'major'
@@ -15,12 +13,13 @@ class MyInfo extends Component{
     }
 
     getMyInfo(){
-        api.get(`/user/${this.state.id}`)
+        api.get(`/user/${this.state.no}`)
         .then(res => {
-            this.setState({data: res.data})
+            this.setState({data: res.data.data})
             console.log(res)
         })
     }
+
     setData = (key, value) => {
         var data = this.state.data
         data[key] = value
@@ -45,7 +44,7 @@ class MyInfo extends Component{
         }
         console.log(data)
 
-        api.put(`/user/${this.state.id}`, {
+        api.put(`/user/${this.state.no}`, {
             data: data
         } )
         .then(res => {
@@ -68,6 +67,7 @@ class MyInfo extends Component{
         else {
             for(var key in this.state.data){
                 MyInfoList.push(<InfoElement k={key} v={this.state.data[key]}></InfoElement>)
+                MyInfoList.splice(1, 0, <InfoElement k="password" v=""></InfoElement>)
             }        
             //console.log(this.state.data)
 
