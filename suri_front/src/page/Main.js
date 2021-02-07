@@ -40,19 +40,19 @@ class Main extends Component{
 
     get_problem_list_data = () =>{
         api
-        .get('/problem',
-        {
-            "filter": {
-                "type": this.state.type,
-                "subject": this.state.subject,
-            },
-            "pagination": {
-                "total_pages": this.state.total_page,
-                "total_elements": 1,
-                "current_page": this.state.now_page,
-                "current_elements": 1
-            }
-        })
+        .get(`/problem/list?page=${this.state.now_page}`)
+        // {
+        //     "filter": {
+        //         "type": this.state.type,
+        //         "subject": this.state.subject,
+        //     },
+        //     "pagination": {
+        //         "total_pages": this.state.total_page,
+        //         "total_elements": 1,
+        //         "current_page": this.state.now_page,
+        //         "current_elements": 1
+        //     }
+        // })
         .then(res => {
             if(res.status!=200){
                 alert("문제 불러오기 실패")
@@ -60,7 +60,9 @@ class Main extends Component{
                 return null
             }
             else{
-                return this.set_problem_list(res.data)
+                console.log(res)
+                this.setState({total_page:res.data.totalPages})
+                return this.set_problem_list(res.data.content)
             }
         })
     }
@@ -168,7 +170,7 @@ class Main extends Component{
                                 <div className="col-1">score</div>
                                 </div>
                             </div>
-                                {this.get_problem_list_data_for_test()}
+                                {this.get_problem_list_data()}
                             </ul>
 
                         </div>
