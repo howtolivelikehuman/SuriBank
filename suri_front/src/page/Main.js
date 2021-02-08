@@ -64,6 +64,7 @@ class Main extends Component{
                 console.log(res)
                 this.setState({
                     total_page:res.data.totalPages,
+                    now_page:res.data.page,
                     pb_list:res.data.probleminfo
                 })
             }
