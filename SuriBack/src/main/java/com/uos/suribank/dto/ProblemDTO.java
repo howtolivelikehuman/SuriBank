@@ -2,8 +2,6 @@ package com.uos.suribank.dto;
 
 import java.util.List;
 
-import org.hibernate.annotations.Sort;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,9 +16,10 @@ public class ProblemDTO{
         String title;
         String subject;
         String uploader;
-        String explanation;
+        String professor;
         float score;
         int hit;
+        int type; //0 for 
     
     }
     @Data
@@ -34,5 +33,17 @@ public class ProblemDTO{
         int page;
         int size;
         String sort;
+    }
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class problemAddDTO{
+        private Long uploader_id;
+        String title;
+        String subject;
+        int type;
+        String professor;
+        String question;
+        String answer;
     }
 }

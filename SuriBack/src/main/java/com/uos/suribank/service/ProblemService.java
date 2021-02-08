@@ -20,17 +20,15 @@ public class ProblemService {
     @Autowired
     private ProblemRepository problemRepository;
 
-    @Autowired
-    private ModelMapper modelMapper;
-
     public problemTableDTO getPage(Pageable pageable){
+
         Page<ProblemTable> pg = problemRepository.findAll(pageable);
 
         Page<problemInfoDTO> map = pg.map(ProblemTable -> new problemInfoDTO(
             ProblemTable.getId(), ProblemTable.getTitle(), 
             ProblemTable.getSubject(), ProblemTable.getUser().getNickname(),
-            ProblemTable.getExplanation(),
-            ProblemTable.getScore(), ProblemTable.getHit()));
+            ProblemTable.getProfessor(),
+            ProblemTable.getScore(), ProblemTable.getHit(), ProblemTable.getType()));
 
         //mapping
         problemTableDTO pTableDTO= new problemTableDTO(map.getContent(), 

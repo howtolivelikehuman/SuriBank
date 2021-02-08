@@ -1,6 +1,5 @@
 package com.uos.suribank.entity;
 
-import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,7 +8,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -48,7 +46,7 @@ public class ProblemTable{
     String subject;
 
     @Column(length = 50)
-    String explanation;
+    String professor;
 
     @Column(nullable = false, columnDefinition = "Float(3,2) DEFAULT 0")
     float score;
@@ -56,9 +54,17 @@ public class ProblemTable{
     @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
     int hit;
 
+    @Column(columnDefinition = "INT(2) DEFAULT 0")
+    int type;
+
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	Date registerdate;
+
+    @Column(length  = 500)
+    String question;
+    @Column(length  = 500)
+    String answer;
 
 }
