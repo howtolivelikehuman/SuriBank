@@ -1,7 +1,7 @@
 import React from 'react';
 
 function InfoElement({k, v}){
-    if (k == '_no') return null
+    if (k == 'id') return null
     if (k == 'major'){
         let major_list = ['컴퓨터과학부', '경영학부', '화학공학과', '철학과']
         let major_componet = major_list.map(major => {

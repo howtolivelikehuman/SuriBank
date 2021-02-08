@@ -38,10 +38,10 @@ class Login extends Component{
             return null
         }
 
-        if(this.state.same_password == false){
-            alert("비밀번호를 확인해주세요")
-            return null
-        }
+        // if(this.state.same_password == false){
+        //     alert("비밀번호를 확인해주세요")
+        //     return null
+        // }
 
         console.log(this.state.email, this.state.password, this.state.name, this.state.major, this.state.nickname)
         fetch('http://localhost:8081/api/user/signup', {
@@ -51,13 +51,13 @@ class Login extends Component{
             },
             body: JSON.stringify(
                 {
-                    data:{
+                    
                         email:this.state.email,
                         password:this.state.password,
                         name:this.state.name,
                         major:this.state.major,
                         nickname:this.state.nickname,
-                        }
+                    
                 }
             )
         })
@@ -108,10 +108,10 @@ class Login extends Component{
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(
-                {   data:{
+                { 
                         email: email,
                         password:password
-                    }
+                    
                 }
             )
         })
