@@ -9,13 +9,14 @@ class MyInfo extends Component{
         modalOpen:false,
         editable_list: [
             'name', 'password', 'nickname', 'major'
-        ]
+        ],
+        edit_status:false
     }
 
     getMyInfo(){
         api.get(`/user/${this.state.no}`)
         .then(res => {
-            this.setState({data: res.data.data})
+            this.setState({data: res.data})
             console.log(res)
         })
     }
@@ -27,11 +28,11 @@ class MyInfo extends Component{
     }
 
     set_edit_version = () => {
+        this.setState({edit_status:true})
         for(var i of this.state.editable_list){
             const now = document.getElementsByName(i)[0]
             if(i==='major') now.disabled = false
             else now.readOnly = false
-            
         }
     }
 
@@ -44,13 +45,13 @@ class MyInfo extends Component{
         }
         console.log(data)
 
-        api.put(`/user/${this.state.no}`, {
-            data: data
-        } )
+        api.put(`/user/${this.state.no}`, data )
         .then(res => {
             console.log(res);
             if(res.status==200){
                 alert('수정 완료되었습니다!')
+                this.setState({edit_status:false})
+                //window.location.href=""
             }
             else{
                 alert('다시 입력해주세요')
@@ -67,10 +68,16 @@ class MyInfo extends Component{
         else {
             for(var key in this.state.data){
                 MyInfoList.push(<InfoElement k={key} v={this.state.data[key]}></InfoElement>)
-                MyInfoList.splice(1, 0, <InfoElement k="password" v=""></InfoElement>)
-            }        
+            }
+            MyInfoList.splice(2, 0, <InfoElement k="password" v=""></InfoElement>)        
             //console.log(this.state.data)
-
+            let EditButton = null
+            if(this.state.edit_status)
+                EditButton =
+                <div>
+                    <hr className="my-3"/>
+                    <button className="btn btn-secondary w-100" id="edit_btn" onClick={()=>this.edit_handler()}>수정 완료</button>
+                </div>
         
         //document.getElementById('editBtn').addEventListener('click', this.open_modify_modal)
 
@@ -91,8 +98,7 @@ class MyInfo extends Component{
                         </div>
                         <div className="card-body px-5">
                             {MyInfoList}
-                            <hr className="my-3"/>
-                            <button className="btn btn-secondary w-100" onClick={()=>this.edit_handler()}>수정 완료</button>
+                            {EditButton}
                         </div>
                     </div>
                 </div>
