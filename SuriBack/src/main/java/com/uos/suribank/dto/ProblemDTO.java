@@ -15,25 +15,26 @@ public class ProblemDTO{
         private Long id;
         String title;
         String subject;
-        String uploader;
         String professor;
+        String uploader;
+        int type; //0 for 
         float score;
         int hit;
-        int type; //0 for 
-    
+
     }
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
     public static class problemTableDTO{
         List<problemInfoDTO> probleminfo;
-        Long totalElements;
+        int totalElements;
         int numberofElements;
         int totalPages;
         int page;
         int size;
         String sort;
     }
+
     @Data
     @AllArgsConstructor
     @NoArgsConstructor

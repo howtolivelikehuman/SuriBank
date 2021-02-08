@@ -19,6 +19,7 @@ public class DomainSpec<T extends Enum<T>, U> {
     private int defaultSize = 20;
     private SortStrategy<T> sortStrategy;
 
+
     public DomainSpec(Class<T> clazz, SortStrategy<T> sortStrategy) {
         this.clazz = clazz;
         this.sortStrategy = sortStrategy;

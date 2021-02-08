@@ -1,44 +1,27 @@
 package com.uos.suribank.service;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.parsing.Problem;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.uos.suribank.dto.ProblemDTO.problemInfoDTO;
 import com.uos.suribank.dto.ProblemDTO.problemTableDTO;
-import com.uos.suribank.entity.ProblemTable;
-import com.uos.suribank.repository.ProblemRepository;
+import com.uos.suribank.pagination.DomainSpec;
+import com.uos.suribank.pagination.PageableDTO;
+import com.uos.suribank.repository.ProblemReopository;
 
 @Service
 public class ProblemService {
-    
+
     @Autowired
-    private ProblemRepository problemRepository;
+    private ProblemReopository problemRepository;
 
-    public problemTableDTO getPage(Pageable pageable){
-
-        Page<ProblemTable> pg = problemRepository.findAll(pageable);
-
-        Page<problemInfoDTO> map = pg.map(ProblemTable -> new problemInfoDTO(
-            ProblemTable.getId(), ProblemTable.getTitle(), 
-            ProblemTable.getSubject(), ProblemTable.getUser().getNickname(),
-            ProblemTable.getProfessor(),
-            ProblemTable.getScore(), ProblemTable.getHit(), ProblemTable.getType()));
-
-        //mapping
-        problemTableDTO pTableDTO= new problemTableDTO(map.getContent(), 
-        map.getTotalElements(), 
-        map.getNumberOfElements(), 
-        map.getTotalPages(),
-        map.getNumber(),
-        map.getSize(),
-        map.getSort().toString());
-
-        return pTableDTO;
+    /*public Pageable makePageable(PageableDTO page){
+        DomainSpec domainSpec = new DomainSpec();
+        domainSpec.getPageable(page);
+    }*/
+    
+    public problemTableDTO getPage (final String type, final String value, Pageable pageable){
+        return problemRepository.getPage(type, value, pageable);
     }
+
 }
