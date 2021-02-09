@@ -9,8 +9,6 @@ import com.uos.suribank.dto.ProblemDTO.problemTableDTO;
 import com.uos.suribank.entity.ProblemTable;
 import com.uos.suribank.entity.QProblemTable;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
@@ -21,8 +19,6 @@ public class ProblemReopository extends QuerydslRepositorySupport{
     public ProblemReopository() {
         super(ProblemTable.class);
     }
-
-    
 
     public problemTableDTO getPage(final String type, final String value, Pageable pageable){
 
@@ -70,7 +66,7 @@ public class ProblemReopository extends QuerydslRepositorySupport{
         pDto.setSize(pageable.getPageSize());
         pDto.setNumberofElements(pDto.getProbleminfo().size());
         pDto.setTotalElements((int)query.fetchCount());
-        pDto.setTotalPages(pDto.getTotalElements()/pDto.getSize());
+        pDto.setTotalPages((pDto.getTotalElements()+pDto.getSize()-1)/pDto.getSize());
         return pDto;
     }
 

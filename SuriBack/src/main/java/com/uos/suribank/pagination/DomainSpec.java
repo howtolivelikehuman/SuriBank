@@ -20,6 +20,10 @@ public class DomainSpec<T extends Enum<T>, U> {
     private SortStrategy<T> sortStrategy;
 
 
+    public DomainSpec(Class<T> clazz){
+        this.clazz = clazz;
+    }
+
     public DomainSpec(Class<T> clazz, SortStrategy<T> sortStrategy) {
         this.clazz = clazz;
         this.sortStrategy = sortStrategy;
