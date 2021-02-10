@@ -1,6 +1,5 @@
 package com.uos.suribank.entity;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;

@@ -78,6 +78,7 @@ class Login extends Component{
     }
     check_email_overlap = () => {
         const email = this.state.email
+        console.log(email)
         api.post('/user/checkId', {
             id: email
         })
@@ -87,8 +88,13 @@ class Login extends Component{
                 this.setState({valid_email:true})
             }
         })
-        .catch(()=>{
-            alert("이미 존재하는 이메일 입니다.")
+        .catch((err)=>{
+            //console.log(JSON.stringify(err))
+
+             if(err.response){
+                 if(err.response.status==409) alert("이미 존재하는 이메일 입니다.")
+                 else alert('오류가 발생하였습니다. 다시 시도해주세요')
+             }
             this.setState({valid_email:false})
         })
         //TO DO: err 뜨면 무조건 409라고 간주, 상태 코드 수정할지, 코드상으로 변경할지..?

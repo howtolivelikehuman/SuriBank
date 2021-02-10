@@ -41,7 +41,7 @@ class Main extends Component{
 
     get_problem_list_data = () =>{
         api
-        .get(`/problem/list?page=${this.state.now_page}`)
+        .get(`/problem/list?page=${this.state.now_page}&sort=registerdate,desc&size=1`)
         // {
         //     "filter": {
         //         "type": this.state.type,
@@ -64,11 +64,16 @@ class Main extends Component{
                 console.log(res)
                 this.setState({
                     total_page:res.data.totalPages,
-                    now_page:res.data.page,
                     pb_list:res.data.probleminfo
                 })
             }
         })
+    }
+    page_item_click_handler = (i) => {
+        if(i>=0 && i<this.state.total_page)
+            this.setState({now_page:i},() => {
+                this.get_problem_list_data()
+            })
     }
 
     set_problem_list = () => {
@@ -100,12 +105,13 @@ class Main extends Component{
         else{
             let page=[]
             let problem_list = this.set_problem_list()
+            let current_page = this.state.now_page
             var tot_page=this.state.total_page
             for(let i = 0; i<tot_page; i++){
-                if(this.state.now_page==i)
-                    page.push(<li className="page-item active" onClick={()=>this.setState({now_page:i})}><a className="page-link" href="javascript:void(0);">{i}</a></li>)
+                if(current_page==i)
+                    page.push(<li className="page-item active" onClick={()=>this.page_item_click_handler(i)}><a className="page-link" href="javascript:void(0);">{i}</a></li>)
                 else 
-                    page.push(<li className="page-item" onClick={()=>this.setState({now_page:i})}><a className="page-link" href="javascript:void(0);">{i}</a></li>)
+                    page.push(<li className="page-item" onClick={()=>this.page_item_click_handler(i)}><a className="page-link" href="javascript:void(0);">{i}</a></li>)
             }
             return(
                 <div className="container-fluid">
@@ -154,20 +160,15 @@ class Main extends Component{
                             </div>
                         </nav>
                         <div className="col-md-8" id="content">
-                            <nav className="navbar navbar-expand-sm navbar-light bg-light">
+                            <nav className="navbar ml-auto navbar-expand-sm">
                                 <ul class="navbar-nav">
                                     <li class="nav-item">
-                                    <a class="nav-link" href="#">nav 1</a>
+                                    <a class="nav-link" onClick={()=>this.props.history.push('../makePB')}>+</a>
                                     </li>
                                     <li class="nav-item">
                                     <a class="nav-link" href="#">nav 2</a>
                                     </li>
-                                    <li class="nav-item">
-                                    <a class="nav-link" href="#">nav 3</a>
-                                    </li>                                
-                                    <li class="nav-item">
-                                    <a class="nav-link" href="#">nav 4</a>
-                                    </li>
+
                                 </ul>
                             </nav>
                             <div>
@@ -175,10 +176,10 @@ class Main extends Component{
                                 <div className="list-group-item">
                                     <div className="row">
                                     <div className="col-1">#</div>
-                                    <div className="col-3">title</div>
-                                    <div className="col-3">subject</div>
-                                    <div className="col-2">professor</div>
-                                    <div className="col-2">uploader</div>
+                                    <div className="col-3">제목</div>
+                                    <div className="col-3">과목</div>
+                                    <div className="col-2">교수</div>
+                                    <div className="col-2">작성자</div>
                                     <div className="col-1">score</div>
                                     </div>
                                 </div>
@@ -188,9 +189,9 @@ class Main extends Component{
                             </div>
                             <div className="my-10"> 
                                 <ul class="pagination justify-content-center">
-                                    <li className="page-item"><a className="page-link" href="javascript:void(0);">Previous</a></li>
+                                    <li className="page-item"><a className="page-link" onClick={()=> this.page_item_click_handler(current_page-1)}>Previous</a></li>
                                     {page}
-                                    <li className="page-item"><a className="page-link" href="javascript:void(0);">Next</a></li>
+                                    <li className="page-item"><a className="page-link" onClick={()=> this.page_item_click_handler(current_page+1)}>Next</a></li>
                                 </ul>
                             </div>
                         </div>
