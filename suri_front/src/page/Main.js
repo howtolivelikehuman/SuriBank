@@ -64,7 +64,6 @@ class Main extends Component{
                 console.log(res)
                 this.setState({
                     total_page:res.data.totalPages,
-                    now_page:res.data.page,
                     pb_list:res.data.probleminfo
                 })
             }
@@ -161,20 +160,15 @@ class Main extends Component{
                             </div>
                         </nav>
                         <div className="col-md-8" id="content">
-                            <nav className="navbar navbar-expand-sm navbar-light bg-light">
+                            <nav className="navbar ml-auto navbar-expand-sm">
                                 <ul class="navbar-nav">
                                     <li class="nav-item">
-                                    <a class="nav-link" href="#">nav 1</a>
+                                    <a class="nav-link" onClick={()=>this.props.history.push('../makePB')}>+</a>
                                     </li>
                                     <li class="nav-item">
                                     <a class="nav-link" href="#">nav 2</a>
                                     </li>
-                                    <li class="nav-item">
-                                    <a class="nav-link" href="#">nav 3</a>
-                                    </li>                                
-                                    <li class="nav-item">
-                                    <a class="nav-link" href="#">nav 4</a>
-                                    </li>
+
                                 </ul>
                             </nav>
                             <div>
@@ -182,10 +176,10 @@ class Main extends Component{
                                 <div className="list-group-item">
                                     <div className="row">
                                     <div className="col-1">#</div>
-                                    <div className="col-3">title</div>
-                                    <div className="col-3">subject</div>
-                                    <div className="col-2">professor</div>
-                                    <div className="col-2">uploader</div>
+                                    <div className="col-3">제목</div>
+                                    <div className="col-3">과목</div>
+                                    <div className="col-2">교수</div>
+                                    <div className="col-2">작성자</div>
                                     <div className="col-1">score</div>
                                     </div>
                                 </div>
