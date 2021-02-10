@@ -1,9 +1,9 @@
 package com.uos.suribank.repository;
 
-import java.util.List;
-
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
+import com.querydsl.jpa.impl.JPAInsertClause;
+import com.uos.suribank.dto.ProblemDTO.problemAddDTO;
 import com.uos.suribank.dto.ProblemDTO.problemInfoDTO;
 import com.uos.suribank.dto.ProblemDTO.problemTableDTO;
 import com.uos.suribank.entity.ProblemTable;
@@ -23,6 +23,7 @@ public class ProblemReopository extends QuerydslRepositorySupport{
     public problemTableDTO getPage(final String type, final String value, Pageable pageable){
 
         final JPQLQuery<problemInfoDTO> query;
+        
         QProblemTable problemTable = QProblemTable.problemTable;
         problemTableDTO pDto = new problemTableDTO();
         
@@ -64,10 +65,10 @@ public class ProblemReopository extends QuerydslRepositorySupport{
         pDto.setProbleminfo(getQuerydsl().applyPagination(pageable, query).fetch());
         pDto.setPage(pageable.getPageNumber());
         pDto.setSize(pageable.getPageSize());
+        pDto.setSort(pageable.getSort().toString());
         pDto.setNumberofElements(pDto.getProbleminfo().size());
         pDto.setTotalElements((int)query.fetchCount());
         pDto.setTotalPages((pDto.getTotalElements()+pDto.getSize()-1)/pDto.getSize());
         return pDto;
     }
-
 }
