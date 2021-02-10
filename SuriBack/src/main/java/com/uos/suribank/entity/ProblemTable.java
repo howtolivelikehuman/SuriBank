@@ -1,5 +1,6 @@
 package com.uos.suribank.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -29,7 +30,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "problem_table")
 @DynamicUpdate
 @DynamicInsert
-public class ProblemTable{
+public class ProblemTable implements Serializable{
 
     @Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

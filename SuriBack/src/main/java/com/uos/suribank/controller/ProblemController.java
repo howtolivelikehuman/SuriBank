@@ -4,11 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.uos.suribank.dto.ProblemDTO.problemAddDTO;
 import com.uos.suribank.dto.ProblemDTO.problemTableDTO;
 import com.uos.suribank.exception.UserNotFoundException;
 import com.uos.suribank.pagination.PageableDTO;
@@ -32,5 +34,15 @@ public class ProblemController {
 			throw new UserNotFoundException("Page not found");
 		}
         return ResponseEntity.ok(pDto);
+    }
+
+    @PostMapping(path = "/add")
+    public ResponseEntity<?> addProblem(@RequestBody problemAddDTO pAddDTO){
+        Long pId = problemService.addProblem(pAddDTO);
+
+        if(pId < 1){
+            throw new UserNotFoundException("invalid input");
+        }
+        return ResponseEntity.ok(pId);
     }
 }
