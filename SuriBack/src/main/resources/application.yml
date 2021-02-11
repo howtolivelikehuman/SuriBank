@@ -13,11 +13,12 @@ spring :
         database-platform: org.hibernate.dialect.MySQL8Dialect
         properties:
             hibernate:
-                ddl-auto: update 
+                ddl-auto: update
         generate-ddl: true
         open-in-view: false
         show-sql : true
 
+    
 
 
 #logging:

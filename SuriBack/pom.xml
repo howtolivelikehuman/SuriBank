@@ -94,12 +94,6 @@
 			<version>6.0.8.Final</version>
 		</dependency>
 
-		<!--hateoas-->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-hateoas</artifactId>
-		</dependency>
-
 		<!--security-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

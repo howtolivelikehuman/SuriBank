@@ -1,6 +1,7 @@
 package com.uos.suribank.dto;
 
 import java.util.List;
+import java.util.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +12,7 @@ public class ProblemDTO {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class problemInfoDTO{
+    public static class problemShortDTO{
         private Long id;
         String title;
         String subject;
@@ -26,7 +27,7 @@ public class ProblemDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class problemTableDTO{
-        List<problemInfoDTO> probleminfo;
+        List<problemShortDTO> probleminfo;
         int totalElements;
         int numberofElements;
         int totalPages;
@@ -46,5 +47,23 @@ public class ProblemDTO {
         String professor;
         String question;
         String answer;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class problemInfoDTO{
+        private Long id;
+        String title;
+        String subject;
+        String professor;
+        String question;
+        String answer;
+        String uploader;
+        Date registerdate;
+        int type; //0 for 
+        float score;
+        int hit;
+
     }
 }
