@@ -3,7 +3,9 @@ package com.uos.suribank.repository;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
+import com.fasterxml.jackson.databind.util.ArrayBuilders.BooleanBuilder;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.uos.suribank.dto.ProblemDTO.problemAddDTO;
@@ -18,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 @Repository
 public class ProblemReopository extends QuerydslRepositorySupport {
@@ -27,6 +30,8 @@ public class ProblemReopository extends QuerydslRepositorySupport {
 
     @Autowired
     private JPAQueryFactory queryFactory;
+
+    QProblemTable problemTable;
     
     public ProblemReopository() {
         super(ProblemTable.class);
@@ -34,13 +39,14 @@ public class ProblemReopository extends QuerydslRepositorySupport {
 
     public problemTableDTO getPage(final String type, final String value, Pageable pageable) {
 
-        QProblemTable problemTable = QProblemTable.problemTable;
+        problemTable = QProblemTable.problemTable;
         problemTableDTO pDto = new problemTableDTO();
 
         JPQLQuery<problemShortDTO> query= from(problemTable)
-                                        .select(Projections.constructor(problemShortDTO.class, problemTable.id, problemTable.title,
+                                          .select(Projections.constructor(problemShortDTO.class, problemTable.id, problemTable.title,
                                                 problemTable.subject, problemTable.professor, problemTable.user.name, problemTable.type,
                                                  problemTable.score, problemTable.hit));
+
         switch (type) {
             case "title":
                 query = query.where(problemTable.title.stringValue().likeIgnoreCase(value + "%"));
@@ -62,6 +68,49 @@ public class ProblemReopository extends QuerydslRepositorySupport {
                 query = query.fetchAll();
                 break;
         }
+
+        pDto.setProbleminfo(getQuerydsl().applyPagination(pageable, query).fetch());
+        pDto.setPage(pageable.getPageNumber());
+        pDto.setSize(pageable.getPageSize());
+        pDto.setSort(pageable.getSort().toString());
+        pDto.setNumberofElements(pDto.getProbleminfo().size());
+        pDto.setTotalElements((int) query.fetchCount());
+        pDto.setTotalPages((pDto.getTotalElements() + pDto.getSize() - 1) / pDto.getSize());
+        return pDto;
+    }
+
+    public problemTableDTO getPage(final String type, final String[] value, Pageable pageable) {
+
+        problemTable = QProblemTable.problemTable;
+        problemTableDTO pDto = new problemTableDTO();
+
+        JPQLQuery<problemShortDTO> query= from(problemTable)
+                                          .select(Projections.constructor(problemShortDTO.class, problemTable.id, problemTable.title,
+                                                problemTable.subject, problemTable.professor, problemTable.user.name, problemTable.type,
+                                                 problemTable.score, problemTable.hit));
+
+        switch (type) {
+            case "title":
+                query = query.where(problemTable.title.stringValue().in(value));
+                break;
+
+            case "subject":
+                query = query.where(problemTable.subject.stringValue().in(value));
+                break;
+
+            case "professor":
+                query = query.where(problemTable.professor.stringValue().in(value));
+                break;
+
+            case "type":
+                query =query.where(problemTable.type.intValue().eq(Integer.parseInt(value[0])));
+                break;
+
+            default:
+                query = query.fetchAll();
+                break;
+        }
+
         pDto.setProbleminfo(getQuerydsl().applyPagination(pageable, query).fetch());
         pDto.setPage(pageable.getPageNumber());
         pDto.setSize(pageable.getPageSize());
@@ -96,7 +145,6 @@ public class ProblemReopository extends QuerydslRepositorySupport {
         }
         return result > 0 ? true : false;
     }
-
 
     public problemInfoDTO getProblemInfo(Long id){
         QProblemTable problemTable = QProblemTable.problemTable;

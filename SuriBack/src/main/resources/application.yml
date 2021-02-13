@@ -5,7 +5,7 @@ server:
 spring :
     datasource:
         driver-class-name: com.mysql.cj.jdbc.Driver
-        url: jdbc:mysql://localhost:3306/suribank?useSSL=false&serverTimezone=UTC
+        url: jdbc:mysql://localhost:3306/suribank?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
         username: suriadmin
         password: howtolivelikehuman
 
