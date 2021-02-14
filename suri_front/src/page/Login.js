@@ -3,6 +3,8 @@ import Modal from 'react-modal'
 import Header from '../component/Header';
 import '../css/login.sass'
 import api from '../util/API'
+import login from '../img/login.png'
+
 
 class Login extends Component{
     state={
@@ -160,7 +162,10 @@ class Login extends Component{
                 <div className="row">
                     <div className="col-6 card login_wrapper m-auto"> 
                         <div className="my-3">
-                            <h4 className="card-title text-center mb-1">Login</h4><hr></hr>   
+                            <div className="row">
+                            <img className="mx-auto my-0 card-title" height="30" id="login_img" src={login}/>
+                            </div>
+                            <hr></hr>   
                             <div className="form-group">
                                 <label className="form-control-label text-muted">Username</label>
                                 <input name="Login_id" className="loginId input_e form-control" type="text" placeholder="ID" />
