@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Modal from 'react-modal'
 import api from '../util/API'
 import SubHeader from '../component/SubHeader'
+import {Link} from 'react-router-dom'
 
 class Main extends Component{
     state={
@@ -41,19 +42,17 @@ class Main extends Component{
 
     get_problem_list_data = () =>{
         api
-        .get(`/problem/list?page=${this.state.now_page}&sort=registerdate,desc&size=1`)
-        // {
-        //     "filter": {
-        //         "type": this.state.type,
-        //         "subject": this.state.subject,
-        //     },
-        //     "pagination": {
-        //         "total_pages": this.state.total_page,
-        //         "total_elements": 1,
-        //         "current_page": this.state.now_page,
-        //         "current_elements": 1
-        //     }
-        // })
+        .get(`/problem/list`,
+        {
+            page:this.state.now_page,
+            size:20,
+            sort:"registerdate",
+            order:"desc",
+            // "filter": {
+            //     "type": this.state.type,
+            //     "subject": this.state.subject,
+            // },
+        })
         .then(res => {
             if(res.status!=200){
                 alert("문제 불러오기 실패")
@@ -80,7 +79,7 @@ class Main extends Component{
         let problem_list = []
         problem_list = this.state.pb_list.map(problem => {
             return(
-                <a href="#" className="list-group-item list-group-item-action">
+                <Link to={{pathname: '/order', data : {id: problem.id}}} className="list-group-item list-group-item-action">
                     <div className="row">
                     <div className="col-1">{problem.id}</div>
                     <div className="col-3">{problem.title}</div>
@@ -89,7 +88,7 @@ class Main extends Component{
                     <div className="col-2">{problem.uploader}</div>
                     <div className="col-1">{problem.score}</div>
                     </div>
-                </a>
+                </Link>
             )
         })
 

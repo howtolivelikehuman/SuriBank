@@ -14,8 +14,11 @@ class makePB extends Component{
             professor:null,
             question:null,
             answer:null,
-            img:null,
         },
+        img:null
+    }
+    set_img = (img_file) => {
+        this.setState({img:img_file})
     }
 
     get_user_id = () => {
@@ -27,8 +30,12 @@ class makePB extends Component{
     }
 
     make_problem_handler = () => {
+        const formData = new FormData()
         let pb_data = new Object()
+        console.log(this.state.img)
+        formData.append('file',this.state.img)
         for(var key in this.state.pb_data){
+            console.log(document.getElementsByName(key)[0])
             pb_data[key] = document.getElementsByName(key)[0].value
         }
         pb_data['uploader_id']=this.state.id
@@ -52,7 +59,7 @@ class makePB extends Component{
             let pb_input = []
             for(var key in this.state.pb_data){
                 console.log(typeof(key))
-                pb_input.push(<ProblemElement k={key}></ProblemElement>)
+                pb_input.push(<ProblemElement k={key} set_img={this.set_img}></ProblemElement>)
             }
             return(
                 <div className="container-fluid">
