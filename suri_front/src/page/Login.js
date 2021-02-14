@@ -80,7 +80,7 @@ class Login extends Component{
         const email = this.state.email
         console.log(email)
         api.post('/user/checkId', {
-            id: email
+            email: email
         })
         .then(res => {
             if(res.status=="200") {
@@ -90,7 +90,6 @@ class Login extends Component{
         })
         .catch((err)=>{
             //console.log(JSON.stringify(err))
-
              if(err.response){
                  if(err.response.status==409) alert("이미 존재하는 이메일 입니다.")
                  else alert('오류가 발생하였습니다. 다시 시도해주세요')
