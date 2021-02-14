@@ -20,7 +20,7 @@ import com.uos.suribank.dto.UserDTO.signupDTO;
 import com.uos.suribank.dto.UserDTO.updateDTO;
 import com.uos.suribank.service.UserService;
 
-import com.uos.suribank.exception.UserNotFoundException;
+import com.uos.suribank.exception.NotFoundException;
 import com.uos.suribank.exception.DuplicateException;
 
 @RestController
@@ -37,7 +37,7 @@ public class UserController {
 		infoDTO info = userService.getInfo(id);
 
 		if(info == null){
-			throw new UserNotFoundException(String.format("ID[%s] not found", id));
+			throw new NotFoundException(String.format("ID[%s] not found", id));
 		}
 		/*SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.filterOutAllExcept("no","id","name","nickname","major","type","registerdate","point");
         FilterProvider filters = new SimpleFilterProvider().addFilter("userInfo", filter);
@@ -52,7 +52,7 @@ public class UserController {
 	public void deleteInfo(@PathVariable Long id) {
 		int result = userService.deleteInfo(id);
 		if( result == 0){
-			throw new UserNotFoundException(String.format("ID[%s] not found", id));
+			throw new NotFoundException(String.format("ID[%s] not found", id));
 		}
 	}
 
@@ -61,7 +61,7 @@ public class UserController {
 	public void updateInfo(@PathVariable Long id, @Valid @RequestBody updateDTO udto){
 		
 		if(userService.update(udto, id) == null){
-			throw new UserNotFoundException("Error Occurs");
+			throw new NotFoundException("Error Occurs");
 		}
 	}
 
@@ -72,7 +72,7 @@ public class UserController {
 		
 		//loginfailed
 		if(!result){
-			throw new UserNotFoundException("ID is not found or Wrong PW");
+			throw new NotFoundException("ID is not found or Wrong PW");
 		}
 	}
 
@@ -95,7 +95,7 @@ public class UserController {
 		userService.checkId(sdto.getEmail());
 
 		if(userService.singup(sdto) == null){
-			throw new UserNotFoundException("Error Occurs");
+			throw new NotFoundException("Error Occurs");
 		}
 	}
 	

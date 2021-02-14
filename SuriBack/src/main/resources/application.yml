@@ -5,7 +5,7 @@ server:
 spring :
     datasource:
         driver-class-name: com.mysql.cj.jdbc.Driver
-        url: jdbc:mysql://localhost:3306/suribank?useSSL=false&serverTimezone=UTC
+        url: jdbc:mysql://localhost:3306/suribank?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
         username: suriadmin
         password: howtolivelikehuman
 
@@ -13,13 +13,14 @@ spring :
         database-platform: org.hibernate.dialect.MySQL8Dialect
         properties:
             hibernate:
-                ddl-auto: update 
+                ddl-auto: update
         generate-ddl: true
         open-in-view: false
         show-sql : true
 
+    
 
 
 #logging:
-#    level:  
+#   level:  
 #        org.springframework: DEBUG

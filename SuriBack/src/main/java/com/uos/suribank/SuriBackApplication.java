@@ -7,6 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class SuriBackApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SuriBackApplication.class, args);
+		 SpringApplication.run(SuriBackApplication.class, args);
 	}
 }
