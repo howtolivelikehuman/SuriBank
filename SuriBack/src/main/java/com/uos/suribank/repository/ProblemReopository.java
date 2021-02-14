@@ -3,9 +3,7 @@ package com.uos.suribank.repository;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-import com.fasterxml.jackson.databind.util.ArrayBuilders.BooleanBuilder;
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.uos.suribank.dto.ProblemDTO.problemAddDTO;
@@ -20,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.StringUtils;
 
 @Repository
 public class ProblemReopository extends QuerydslRepositorySupport {
