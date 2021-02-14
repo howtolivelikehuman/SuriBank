@@ -1,8 +1,6 @@
 
 package com.uos.suribank.pagination;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,8 +16,6 @@ public class PageableDTO {
     String sort;
     //ASC or DESC
     String order;
-
-    //filter
-    String type;
-    String[] value;
+    //Filter
+    FilterDTO filter;
 }

@@ -5,6 +5,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
+import com.uos.suribank.dto.SubjectDTO;
 import com.uos.suribank.dto.ProblemDTO.problemAddDTO;
 import com.uos.suribank.dto.ProblemDTO.problemInfoDTO;
 import com.uos.suribank.dto.ProblemDTO.problemTableDTO;
@@ -20,16 +23,21 @@ public class ProblemService {
 
     public problemTableDTO getProblemList(PageableDTO page){
         Pageable pageable = ProblemPageable.makePageable(page);
-        return problemRepository.getPage(page.getType(), page.getValue(), pageable);
+        return problemRepository.getPage(page.getFilter(), pageable);
     }
 
     
+    @Transactional
     public boolean addProblem(problemAddDTO pAddDTO){
         return problemRepository.addProblem(pAddDTO);
     }
 
     public problemInfoDTO getProblemInfo(Long id){
         return problemRepository.getProblemInfo(id);
+    }
+
+    public List<SubjectDTO> getSubjectList(){
+        return problemRepository.getSubjectList();
     }
 
 }

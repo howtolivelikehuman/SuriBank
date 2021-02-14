@@ -15,7 +15,7 @@ public class ProblemDTO {
     public static class problemShortDTO{
         private Long id;
         String title;
-        String subject;
+        Long subject;
         String professor;
         String uploader;
         int type; //0 for 
@@ -42,7 +42,7 @@ public class ProblemDTO {
     public static class problemAddDTO{
         private Long uploader_id;
         String title;
-        String subject;
+        Long subject;
         int type;
         String professor;
         String question;
@@ -55,7 +55,7 @@ public class ProblemDTO {
     public static class problemInfoDTO{
         private Long id;
         String title;
-        String subject;
+        Long subject;
         String professor;
         String question;
         String answer;
