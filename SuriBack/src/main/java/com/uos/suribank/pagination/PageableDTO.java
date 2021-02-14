@@ -21,5 +21,5 @@ public class PageableDTO {
 
     //filter
     String type;
-    String value;
+    String[] value;
 }
