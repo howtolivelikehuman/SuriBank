@@ -1,17 +1,23 @@
 package com.uos.suribank.repository;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.uos.suribank.dto.SubjectDTO;
 import com.uos.suribank.dto.ProblemDTO.problemAddDTO;
 import com.uos.suribank.dto.ProblemDTO.problemInfoDTO;
 import com.uos.suribank.dto.ProblemDTO.problemShortDTO;
 import com.uos.suribank.dto.ProblemDTO.problemTableDTO;
 import com.uos.suribank.entity.ProblemTable;
 import com.uos.suribank.entity.QProblemTable;
+import com.uos.suribank.entity.QSubject;
+import com.uos.suribank.pagination.FilterDTO;
 
 import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,38 +40,20 @@ public class ProblemReopository extends QuerydslRepositorySupport {
         super(ProblemTable.class);
     }
 
-    public problemTableDTO getPage(final String type, final String value, Pageable pageable) {
+    public problemTableDTO getPage(FilterDTO filter, Pageable pageable) {
 
         problemTable = QProblemTable.problemTable;
         problemTableDTO pDto = new problemTableDTO();
 
         JPQLQuery<problemShortDTO> query= from(problemTable)
                                           .select(Projections.constructor(problemShortDTO.class, problemTable.id, problemTable.title,
-                                                problemTable.subject, problemTable.professor, problemTable.user.name, problemTable.type,
+                                                problemTable.subject.code, problemTable.professor, problemTable.user.name, problemTable.type,
                                                  problemTable.score, problemTable.hit));
 
-        switch (type) {
-            case "title":
-                query = query.where(problemTable.title.stringValue().likeIgnoreCase(value + "%"));
-                break;
+        //set filter
+        query = query.where(eqType(filter.getType()), eqSubject(filter.getSubject()), eqProfessor(filter.getProfessor()));
 
-            case "subject":
-                query = query.where(problemTable.subject.stringValue().likeIgnoreCase(value + "%"));
-                break;
-
-            case "professor":
-                query = query.where(problemTable.professor.stringValue().likeIgnoreCase(value + "%"));
-                break;
-
-            case "type":
-                query =query.where(problemTable.type.intValue().eq(Integer.parseInt(value)));
-                break;
-
-            default:
-                query = query.fetchAll();
-                break;
-        }
-
+        //setting pDto
         pDto.setProbleminfo(getQuerydsl().applyPagination(pageable, query).fetch());
         pDto.setPage(pageable.getPageNumber());
         pDto.setSize(pageable.getPageSize());
@@ -76,55 +64,32 @@ public class ProblemReopository extends QuerydslRepositorySupport {
         return pDto;
     }
 
-    public problemTableDTO getPage(final String type, final String[] value, Pageable pageable) {
-
-        problemTable = QProblemTable.problemTable;
-        problemTableDTO pDto = new problemTableDTO();
-
-        JPQLQuery<problemShortDTO> query= from(problemTable)
-                                          .select(Projections.constructor(problemShortDTO.class, problemTable.id, problemTable.title,
-                                                problemTable.subject, problemTable.professor, problemTable.user.name, problemTable.type,
-                                                 problemTable.score, problemTable.hit));
-
-        switch (type) {
-            case "title":
-                query = query.where(problemTable.title.stringValue().in(value));
-                break;
-
-            case "subject":
-                query = query.where(problemTable.subject.stringValue().in(value));
-                break;
-
-            case "professor":
-                query = query.where(problemTable.professor.stringValue().in(value));
-                break;
-
-            case "type":
-                query =query.where(problemTable.type.intValue().eq(Integer.parseInt(value[0])));
-                break;
-
-            default:
-                query = query.fetchAll();
-                break;
+    private BooleanExpression eqType(String type){
+        if(type.length() > 0){
+            return problemTable.type.intValue().eq(Integer.parseInt(type));
         }
-
-        pDto.setProbleminfo(getQuerydsl().applyPagination(pageable, query).fetch());
-        pDto.setPage(pageable.getPageNumber());
-        pDto.setSize(pageable.getPageSize());
-        pDto.setSort(pageable.getSort().toString());
-        pDto.setNumberofElements(pDto.getProbleminfo().size());
-        pDto.setTotalElements((int) query.fetchCount());
-        pDto.setTotalPages((pDto.getTotalElements() + pDto.getSize() - 1) / pDto.getSize());
-        return pDto;
+        return null;
+    }
+    private BooleanExpression eqSubject(Long[] subject){
+        if(subject.length > 0){
+           return problemTable.subject.code.in(subject);
+        }
+        return null;
+    }
+    private BooleanExpression eqProfessor(String[] professor){
+        if(professor.length > 0){
+            return problemTable.professor.stringValue().in(professor);
+        }
+        return null;
     }
 
     public boolean addProblem(problemAddDTO pAddDTO){
         int result = 0;
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         String sql = "insert into problem_table (title, subject, professor, answer, question, type, uploader_id)"
                      + "values( :a, :b, :c, :d, :e, :f, :g)";
         
         try{
-            EntityManager entityManager = entityManagerFactory.createEntityManager();
             entityManager.getTransaction().begin();
             result = entityManager.createNativeQuery(sql)
             .setParameter("a", pAddDTO.getTitle())
@@ -135,22 +100,31 @@ public class ProblemReopository extends QuerydslRepositorySupport {
             .setParameter("f", pAddDTO.getType())
             .setParameter("g", pAddDTO.getUploader_id()).executeUpdate();
             entityManager.getTransaction().commit();
-            entityManager.close();
+            
         } catch (HibernateException ex)
         {
             ex.printStackTrace();
+            
+        }
+        finally{
+            entityManager.close();
         }
         return result > 0 ? true : false;
     }
 
     public problemInfoDTO getProblemInfo(Long id){
-        QProblemTable problemTable = QProblemTable.problemTable;
+        problemTable = QProblemTable.problemTable;
 
         return queryFactory.from(problemTable).select(Projections.constructor(problemInfoDTO.class,
-                        problemTable.id, problemTable.title, problemTable.subject, 
+                        problemTable.id, problemTable.title, problemTable.subject.code, 
                         problemTable.professor, problemTable.question, problemTable.answer,
                         problemTable.user.name, problemTable.registerdate, problemTable.type, 
                         problemTable.score, problemTable.hit))
                 .where(problemTable.id.eq(id)).fetchOne();
+    }
+
+    public List<SubjectDTO> getSubjectList(){
+        QSubject subject = QSubject.subject;
+        return queryFactory.from(subject).select(Projections.constructor(SubjectDTO.class, subject.code, subject.name)).fetch();
     }
 }

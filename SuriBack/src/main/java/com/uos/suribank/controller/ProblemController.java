@@ -4,12 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
+import com.uos.suribank.dto.SubjectDTO;
 import com.uos.suribank.dto.ProblemDTO.problemAddDTO;
 import com.uos.suribank.dto.ProblemDTO.problemInfoDTO;
 import com.uos.suribank.dto.ProblemDTO.problemTableDTO;
@@ -35,6 +37,17 @@ public class ProblemController {
 			throw new NotFoundException("Page not found");
 		}
         return ResponseEntity.ok(pDto);
+    }
+
+    //과목-코드 리스트 받아오기
+    @GetMapping(path = "subjectList")
+    public ResponseEntity<?> getSubjectList(){
+        List<SubjectDTO> sList = problemService.getSubjectList();
+
+        if(sList == null){
+            throw new NotFoundException("Subject not found");
+		}
+        return ResponseEntity.ok(sList);
     }
 
     //삽입
