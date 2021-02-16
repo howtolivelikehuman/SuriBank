@@ -1,6 +1,5 @@
 package com.uos.suribank.entity;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -44,8 +43,9 @@ public class ProblemTable{
     @JoinColumn(name = "uploader_id")
     User user;
 
-    @Column(length  = 30)
-    String subject;
+    @ManyToOne(targetEntity = Subject.class)
+    @JoinColumn(name = "subject")
+    Subject subject;
 
     @Column(nullable = false, columnDefinition = "VARCHAR(10) DEFAULT \"미지의 교수님\"")
     String professor;
