@@ -8,36 +8,40 @@ class Main extends Component{
     state={
         now_page:0,
         total_page: 5,
-        type:"ALL",
-        subject:"ALL",
+        type:[],
+        subject:[],
+        professor:[],
         pb_list:null
     }
     get_problem_list_data_for_test = () => {
         let problem=[
             {
-                pb_id:"1", 
-                pb_title:"첫 번째 문제 예제", 
+                id:"1", 
+                title:"첫 번째 문제 예제", 
                 subject:"수미방", 
                 uploader:"카와잇규짱", 
+                professor:"김민호",
                 score:3
             },
             {
-                pb_id:"2", 
-                pb_title:"디비에 빨리 문제 테이블 만들쟈", 
+                id:"2", 
+                title:"디비에 빨리 문제 테이블 만들쟈", 
                 subject:"데이터베이스설계", 
                 uploader:"엄대장", 
+                professor:"홍의경",
                 score:5
             },
             {
-                pb_id:"3", 
-                pb_title:"오늘 야식은 치킨이닭", 
+                id:"3", 
+                title:"오늘 야식은 치킨이닭", 
                 subject:"웹정보시스템", 
                 uploader:"문초코", 
+                professor:"황혜수",
                 score:1
             },
         ]
 
-        return this.set_problem_list(problem)
+        this.setState({pb_list:problem})
     }
 
     get_problem_list_data = () =>{
@@ -46,12 +50,13 @@ class Main extends Component{
         {
             page:this.state.now_page,
             size:20,
-            sort:"registerdate",
-            order:"desc",
-            // "filter": {
-            //     "type": this.state.type,
-            //     "subject": this.state.subject,
-            // },
+            //sort:"registerdate",
+            //order:"desc",
+            filter: {
+                type: this.state.type,
+                subject: this.state.subject,
+                professor:this.state.professor
+            },
         })
         .then(res => {
             if(res.status!=200){
@@ -79,7 +84,7 @@ class Main extends Component{
         let problem_list = []
         problem_list = this.state.pb_list.map(problem => {
             return(
-                <Link to={{pathname: '/order', data : {id: problem.id}}} className="list-group-item list-group-item-action">
+                <Link to={{pathname: '/problem', data : {id: problem.id}}} className="list-group-item list-group-item-action">
                     <div className="row">
                     <div className="col-1">{problem.id}</div>
                     <div className="col-3">{problem.title}</div>
@@ -98,7 +103,7 @@ class Main extends Component{
 
     render(){
         if(this.state.pb_list==null){
-            this.get_problem_list_data()
+            this.get_problem_list_data_for_test()
             return null
         }
         else{
