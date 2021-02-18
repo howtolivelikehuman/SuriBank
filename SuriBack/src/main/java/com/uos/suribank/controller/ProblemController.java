@@ -2,6 +2,7 @@ package com.uos.suribank.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -20,6 +21,7 @@ import com.uos.suribank.exception.NotFoundException;
 import com.uos.suribank.pagination.PageableDTO;
 import com.uos.suribank.service.ProblemService;
 
+@CrossOrigin
 @RestController
 @RequestMapping(value = "/api/problem")
 public class ProblemController {
@@ -40,7 +42,7 @@ public class ProblemController {
     }
 
     //과목-코드 리스트 받아오기
-    @GetMapping(path = "subjectList")
+    @GetMapping(path = "/subjectList")
     public ResponseEntity<?> getSubjectList(){
         List<SubjectDTO> sList = problemService.getSubjectList();
 

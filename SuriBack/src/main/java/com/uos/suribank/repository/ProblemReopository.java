@@ -125,6 +125,7 @@ public class ProblemReopository extends QuerydslRepositorySupport {
 
     public List<SubjectDTO> getSubjectList(){
         QSubject subject = QSubject.subject;
+        
         return queryFactory.from(subject).select(Projections.constructor(SubjectDTO.class, subject.code, subject.name)).fetch();
     }
 }

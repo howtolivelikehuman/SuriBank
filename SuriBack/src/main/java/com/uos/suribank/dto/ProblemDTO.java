@@ -1,6 +1,9 @@
 package com.uos.suribank.dto;
 
 import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
+import java.io.File;
 import java.util.Date;
 
 import lombok.AllArgsConstructor;
@@ -47,6 +50,7 @@ public class ProblemDTO {
         String professor;
         String question;
         String answer;
+        //MultipartFile[] images;
     }
 
     @Data
@@ -64,6 +68,6 @@ public class ProblemDTO {
         int type; //0 for 
         float score;
         int hit;
-
+        List<String> images;
     }
 }
