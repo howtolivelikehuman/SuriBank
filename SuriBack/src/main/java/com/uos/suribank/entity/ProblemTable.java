@@ -72,6 +72,6 @@ public class ProblemTable{
     @Column(length  = 500)
     String answer;
 
-    //@OneToMany(mappedBy = "ProblemImage")
-    //List<ProblemImage> images;
+    @OneToMany(mappedBy = "problemTable")
+    List<ProblemImage> images;
 }

@@ -50,7 +50,8 @@ public class ProblemDTO {
         String professor;
         String question;
         String answer;
-        //MultipartFile[] images;
+        MultipartFile[] q_img;
+        MultipartFile[] a_img;
     }
 
     @Data

@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +22,7 @@ import com.uos.suribank.exception.NotFoundException;
 import com.uos.suribank.pagination.PageableDTO;
 import com.uos.suribank.service.ProblemService;
 
-@CrossOrigin
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(value = "/api/problem")
 public class ProblemController {
@@ -55,8 +56,12 @@ public class ProblemController {
     //삽입
     @PutMapping(path = "/add")
     public void addProblem(@RequestBody problemAddDTO pAddDTO){
-        boolean result = problemService.addProblem(pAddDTO);
-
+        boolean result = false;
+        try{
+            result = problemService.addProblem(pAddDTO);
+        }catch(Exception e){
+            throw new InsertErrorException("Failed to Upload Images");
+        }
         if(!result){
             throw new InsertErrorException("Failed to insert into DB");
         }

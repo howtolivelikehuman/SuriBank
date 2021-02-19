@@ -17,7 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/*@Data
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -40,5 +40,5 @@ public class ProblemImage {
     int type;
 
     @Column(length  = 100, nullable = false)
-    String link;
-}*/
+    String path;
+}

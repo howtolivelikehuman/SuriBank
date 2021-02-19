@@ -49,7 +49,6 @@ public class ProblemReopository extends QuerydslRepositorySupport {
                                           .select(Projections.constructor(problemShortDTO.class, problemTable.id, problemTable.title,
                                                 problemTable.subject.code, problemTable.professor, problemTable.user.name, problemTable.type,
                                                  problemTable.score, problemTable.hit));
-
         //set filter
         query = query.where(eqType(filter.getType()), eqSubject(filter.getSubject()), eqProfessor(filter.getProfessor()));
 
@@ -81,6 +80,49 @@ public class ProblemReopository extends QuerydslRepositorySupport {
             return problemTable.professor.stringValue().in(professor);
         }
         return null;
+    }
+
+    public void addImages(String[] q_path, String[] a_path, Long problemId){
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        String sql = "insert into problem_image (problem_id, type, path) values(:a, :b, :c)";
+
+        try{
+            entityManager.getTransaction().begin();
+            if(q_path != null){
+                //add Question Image
+                for(int i=0; i<q_path.length; i++){
+                entityManager.createNativeQuery(sql)
+                   .setParameter("a", problemId)
+                   .setParameter("b", 0)
+                   .setParameter("c", q_path[i]).executeUpdate();
+                   entityManager.getTransaction().commit();
+               }
+            }
+            if(a_path != null){
+                //add Answer Image
+                for(int i=0; i<a_path.length; i++){
+                    entityManager.createNativeQuery(sql)
+                    .setParameter("a", problemId)
+                    .setParameter("b", 1)
+                    .setParameter("c", a_path[i]).executeUpdate();
+                    entityManager.getTransaction().commit();
+                }
+            }
+        }catch (HibernateException ex)
+        {
+            ex.printStackTrace();
+            
+        }
+        finally{
+            entityManager.close();
+        }
+    }
+
+    public Long getProblemId(String title, String professor){
+        QProblemTable qProblemTable = QProblemTable.problemTable;
+        return queryFactory.from(qProblemTable).select(qProblemTable.id)
+        .where(qProblemTable.title.eq(title).and(qProblemTable.professor.eq(professor)))
+        .fetchOne();
     }
 
     public boolean addProblem(problemAddDTO pAddDTO){

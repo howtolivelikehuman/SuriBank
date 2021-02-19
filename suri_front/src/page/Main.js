@@ -42,16 +42,17 @@ class Main extends Component{
 
     get_problem_list_data = () =>{
         api
-        .get(`/problem/list`,
+        .post(`/problem/list`,
         {
-            page:this.state.now_page,
-            size:20,
-            sort:"registerdate",
-            order:"desc",
-            // "filter": {
-            //     "type": this.state.type,
-            //     "subject": this.state.subject,
-            // },
+                page:this.state.now_page,
+                size:20,
+                sort:"registerdate",
+                order:"desc",
+                filter: {
+                    "type": "",
+                    "subject": [],
+                    "professor": []
+                }
         })
         .then(res => {
             if(res.status!=200){

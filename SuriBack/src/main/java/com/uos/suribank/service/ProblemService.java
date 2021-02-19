@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.util.Date;
 import java.util.List;
 
 import com.uos.suribank.dto.SubjectDTO;
@@ -32,8 +31,37 @@ public class ProblemService {
 
     
     @Transactional
-    public boolean addProblem(problemAddDTO pAddDTO){
-        return problemRepository.addProblem(pAddDTO);
+    public boolean addProblem(problemAddDTO pAddDTO) throws Exception{
+        String path = "images/" + pAddDTO.getTitle();
+        ClassPathResource resource = new ClassPathResource(path);
+        String a_path[] = null;
+        String q_path[] = null;
+
+        if(pAddDTO.getA_img() != null){
+            a_path = uploadImage(pAddDTO.getA_img(), 'A', pAddDTO.getTitle(), resource.getPath());
+        }
+        if(pAddDTO.getQ_img() != null){
+            q_path = uploadImage(pAddDTO.getQ_img(), 'Q', pAddDTO.getTitle(), resource.getPath());
+        }
+        boolean result = problemRepository.addProblem(pAddDTO);
+        Long problem_id = problemRepository.getProblemId(pAddDTO.getTitle(), pAddDTO.getProfessor());
+        problemRepository.addImages(q_path,a_path,problem_id);
+        return result;
+    }
+
+
+    public String[] uploadImage(MultipartFile[] files, char type, String title, String path) throws Exception {
+        String[] pathList = new String[files.length];
+        File folder = new File(path);
+        if(!folder.exists()){
+            folder.mkdir();
+        }
+        for(int i=0; i< files.length; i++){
+            String name = title+type+i;
+            pathList[i] = path+"/"+name+".jpg";
+            files[i].transferTo(new File(pathList[i]));
+        }
+        return pathList;
     }
 
     public problemInfoDTO getProblemInfo(Long id){
