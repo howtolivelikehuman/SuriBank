@@ -1,5 +1,6 @@
 package com.uos.suribank.service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,11 +10,14 @@ import com.uos.suribank.entity.User;
 import com.uos.suribank.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
@@ -22,7 +26,7 @@ public class UserService {
     private ModelMapper modelMapper;
 
     public infoDTO getInfo(Long id) {
-        Optional<User> user = userRepository.findById(id); 
+        Optional<User> user = userRepository.findById(id);
         if (!user.isPresent()) {
             return null;
         } else {
@@ -42,9 +46,15 @@ public class UserService {
         return result;
     }
 
-    public boolean login(loginDTO ldto) {
-        return userRepository.existsByEmailAndPassword(ldto.getEmail(), ldto.getPassword());
-
+    public usertokenDTO login(loginDTO ldto) {
+        Optional<User> usr = userRepository.findByEmail(ldto.getEmail());
+        if (usr.isPresent()) {
+            return usertokenDTO.builder()
+            .id(usr.get().getId())
+            .type(usr.get().getType())
+            .password(usr.get().getPassword()).build();
+        }
+        return null;
     }
 
     public boolean checkId(String id) {
@@ -53,43 +63,45 @@ public class UserService {
 
     public User singup(signupDTO sdto) {
         User user = modelMapper.map(sdto, User.class);
+        user.setType(Collections.singletonList("ROLE_T1"));
         return userRepository.save(user);
     }
 
-    public User update(updateDTO udto, Long id){
+    public User update(updateDTO udto, Long id) {
         User usr = null;
         Optional<User> existing = userRepository.findById(id);
-        if(existing.isPresent()){
+        if (existing.isPresent()) {
             checkUpdate(existing.get(), udto);
             usr = userRepository.save(existing.get());
         }
         return usr;
     }
 
-    public void checkUpdate(User O, updateDTO udto){
-        if(udto.getPassword() != null){
+    public void checkUpdate(User O, updateDTO udto) {
+        if (udto.getPassword() != null) {
             O.setPassword(udto.getPassword());
         }
-        if(udto.getMajor() != null){
+        if (udto.getMajor() != null) {
             O.setMajor(udto.getMajor());
         }
-        if(udto.getName() != null){
+        if (udto.getName() != null) {
             O.setName(udto.getName());
         }
-        if(udto.getNickname() != null){
+        if (udto.getNickname() != null) {
             O.setNickname(udto.getNickname());
         }
     }
 
-    public List<infoDTO> getUserList(){
-        return  mapList(userRepository.findAll(), infoDTO.class);
-        
+    public List<infoDTO> getUserList() {
+        return mapList(userRepository.findAll(), infoDTO.class);
     }
-    
-    public <S, T>List<T> mapList(List<S> source, Class<T> targetClass) {
-        return source
-          .stream()
-          .map(element -> modelMapper.map(element, targetClass))
-          .collect(Collectors.toList());
+
+    public <S, T> List<T> mapList(List<S> source, Class<T> targetClass) {
+        return source.stream().map(element -> modelMapper.map(element, targetClass)).collect(Collectors.toList());
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
+        return userRepository.findById(Long.parseLong(id)).orElseThrow(() -> new UsernameNotFoundException((id)));
     }
 }
