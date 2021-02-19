@@ -8,7 +8,7 @@ class Main extends Component{
     state={
         now_page:0,
         total_page: 5,
-        type:[],
+        type:"",
         subject:[],
         professor:[],
         pb_list:null
@@ -45,18 +45,21 @@ class Main extends Component{
     }
 
     get_problem_list_data = () =>{
+        //TO DO: get으로 하는 방법?
         api
-        .get(`/problem/list`,
+        .post('/problem/list',
         {
             page:this.state.now_page,
             size:20,
-            //sort:"registerdate",
-            //order:"desc",
+            sort:"registerdate",
+            order:"desc",
             filter: {
                 type: this.state.type,
                 subject: this.state.subject,
                 professor:this.state.professor
-            },
+            }
+          
+
         })
         .then(res => {
             if(res.status!=200){
@@ -103,7 +106,7 @@ class Main extends Component{
 
     render(){
         if(this.state.pb_list==null){
-            this.get_problem_list_data_for_test()
+            this.get_problem_list_data()
             return null
         }
         else{
