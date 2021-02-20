@@ -1,12 +1,15 @@
-import React from 'react';
+import React,{useState} from 'react'
+import $ from "jquery";
+import api from '../../util/API'
 
 
-function ProblemElement({k, set_img}){
-    if (k == 'uploader_id') return null
-    if (k == 'type'){
+function ProblemElement({k, subject_data, set_q_img, set_a_img}){
+    //console.log(k)
+    if (k === 'uploader_id') return null
+    if (k === 'type'){
         let type_list = ['기출', '예제'] //TO DO:기출 아닌거 뭐라 정하지 출제?
         let type_componet = type_list.map(type => (
-            <option value={type}>{type}</option>
+            <option value={type==='기출'?'1':'0'}>{type}</option>
         ))
         return(
             <div className="row info_element mb-3 ">
@@ -21,8 +24,27 @@ function ProblemElement({k, set_img}){
             </div>
         )
     }
+    if(k === 'subject'){
+        let subject_component = subject_data.map(subject => 
+                (<option value={subject['code']}>{subject['name']}</option>)
+            )
+            
+        return(
+            <div className="row info_element mb-3 ">
+                <div className="col-sm-5 key">
+                    {k}
+                </div>
+                <div className="col-sm-7 value">
+                    <select className="form-control mx-3" labelId="simple-select-label" name="subject">
+                        {subject_component}
+                    </select>                
+                </div>
+            </div>
+        )
 
-    if( k == 'title' || k == 'subject' || k == 'professor'){
+    }
+
+    if( k == 'title' || k == 'professor'){
         let ph=""
         if(k === 'title') ph="년도 + 제목 기입"
         return(
@@ -37,9 +59,16 @@ function ProblemElement({k, set_img}){
         )
     }
     else{
+        $(".custom-file-input").on("change", function() {
+            var fileName = [] 
+            for(var i =0; i < $(this).get(0).files.length; i++)
+                fileName.push($(this).get(0).files[i].name+" ")
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName)
+          })
         //https://basketdeveloper.tistory.com/55
         const file_input_handler=(e)=>{
-            set_img(e.target.files[0])
+            if(e.target.id==='q') set_q_img(e.target.files)
+            else set_a_img(e.target.files)
         }
         return(
             <div className="info_element my-3">
@@ -50,8 +79,8 @@ function ProblemElement({k, set_img}){
                     <textarea name={k} rows="10" className="form-control mod_input" type="text" />    
                 </div>            
             <div className="row info_element mb-3 custom-file mx-1" >
-                <input type='file' className="custom-file-input" name='img_file' onChange={(e)=>file_input_handler(e)}/>
-                <label className="custom-file-label" for='img_file'>이미지 선택</label>
+                <input type='file' id={k==='question'?'q':'a'} multiple="multiple" className="custom-file-input" name='img_file[]' onChange={(e)=>file_input_handler(e)}/>
+                <label className="custom-file-label" for='img_file[]'>이미지 선택</label>
             </div>
             </div>
         )
