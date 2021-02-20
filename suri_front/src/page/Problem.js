@@ -6,6 +6,7 @@ import { IoTimeSharp } from 'react-icons/io5';
 class Problem extends Component{
     state={
         data:null,
+        subject_list:null
     }
     get_pb_data = () => {
         api.get(`problem/${this.props.location.data.id}`)
@@ -35,24 +36,41 @@ class Problem extends Component{
         if(isVisible === "invisible") document.getElementsByName('answer')[0].className = 'visible'
         else document.getElementsByName('answer')[0].className = 'invisible'
     }
+    get_subject_list = () => {
+        api.get('/problem/subjectList')
+        .then(res => {
+            //console.log(res)
+            this.setState({subject_list:res.data})
+        })
+    }
+    get_subject_name = (code) => {
+        const subject = this.state.subject_list.find(subject => subject['code'] === code)
+        return subject['name']
+    }
 
     render(){
-        if(this.state.data===null){
-            this.get_pb_data_for_test()
+        if(this.state.data===null || this.state.subject_list===null){
+            this.get_pb_data()
+            this.get_subject_list()
             return null
         }
+
         else{
             let problem =[]
+            let value
             for(var key in this.state.data){
-                if (key==='title'||key ==='question' || key === 'answer') continue
-                else
+                if (key==='title'||key ==='question' || key === 'answer' || key === 'id') continue
+                if (key==='subject'){
+                    value=this.get_subject_name(this.state.data[key])
+                }
+                else value=this.state.data[key]
                 problem.push(
                     <div className="row info_element mb-3">
                         <div className="col-sm-5 key">
                             {key}
                         </div>
                         <div className="col-sm-7 value">
-                            {this.state.data[key]}
+                            {value}
                         </div>
                     </div>
                 )

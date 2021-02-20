@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,7 +31,7 @@ public class ProblemController {
     private ProblemService problemService;
 
     //목록 조회
-    @GetMapping(path = "/list")
+    @PostMapping(path = "/list")
     public ResponseEntity<?> getList(@RequestBody PageableDTO pageableDTO) {
         
         problemTableDTO pDto = problemService.getProblemList(pageableDTO);
