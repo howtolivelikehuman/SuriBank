@@ -7,6 +7,7 @@ import ProblemElement from '../component/make_pb/ProblemElement'
 class makePB extends Component{
     state={
         id:null,
+        subject_data:null,
         pb_data:{
             title:null,
             subject:null,
@@ -15,31 +16,51 @@ class makePB extends Component{
             question:null,
             answer:null,
         },
-        img:null
+        q_img:[],
+        a_img:[]
     }
-    set_img = (img_file) => {
-        this.setState({img:img_file})
+    set_a_img = (a_img) => {
+        this.setState({a_img:a_img})
+    }   
+    set_q_img = (q_img) => {
+        this.setState({q_img:q_img})
     }
 
     get_user_id = () => {
         api.get(`/user/1`)
         .then(res => {
-            console.log(typeof(res.data.id))
             this.setState({id: res.data.id})
         })
     }
+    get_subject_data = () => {
+        api.get('problem/subjectList')
+        .then(res => {
+            //console.log(res.data)
+            this.setState({subject_data:res.data})
+        })
+        .catch(err => console.log(err))
+    }
 
     make_problem_handler = () => {
-        const formData = new FormData()
+        const formData_q = new FormData()
+        const formData_a = new FormData()
         let pb_data = new Object()
-        console.log(this.state.img)
-        formData.append('file',this.state.img)
+        console.log(this.state.q_img)
+        for (let i = 0; i < this.state.q_img.length; i++) {
+            formData_q.append(`images_q[${i}]`, this.state.q_img[i])
+        }
+        console.log(formData_q)
+        for (let i = 0; i < this.state.a_img.length; i++) {
+            formData_a.append(`images_a[${i}]`, this.state.a_img[i])
+        }
         for(var key in this.state.pb_data){
             console.log(document.getElementsByName(key)[0])
             pb_data[key] = document.getElementsByName(key)[0].value
         }
         pb_data['uploader_id']=this.state.id
 
+       // pb_data['q_img']=formData_q
+       // pb_data['a_img']=formData_a
         console.log(pb_data)
         api.post('/problem/add',pb_data)
         .then(res => {
@@ -55,11 +76,14 @@ class makePB extends Component{
             this.get_user_id()
             return null
         }
+        else if(this.state.subject_data === null){
+            this.get_subject_data()
+            return null
+        }
         else{
             let pb_input = []
             for(var key in this.state.pb_data){
-                console.log(typeof(key))
-                pb_input.push(<ProblemElement k={key} set_img={this.set_img}></ProblemElement>)
+                pb_input.push(<ProblemElement k={key} subject_data={this.state.subject_data} set_q_img={this.set_q_img} set_a_img={this.set_a_img}></ProblemElement>)
             }
             return(
                 <div className="container-fluid">

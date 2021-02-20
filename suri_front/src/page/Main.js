@@ -68,7 +68,7 @@ class Main extends Component{
                 return null
             }
             else{
-                console.log(res)
+                //console.log(res)
                 this.setState({
                     total_page:res.data.totalPages,
                     pb_list:res.data.probleminfo
