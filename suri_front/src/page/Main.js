@@ -69,6 +69,7 @@ class Main extends Component{
                 subject: this.state.subject,
                 professor:this.state.professor
             }
+
         })
         .then(res => {
             if(res.status!=200){
