@@ -39,7 +39,6 @@ public class UserDTO implements Serializable{
     public static class infoDTO{
         private Long id;
         String email;
-        //String password;
         String name;
         String nickname;
         String major;

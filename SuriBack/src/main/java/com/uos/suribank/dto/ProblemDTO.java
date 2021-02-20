@@ -3,7 +3,6 @@ package com.uos.suribank.dto;
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
-import java.io.File;
 import java.util.Date;
 
 import lombok.AllArgsConstructor;
