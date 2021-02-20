@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Modal from 'react-modal'
 import api from '../util/API'
 import SubHeader from '../component/SubHeader'
 import ProblemElement from '../component/make_pb/ProblemElement'
@@ -62,7 +61,7 @@ class makePB extends Component{
        // pb_data['q_img']=formData_q
        // pb_data['a_img']=formData_a
         console.log(pb_data)
-        api.post('/problem/add',pb_data)
+        api.put('/problem/add',pb_data)
         .then(res => {
             console.log(res)
             if(res.status==200){

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import FilterElement from './FilterElement'
 
 function Filter({title, filter_list,setFilter}){
