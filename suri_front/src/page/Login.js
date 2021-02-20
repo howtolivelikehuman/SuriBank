@@ -118,7 +118,6 @@ class Login extends Component{
                 { 
                         email: email,
                         password:password
-                    
                 }
             )
         })
@@ -128,8 +127,6 @@ class Login extends Component{
             if(res.status == 200){
                 alert("로그인 성공!")
                 
-                //link to main
-                //api.get(`/user`)
                 this.props.history.push('/main')
                 
             }
