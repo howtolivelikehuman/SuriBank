@@ -4,9 +4,9 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -14,15 +14,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.RequiredArgsConstructor;
+
+import com.uos.suribank.auth.JwtTokenProvider;
 import com.uos.suribank.dto.UserDTO.infoDTO;
 import com.uos.suribank.dto.UserDTO.loginDTO;
 import com.uos.suribank.dto.UserDTO.signupDTO;
 import com.uos.suribank.dto.UserDTO.updateDTO;
+import com.uos.suribank.dto.UserDTO.usertokenDTO;
 import com.uos.suribank.service.UserService;
 
 import com.uos.suribank.exception.NotFoundException;
 import com.uos.suribank.exception.DuplicateException;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping(value = "/api/user")
 public class UserController {
@@ -30,20 +35,19 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 
+    private final JwtTokenProvider jwtTokenProvider;
+
+	private final PasswordEncoder passwordEncoder;
+	
 	//조회
 	@GetMapping(path = "/{id}")
 	public ResponseEntity<?> getInfo(@PathVariable Long id) {
-		
+		System.out.println(id);
 		infoDTO info = userService.getInfo(id);
 
 		if(info == null){
 			throw new NotFoundException(String.format("ID[%s] not found", id));
 		}
-		/*SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.filterOutAllExcept("no","id","name","nickname","major","type","registerdate","point");
-        FilterProvider filters = new SimpleFilterProvider().addFilter("userInfo", filter);
-        MappingJacksonValue mapping = new MappingJacksonValue(info);
-        mapping.setFilters(filters);
-		return ResponseEntity.ok(mapping);*/
 		return ResponseEntity.ok(info);
 	}
 
@@ -59,7 +63,7 @@ public class UserController {
 	//수정
 	@PutMapping(path = "/{id}")
 	public void updateInfo(@PathVariable Long id, @Valid @RequestBody updateDTO udto){
-		
+		udto.setPassword(passwordEncoder.encode(udto.getPassword()));
 		if(userService.update(udto, id) == null){
 			throw new NotFoundException("Error Occurs");
 		}
@@ -67,13 +71,15 @@ public class UserController {
 
 	//로그인
 	@PostMapping(value = "/login")
-	public void login(@RequestBody loginDTO ldto){
-		boolean result = userService.login(ldto);
-		
+	public String login(@RequestBody loginDTO ldto){
+		usertokenDTO ustoken = userService.login(ldto);
 		//loginfailed
-		if(!result){
-			throw new NotFoundException("ID is not found or Wrong PW");
+		if(ustoken == null){
+			throw new NotFoundException("ID is not found");
+		}else if (!passwordEncoder.matches(ldto.getPassword(), ustoken.getPassword())){
+			throw new IllegalArgumentException("Wrong password!");
 		}
+		return jwtTokenProvider.createToken(ustoken.getId().toString(), ustoken.getType());
 	}
 
 	//아이디 검사
@@ -93,7 +99,7 @@ public class UserController {
 		
 		// 아이디 한번 더 검사
 		userService.checkId(sdto.getEmail());
-
+		sdto.setPassword(passwordEncoder.encode(sdto.getPassword()));
 		if(userService.singup(sdto) == null){
 			throw new NotFoundException("Error Occurs");
 		}
