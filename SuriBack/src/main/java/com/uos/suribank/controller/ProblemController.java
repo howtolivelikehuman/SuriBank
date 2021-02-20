@@ -15,6 +15,7 @@ import com.uos.suribank.exception.NotFoundException;
 import com.uos.suribank.pagination.PageableDTO;
 import com.uos.suribank.service.ProblemService;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(value = "/api/problem")
 public class ProblemController {
@@ -35,7 +36,7 @@ public class ProblemController {
     }
 
     //과목-코드 리스트 받아오기
-    @GetMapping(path = "subjectList")
+    @GetMapping(path = "/subjectList")
     public ResponseEntity<?> getSubjectList(){
         List<SubjectDTO> sList = problemService.getSubjectList();
 
@@ -48,8 +49,12 @@ public class ProblemController {
     //삽입
     @PutMapping(path = "/add")
     public void addProblem(@RequestBody problemAddDTO pAddDTO){
-        boolean result = problemService.addProblem(pAddDTO);
-
+        boolean result = false;
+        try{
+            result = problemService.addProblem(pAddDTO);
+        }catch(Exception e){
+            throw new InsertErrorException("Failed to Upload Images");
+        }
         if(!result){
             throw new InsertErrorException("Failed to insert into DB");
         }
