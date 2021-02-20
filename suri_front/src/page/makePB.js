@@ -45,19 +45,25 @@ class makePB extends Component{
         const formData_a = new FormData()
         let pb_data = new Object()
         console.log(this.state.q_img)
+
+        //make form data (from state.(q_,a_)img)
         for (let i = 0; i < this.state.q_img.length; i++) {
             formData_q.append(`images_q[${i}]`, this.state.q_img[i])
         }
-        console.log(formData_q)
         for (let i = 0; i < this.state.a_img.length; i++) {
             formData_a.append(`images_a[${i}]`, this.state.a_img[i])
         }
+
         for(var key in this.state.pb_data){
             console.log(document.getElementsByName(key)[0])
             pb_data[key] = document.getElementsByName(key)[0].value
         }
         pb_data['uploader_id']=this.state.id
 
+        //file 객체로 넘기는 부분
+        pb_data['q_img']=this.state.q_img
+        pb_data['a_img']=this.state.a_img
+       //form data로 넘기는 부분 
        // pb_data['q_img']=formData_q
        // pb_data['a_img']=formData_a
         console.log(pb_data)
