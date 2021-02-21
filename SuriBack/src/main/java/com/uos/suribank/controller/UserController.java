@@ -4,6 +4,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,9 +41,9 @@ public class UserController {
 	private final PasswordEncoder passwordEncoder;
 	
 	//조회
-	@GetMapping(path = "/{id}")
-	public ResponseEntity<?> getInfo(@PathVariable Long id) {
-		System.out.println(id);
+	@GetMapping(path = "/")
+	public ResponseEntity<?> getInfo(Authentication authentication) {
+		Long id = Long.parseLong(authentication.getName());
 		infoDTO info = userService.getInfo(id);
 
 		if(info == null){
@@ -52,8 +53,9 @@ public class UserController {
 	}
 
 	//삭제
-	@DeleteMapping("/{id}")
-	public void deleteInfo(@PathVariable Long id) {
+	@DeleteMapping("/")
+	public void deleteInfo(Authentication authentication) {
+		Long id = Long.parseLong(authentication.getName());
 		int result = userService.deleteInfo(id);
 		if( result == 0){
 			throw new NotFoundException(String.format("ID[%s] not found", id));
@@ -61,8 +63,9 @@ public class UserController {
 	}
 
 	//수정
-	@PutMapping(path = "/{id}")
-	public void updateInfo(@PathVariable Long id, @Valid @RequestBody updateDTO udto){
+	@PutMapping(path = "/")
+	public void updateInfo(Authentication authentication, @Valid @RequestBody updateDTO udto){
+		Long id = Long.parseLong(authentication.getName());
 		udto.setPassword(passwordEncoder.encode(udto.getPassword()));
 		if(userService.update(udto, id) == null){
 			throw new NotFoundException("Error Occurs");

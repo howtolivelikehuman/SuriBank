@@ -13,6 +13,7 @@ import java.util.List;
 import com.uos.suribank.dto.SubjectDTO;
 import com.uos.suribank.dto.ProblemDTO.problemAddDTO;
 import com.uos.suribank.dto.ProblemDTO.problemInfoDTO;
+import com.uos.suribank.dto.ProblemDTO.problemShortDTO;
 import com.uos.suribank.dto.ProblemDTO.problemTableDTO;
 import com.uos.suribank.pagination.PageableDTO;
 import com.uos.suribank.repository.ProblemReopository;
@@ -31,17 +32,18 @@ public class ProblemService {
 
     
     @Transactional
-    public boolean addProblem(problemAddDTO pAddDTO) throws Exception{
+    public boolean addProblem(problemAddDTO pAddDTO, 
+    List<MultipartFile> q_img, List<MultipartFile> a_img) throws Exception{
         String path = "images/" + pAddDTO.getTitle();
         ClassPathResource resource = new ClassPathResource(path);
         String a_path[] = null;
         String q_path[] = null;
 
-        if(pAddDTO.getA_img() != null){
-            a_path = uploadImage(pAddDTO.getA_img(), 'A', pAddDTO.getTitle(), resource.getPath());
+        if(a_img != null){
+            a_path = uploadImage(a_img, 'A', pAddDTO.getTitle(), resource.getPath());
         }
-        if(pAddDTO.getQ_img() != null){
-            q_path = uploadImage(pAddDTO.getQ_img(), 'Q', pAddDTO.getTitle(), resource.getPath());
+        if(q_img != null){
+            q_path = uploadImage(q_img, 'Q', pAddDTO.getTitle(), resource.getPath());
         }
         boolean result = problemRepository.addProblem(pAddDTO);
         Long problem_id = problemRepository.getProblemId(pAddDTO.getTitle(), pAddDTO.getProfessor());
@@ -50,16 +52,16 @@ public class ProblemService {
     }
 
 
-    public String[] uploadImage(MultipartFile[] files, char type, String title, String path) throws Exception {
-        String[] pathList = new String[files.length];
+    public String[] uploadImage(List<MultipartFile> files, char type, String title, String path) throws Exception {
+        String[] pathList = new String[files.size()];
         File folder = new File(path);
         if(!folder.exists()){
             folder.mkdir();
         }
-        for(int i=0; i< files.length; i++){
+        for(int i=0; i< files.size(); i++){
             String name = title+type+i;
             pathList[i] = path+"/"+name+".jpg";
-            files[i].transferTo(new File(pathList[i]));
+            files.get(i).transferTo(new File(pathList[i]));
         }
         return pathList;
     }
@@ -70,6 +72,14 @@ public class ProblemService {
 
     public List<SubjectDTO> getSubjectList(){
         return problemRepository.getSubjectList();
+    }
+
+    public void scoreProblem(Long id, int score){
+        problemShortDTO psdto = problemRepository.getScoreAndHit(id);
+        int nhit = psdto.getHit()+1;
+        float nscore = ((nhit-1) * psdto.getScore() + score)/(nhit);
+        
+        problemRepository.updateScore(id, nhit, nscore);
     }
 
 }

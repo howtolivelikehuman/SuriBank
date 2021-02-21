@@ -24,7 +24,13 @@ public class ProblemDTO {
         float score;
         int hit;
 
+        public problemShortDTO(int hit, float score){
+            this.score = score;
+            this.hit = hit;
+        }
     }
+    
+
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
@@ -49,8 +55,6 @@ public class ProblemDTO {
         String professor;
         String question;
         String answer;
-        MultipartFile[] q_img;
-        MultipartFile[] a_img;
     }
 
     @Data
@@ -68,6 +72,16 @@ public class ProblemDTO {
         int type; //0 for 
         float score;
         int hit;
-        List<String> images;
+        List<problemImageDTO> images;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class problemImageDTO{
+        private Long id;
+        Long problemTable;
+        int type;
+        String path;
     }
 }

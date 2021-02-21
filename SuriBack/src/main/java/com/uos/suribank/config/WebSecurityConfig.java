@@ -43,10 +43,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
 				// dont authenticate this particular request
 				.authorizeRequests()
-                .antMatchers("/admin/**").hasRole("T5")
-                .antMatchers("/*/user/login", "/*/user/signup", "/*/problem/add").permitAll().
-				// all other requests need to be authenticated
-				anyRequest().hasRole("T1")
+                //.antMatchers("/admin/**").hasRole("T5")
+                .antMatchers("/*/user/login", "/*/user/signup", "/*/problem/add").permitAll()
+				//all other requests need to be authenticated
+				.anyRequest().hasRole("T1")
+                //.anyRequest().permitAll()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
                         UsernamePasswordAuthenticationFilter.class);
