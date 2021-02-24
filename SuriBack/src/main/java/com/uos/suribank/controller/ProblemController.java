@@ -2,7 +2,18 @@ package com.uos.suribank.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -48,10 +59,11 @@ public class ProblemController {
 
     //삽입
     @PutMapping(path = "/add")
-    public void addProblem(@RequestBody problemAddDTO pAddDTO){
+    public void addProblem(@RequestBody problemAddDTO pAddDTO,Authentication authentication, @RequestParam("a_img") List<MultipartFile> a_img, @RequestParam("q_img") List<MultipartFile> q_img){
+        pAddDTO.setUploader_id(Long.parseLong(authentication.getName()));
         boolean result = false;
         try{
-            result = problemService.addProblem(pAddDTO);
+            result = problemService.addProblem(pAddDTO, q_img, a_img);
         }catch(Exception e){
             throw new InsertErrorException("Failed to Upload Images");
         }
@@ -69,5 +81,16 @@ public class ProblemController {
 			throw new NotFoundException("Page not found");
 		}
         return ResponseEntity.ok(pIDTO);
+    }
+
+    //평가하기
+    @PostMapping(path = "score/{id}", produces = "application/json")
+    public void scoreProblem(@PathVariable Long id, @RequestParam("score") int score){
+        try{
+            problemService.scoreProblem(id, score);
+        }catch(Exception e){
+            e.printStackTrace();
+            throw new InsertErrorException("Failed to Update score");
+        }
     }
 }

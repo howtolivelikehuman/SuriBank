@@ -66,6 +66,7 @@ class makePB extends Component{
        //form data로 넘기는 부분 
        // pb_data['q_img']=formData_q
        // pb_data['a_img']=formData_a
+
         console.log(pb_data)
         api.put('/problem/add',pb_data)
         .then(res => {
