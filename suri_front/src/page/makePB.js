@@ -63,9 +63,9 @@ class makePB extends Component{
         //file 객체로 넘기는 부분
         pb_data['q_img']=this.state.q_img
         pb_data['a_img']=this.state.a_img
-       //form data로 넘기는 부분 
-       // pb_data['q_img']=formData_q
-       // pb_data['a_img']=formData_a
+        //form data로 넘기는 부분 
+        //pb_data['q_img']=formData_q
+        //pb_data['a_img']=formData_a
         console.log(pb_data)
         api.put('/problem/add',pb_data)
         .then(res => {
