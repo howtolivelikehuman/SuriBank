@@ -63,6 +63,7 @@ public class ProblemController {
         return ResponseEntity.ok(sList);
     }
 
+    
     //삽입
     @RequestMapping(path = "/add", method = RequestMethod.PUT, consumes = {"multipart/form-data"})
     public void addProblem(@RequestPart("data") problemAddinfoDTO pAddinfoDTO, 
@@ -71,8 +72,6 @@ public class ProblemController {
         pAddinfoDTO.setUploader_id(Long.parseLong(authentication.getName()));
 
 
-
-        
         boolean result = false;
         try{
             result = problemService.addProblem(pAddinfoDTO, q_img, a_img);
