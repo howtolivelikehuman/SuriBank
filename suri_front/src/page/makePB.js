@@ -26,7 +26,7 @@ class makePB extends Component{
     }
 
     get_user_id = () => {
-        api.get(`/user/`)
+        api.get(`/user`)
         .then(res => {
             this.setState({id: res.data.id})
         })
@@ -82,11 +82,11 @@ class makePB extends Component{
     }
 
     render(){
-        if(this.state.id===null) {
-            this.get_user_id()
-            return null
-        }
-        else if(this.state.subject_data === null){
+        // if(this.state.id===null) {
+        //     this.get_user_id()
+        //     return null
+        // }
+         if(this.state.subject_data === null){
             this.get_subject_data()
             return null
         }
