@@ -40,6 +40,7 @@ public class ProblemService {
     @Transactional
     public boolean addProblem(problemAddinfoDTO pAddinfoDTO, 
     List<MultipartFile> q_img, List<MultipartFile> a_img) throws Exception{
+        
         //absolute path in this project
         String path = System.getProperty("user.dir") 
         + "\\src\\main\\resources\\images\\"
