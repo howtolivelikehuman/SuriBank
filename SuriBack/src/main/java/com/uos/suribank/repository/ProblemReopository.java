@@ -152,7 +152,7 @@ public class ProblemReopository extends QuerydslRepositorySupport {
                 .select(Projections.constructor(problemInfoDTO.class, problemTable.id, problemTable.title,
                         problemTable.subject.code, problemTable.professor, problemTable.question, problemTable.answer,
                         problemTable.user.name, problemTable.registerdate, problemTable.type, problemTable.score,
-                        problemTable.hit, problemTable.images))
+                        problemTable.hit))
                 .where(problemTable.id.eq(id)).fetchOne();
     }
 

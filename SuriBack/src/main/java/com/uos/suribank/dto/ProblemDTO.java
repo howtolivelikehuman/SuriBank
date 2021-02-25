@@ -55,6 +55,8 @@ public class ProblemDTO {
         String professor;
         String question;
         String answer;
+        List<MultipartFile> a_img;
+        List<MultipartFile> q_img;
     }
 
     @Data
@@ -72,7 +74,7 @@ public class ProblemDTO {
         int type; //0 for 
         float score;
         int hit;
-        List<problemImageDTO> images;
+        //List<problemImageDTO> images;
     }
 
     @Data

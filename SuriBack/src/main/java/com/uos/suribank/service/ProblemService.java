@@ -32,18 +32,17 @@ public class ProblemService {
 
     
     @Transactional
-    public boolean addProblem(problemAddDTO pAddDTO, 
-    List<MultipartFile> q_img, List<MultipartFile> a_img) throws Exception{
+    public boolean addProblem(problemAddDTO pAddDTO) throws Exception{
         String path = "images/" + pAddDTO.getTitle();
         ClassPathResource resource = new ClassPathResource(path);
         String a_path[] = null;
         String q_path[] = null;
 
         if(a_img != null){
-            a_path = uploadImage(a_img, 'A', pAddDTO.getTitle(), resource.getPath());
+            a_path = uploadImage(pAddDTO.getA_img(), 'A', pAddDTO.getTitle(), resource.getPath());
         }
         if(q_img != null){
-            q_path = uploadImage(q_img, 'Q', pAddDTO.getTitle(), resource.getPath());
+            q_path = uploadImage(pAddDTO.getQ_img(), 'Q', pAddDTO.getTitle(), resource.getPath());
         }
         boolean result = problemRepository.addProblem(pAddDTO);
         Long problem_id = problemRepository.getProblemId(pAddDTO.getTitle(), pAddDTO.getProfessor());

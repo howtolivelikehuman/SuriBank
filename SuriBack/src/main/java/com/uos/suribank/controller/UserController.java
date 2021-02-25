@@ -52,6 +52,17 @@ public class UserController {
 		return ResponseEntity.ok(info);
 	}
 
+	//조회
+	@GetMapping(path = "/{id}")
+	public ResponseEntity<?> getInfo2(@PathVariable Long id) {
+		infoDTO info = userService.getInfo(id);
+
+		if(info == null){
+			throw new NotFoundException(String.format("ID[%s] not found", id));
+		}
+		return ResponseEntity.ok(info);
+	}
+
 	//삭제
 	@DeleteMapping("/")
 	public void deleteInfo(Authentication authentication) {
