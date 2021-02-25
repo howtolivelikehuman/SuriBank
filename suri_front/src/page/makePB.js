@@ -26,7 +26,7 @@ class makePB extends Component{
     }
 
     get_user_id = () => {
-        api.get(`/user/1`)
+        api.get(`/user/`)
         .then(res => {
             this.setState({id: res.data.id})
         })
@@ -41,17 +41,16 @@ class makePB extends Component{
     }
 
     make_problem_handler = () => {
-        const formData_q = new FormData()
-        const formData_a = new FormData()
+        const formData = new FormData()
         let pb_data = new Object()
         console.log(this.state.q_img)
 
         //make form data (from state.(q_,a_)img)
         for (let i = 0; i < this.state.q_img.length; i++) {
-            formData_q.append(`images_q[${i}]`, this.state.q_img[i])
+            formData.append(`q_img[${i}]`, this.state.q_img[i])
         }
         for (let i = 0; i < this.state.a_img.length; i++) {
-            formData_a.append(`images_a[${i}]`, this.state.a_img[i])
+            formData.append(`a_img[${i}]`, this.state.a_img[i])
         }
 
         for(var key in this.state.pb_data){
@@ -60,15 +59,20 @@ class makePB extends Component{
         }
         pb_data['uploader_id']=this.state.id
 
-        //file 객체로 넘기는 부분
-        pb_data['q_img']=this.state.q_img
-        pb_data['a_img']=this.state.a_img
-       //form data로 넘기는 부분 
-       // pb_data['q_img']=formData_q
-       // pb_data['a_img']=formData_a
+        const json_data = JSON.stringify(pb_data)
+        const blob_data = new Blob([json_data], {type: 'application/json'})
+        
+        formData.append('data',blob_data)
 
-        console.log(pb_data)
-        api.put('/problem/add',pb_data)
+        //log formData
+        for (let key of formData.keys()) {
+            console.log(key)
+        }
+        for (let value of formData.values()) {
+            console.log(value);
+        }
+
+        api.put('/problem/add',formData)
         .then(res => {
             console.log(res)
             if(res.status==200){
