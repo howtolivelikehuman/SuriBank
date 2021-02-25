@@ -12,6 +12,7 @@ import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.uos.suribank.dto.SubjectDTO;
 import com.uos.suribank.dto.ProblemDTO.problemAddDTO;
+import com.uos.suribank.dto.ProblemDTO.problemAddinfoDTO;
 import com.uos.suribank.dto.ProblemDTO.problemInfoDTO;
 import com.uos.suribank.dto.ProblemDTO.problemShortDTO;
 import com.uos.suribank.dto.ProblemDTO.problemTableDTO;
@@ -122,7 +123,7 @@ public class ProblemReopository extends QuerydslRepositorySupport {
                 .where(qProblemTable.title.eq(title).and(qProblemTable.professor.eq(professor))).fetchOne();
     }
 
-    public boolean addProblem(problemAddDTO pAddDTO) {
+    public boolean addProblem(problemAddinfoDTO pAddDTO) {
         int result = 0;
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         String sql = "insert into problem_table (title, subject, professor, answer, question, type, uploader_id)"

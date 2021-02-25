@@ -13,6 +13,7 @@ import java.util.List;
 
 import com.uos.suribank.dto.SubjectDTO;
 import com.uos.suribank.dto.ProblemDTO.problemAddDTO;
+import com.uos.suribank.dto.ProblemDTO.problemAddinfoDTO;
 import com.uos.suribank.dto.ProblemDTO.problemInfoDTO;
 import com.uos.suribank.dto.ProblemDTO.problemShortDTO;
 import com.uos.suribank.dto.ProblemDTO.problemTableDTO;
@@ -33,21 +34,21 @@ public class ProblemService {
 
     
     @Transactional
-    public boolean addProblem(problemAddDTO pAddDTO, 
+    public boolean addProblem(problemAddinfoDTO pAddinfoDTO, 
     List<MultipartFile> q_img, List<MultipartFile> a_img) throws Exception{
-        String path = "images/" + pAddDTO.getTitle();
+        String path = "images/" + pAddinfoDTO.getTitle();
         ClassPathResource resource = new ClassPathResource(path);
         String a_path[] = null;
         String q_path[] = null;
         if(q_img != null){
-            q_path = uploadImage(q_img, 'Q', pAddDTO.getTitle(), resource.getPath());
+            q_path = uploadImage(q_img, 'Q', pAddinfoDTO.getTitle(), resource.getPath());
         }
         if(a_img != null){
-            a_path = uploadImage(a_img, 'A', pAddDTO.getTitle(), resource.getPath());
+            a_path = uploadImage(a_img, 'A', pAddinfoDTO.getTitle(), resource.getPath());
         }
         
-        boolean result = problemRepository.addProblem(pAddDTO);
-        Long problem_id = problemRepository.getProblemId(pAddDTO.getTitle(), pAddDTO.getProfessor());
+        boolean result = problemRepository.addProblem(pAddinfoDTO);
+        Long problem_id = problemRepository.getProblemId(pAddinfoDTO.getTitle(), pAddinfoDTO.getProfessor());
         problemRepository.addImages(q_path,a_path,problem_id);
         return result;
     }

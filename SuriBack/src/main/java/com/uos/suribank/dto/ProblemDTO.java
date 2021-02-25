@@ -48,6 +48,14 @@ public class ProblemDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class problemAddDTO{
+        List<MultipartFile> a_img;
+        List<MultipartFile> q_img;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class problemAddinfoDTO{
         private Long uploader_id;
         String title;
         Long subject;

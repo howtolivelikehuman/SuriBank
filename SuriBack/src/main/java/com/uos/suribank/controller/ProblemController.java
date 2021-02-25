@@ -5,12 +5,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,6 +21,7 @@ import java.util.List;
 
 import com.uos.suribank.dto.SubjectDTO;
 import com.uos.suribank.dto.ProblemDTO.problemAddDTO;
+import com.uos.suribank.dto.ProblemDTO.problemAddinfoDTO;
 import com.uos.suribank.dto.ProblemDTO.problemInfoDTO;
 import com.uos.suribank.dto.ProblemDTO.problemTableDTO;
 import com.uos.suribank.exception.InsertErrorException;
@@ -57,13 +61,15 @@ public class ProblemController {
     }
 
     //삽입
-    @PutMapping(path = "/add")
-    public void addProblem(@RequestBody problemAddDTO pAddDTO,Authentication authentication, @RequestParam("a_img") List<MultipartFile> a_img, @RequestParam("q_img") List<MultipartFile> q_img){
-        pAddDTO.setUploader_id(Long.parseLong(authentication.getName()));
+    @RequestMapping(path = "/add", method = RequestMethod.PUT, consumes = {"multipart/form-data"})
+    public void addProblem(@RequestPart("data") problemAddinfoDTO pAddinfoDTO,  Authentication authentication){
+        pAddinfoDTO.setUploader_id(Long.parseLong(authentication.getName()));
+        System.out.println("이름 " + pAddinfoDTO.getTitle());
         boolean result = false;
         try{
-            result = problemService.addProblem(pAddDTO, q_img, a_img);
+           // result = problemService.addProblem(pAddDTO.getData(), pAddDTO.getQ_img(), pAddDTO.getA_img());
         }catch(Exception e){
+            //e.printStackTrace();
             throw new InsertErrorException("Failed to Upload Images");
         }
         if(!result){

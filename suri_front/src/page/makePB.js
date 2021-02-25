@@ -59,16 +59,6 @@ class makePB extends Component{
         }
         pb_data['uploader_id']=this.state.id
 
-<<<<<<< HEAD
-        //file 객체로 넘기는 부분
-        pb_data['q_img']=this.state.q_img
-        pb_data['a_img']=this.state.a_img
-        //form data로 넘기는 부분 
-        //pb_data['q_img']=formData_q
-        //pb_data['a_img']=formData_a
-        console.log(pb_data)
-        api.put('/problem/add',pb_data)
-=======
         const json_data = JSON.stringify(pb_data)
         const blob_data = new Blob([json_data], {type: 'application/json'})
         
@@ -83,7 +73,6 @@ class makePB extends Component{
         }
 
         api.put('/problem/add',formData)
->>>>>>> bb73faca6b6bde875bddd6b02a3faad335357080
         .then(res => {
             console.log(res)
             if(res.status==200){
