@@ -1,6 +1,7 @@
 package com.uos.suribank.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.QAbstractPersistable;
@@ -10,6 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.util.List;
+
+import javax.servlet.ServletContext;
 
 import com.uos.suribank.dto.SubjectDTO;
 import com.uos.suribank.dto.ProblemDTO.problemAddDTO;
@@ -24,6 +27,7 @@ import com.uos.suribank.pagination.ProblemPageable;
 @Service
 public class ProblemService {
 
+
     @Autowired
     private ProblemReopository problemRepository;
 
@@ -36,15 +40,20 @@ public class ProblemService {
     @Transactional
     public boolean addProblem(problemAddinfoDTO pAddinfoDTO, 
     List<MultipartFile> q_img, List<MultipartFile> a_img) throws Exception{
-        String path = "images/" + pAddinfoDTO.getTitle();
-        ClassPathResource resource = new ClassPathResource(path);
+        //absolute path in this project
+        String path = System.getProperty("user.dir") 
+        + "\\src\\main\\resources\\images\\"
+        + pAddinfoDTO.getTitle();
+
         String a_path[] = null;
         String q_path[] = null;
+
         if(q_img != null){
-            q_path = uploadImage(q_img, 'Q', pAddinfoDTO.getTitle(), resource.getPath());
+            q_path = uploadImage(q_img, 'Q', pAddinfoDTO.getTitle(), path);
         }
+
         if(a_img != null){
-            a_path = uploadImage(a_img, 'A', pAddinfoDTO.getTitle(), resource.getPath());
+            a_path = uploadImage(a_img, 'A', pAddinfoDTO.getTitle(), path);
         }
         
         boolean result = problemRepository.addProblem(pAddinfoDTO);

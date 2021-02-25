@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.transaction.Transactional;
 
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
@@ -87,15 +88,16 @@ public class ProblemReopository extends QuerydslRepositorySupport {
         return null;
     }
 
+    @Transactional
     public void addImages(String[] q_path, String[] a_path, Long problemId) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         String sql = "insert into problem_image (problem_id, type, path) values(:a, :b, :c)";
 
         try {
-            entityManager.getTransaction().begin();
             if (q_path != null) {
                 // add Question Image
                 for (int i = 0; i < q_path.length; i++) {
+                    entityManager.getTransaction().begin();
                     entityManager.createNativeQuery(sql).setParameter("a", problemId).setParameter("b", 0)
                             .setParameter("c", q_path[i]).executeUpdate();
                     entityManager.getTransaction().commit();
@@ -104,6 +106,7 @@ public class ProblemReopository extends QuerydslRepositorySupport {
             if (a_path != null) {
                 // add Answer Image
                 for (int i = 0; i < a_path.length; i++) {
+                    entityManager.getTransaction().begin();
                     entityManager.createNativeQuery(sql).setParameter("a", problemId).setParameter("b", 1)
                             .setParameter("c", a_path[i]).executeUpdate();
                     entityManager.getTransaction().commit();

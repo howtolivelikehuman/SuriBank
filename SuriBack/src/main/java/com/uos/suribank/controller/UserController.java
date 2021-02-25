@@ -43,6 +43,13 @@ public class UserController {
 	//조회
 	@GetMapping(path = "/")
 	public ResponseEntity<?> getInfo(Authentication authentication) {
+		if(authentication == null){
+			System.out.println("왜 시발 이거 값이 없음?");
+		}
+		else{
+			System.out.println(authentication.toString());
+			System.out.println(Long.parseLong(authentication.getName()));
+		}
 		Long id = Long.parseLong(authentication.getName());
 		infoDTO info = userService.getInfo(id);
 

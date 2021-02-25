@@ -1,6 +1,7 @@
 package com.uos.suribank.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import com.uos.suribank.dto.SubjectDTO;
 import com.uos.suribank.dto.ProblemDTO.problemAddDTO;
@@ -62,14 +65,19 @@ public class ProblemController {
 
     //삽입
     @RequestMapping(path = "/add", method = RequestMethod.PUT, consumes = {"multipart/form-data"})
-    public void addProblem(@RequestPart("data") problemAddinfoDTO pAddinfoDTO,  Authentication authentication){
+    public void addProblem(@RequestPart("data") problemAddinfoDTO pAddinfoDTO, 
+    @RequestPart("a_img") List<MultipartFile> a_img, @RequestPart("q_img") List<MultipartFile> q_img,
+     Authentication authentication){
         pAddinfoDTO.setUploader_id(Long.parseLong(authentication.getName()));
-        System.out.println("이름 " + pAddinfoDTO.getTitle());
+
+
+
+        
         boolean result = false;
         try{
-           // result = problemService.addProblem(pAddDTO.getData(), pAddDTO.getQ_img(), pAddDTO.getA_img());
+            result = problemService.addProblem(pAddinfoDTO, q_img, a_img);
         }catch(Exception e){
-            //e.printStackTrace();
+            e.printStackTrace();
             throw new InsertErrorException("Failed to Upload Images");
         }
         if(!result){
