@@ -26,10 +26,13 @@ class makePB extends Component{
     }
 
     get_user_id = () => {
+
         api.get(`/user`)
         .then(res => {
+            console.log(res.data)
             this.setState({id: res.data.id})
         })
+        .catch(e=>console.log(e))
     }
     get_subject_data = () => {
         api.get('problem/subjectList')
@@ -45,13 +48,17 @@ class makePB extends Component{
         let pb_data = new Object()
         console.log(this.state.q_img)
 
-        //make form data (from state.(q_,a_)img)
-        for (let i = 0; i < this.state.q_img.length; i++) {
-            formData.append(`q_img[${i}]`, this.state.q_img[i])
-        }
-        for (let i = 0; i < this.state.a_img.length; i++) {
-            formData.append(`a_img[${i}]`, this.state.a_img[i])
-        }
+        //make form data (from state.(q_,a_)img) 
+        // for (let i = 0; i < this.state.q_img.length; i++) {
+        //     formData.append(`q_img[${i}]`, this.state.q_img[i])
+        // }
+        // for (let i = 0; i < this.state.a_img.length; i++) {
+        //     formData.append(`a_img[${i}]`, this.state.a_img[i])
+        // }
+
+        formData.append('q_img',this.state.q_img)
+        formData.append('a_img',this.state.a_img)
+
 
         for(var key in this.state.pb_data){
             console.log(document.getElementsByName(key)[0])
@@ -82,10 +89,11 @@ class makePB extends Component{
     }
 
     render(){
-        // if(this.state.id===null) {
-        //     this.get_user_id()
-        //     return null
-        // }
+        if(this.state.id===null) {
+            this.get_user_id()
+            return null
+        }
+
          if(this.state.subject_data === null){
             this.get_subject_data()
             return null

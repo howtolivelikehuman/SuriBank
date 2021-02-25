@@ -14,11 +14,12 @@ class MyInfo extends Component{
     }
 
     getMyInfo(){
-        api.get(`/user/${this.state.no}`)
+        api.get(`/user/`)
         .then(res => {
             this.setState({data: res.data})
             console.log(res)
         })
+        .catch(e => console.log(e))
     }
 
     setData = (key, value) => {
