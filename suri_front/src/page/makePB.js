@@ -26,7 +26,7 @@ class makePB extends Component{
     }
 
     get_user_id = () => {
-        api.get(`/user/1`)
+        api.get(`/user`)
         .then(res => {
             this.setState({id: res.data.id})
         })
@@ -41,17 +41,16 @@ class makePB extends Component{
     }
 
     make_problem_handler = () => {
-        const formData_q = new FormData()
-        const formData_a = new FormData()
+        const formData = new FormData()
         let pb_data = new Object()
         console.log(this.state.q_img)
 
         //make form data (from state.(q_,a_)img)
         for (let i = 0; i < this.state.q_img.length; i++) {
-            formData_q.append(`images_q[${i}]`, this.state.q_img[i])
+            formData.append(`q_img[${i}]`, this.state.q_img[i])
         }
         for (let i = 0; i < this.state.a_img.length; i++) {
-            formData_a.append(`images_a[${i}]`, this.state.a_img[i])
+            formData.append(`a_img[${i}]`, this.state.a_img[i])
         }
 
         for(var key in this.state.pb_data){
@@ -60,6 +59,7 @@ class makePB extends Component{
         }
         pb_data['uploader_id']=this.state.id
 
+<<<<<<< HEAD
         //file 객체로 넘기는 부분
         pb_data['q_img']=this.state.q_img
         pb_data['a_img']=this.state.a_img
@@ -68,6 +68,22 @@ class makePB extends Component{
         //pb_data['a_img']=formData_a
         console.log(pb_data)
         api.put('/problem/add',pb_data)
+=======
+        const json_data = JSON.stringify(pb_data)
+        const blob_data = new Blob([json_data], {type: 'application/json'})
+        
+        formData.append('data',blob_data)
+
+        //log formData
+        for (let key of formData.keys()) {
+            console.log(key)
+        }
+        for (let value of formData.values()) {
+            console.log(value);
+        }
+
+        api.put('/problem/add',formData)
+>>>>>>> bb73faca6b6bde875bddd6b02a3faad335357080
         .then(res => {
             console.log(res)
             if(res.status==200){
@@ -77,11 +93,11 @@ class makePB extends Component{
     }
 
     render(){
-        if(this.state.id===null) {
-            this.get_user_id()
-            return null
-        }
-        else if(this.state.subject_data === null){
+        // if(this.state.id===null) {
+        //     this.get_user_id()
+        //     return null
+        // }
+         if(this.state.subject_data === null){
             this.get_subject_data()
             return null
         }

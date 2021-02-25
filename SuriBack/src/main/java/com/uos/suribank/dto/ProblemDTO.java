@@ -55,8 +55,6 @@ public class ProblemDTO {
         String professor;
         String question;
         String answer;
-        List<MultipartFile> a_img;
-        List<MultipartFile> q_img;
     }
 
     @Data

@@ -58,11 +58,11 @@ public class ProblemController {
 
     //삽입
     @PutMapping(path = "/add")
-    public void addProblem(@RequestBody problemAddDTO pAddDTO,Authentication authentication){
+    public void addProblem(@RequestBody problemAddDTO pAddDTO,Authentication authentication, @RequestParam("a_img") List<MultipartFile> a_img, @RequestParam("q_img") List<MultipartFile> q_img){
         pAddDTO.setUploader_id(Long.parseLong(authentication.getName()));
         boolean result = false;
         try{
-            result = problemService.addProblem(pAddDTO);
+            result = problemService.addProblem(pAddDTO, q_img, a_img);
         }catch(Exception e){
             throw new InsertErrorException("Failed to Upload Images");
         }
