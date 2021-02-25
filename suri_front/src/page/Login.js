@@ -3,6 +3,8 @@ import Modal from 'react-modal'
 import Header from '../component/Header';
 import '../css/login.sass'
 import api from '../util/API'
+import login from '../img/login.png'
+
 
 class Login extends Component{
     state={
@@ -80,7 +82,7 @@ class Login extends Component{
         const email = this.state.email
         console.log(email)
         api.post('/user/checkId', {
-            id: email
+            email: email
         })
         .then(res => {
             if(res.status=="200") {
@@ -90,7 +92,6 @@ class Login extends Component{
         })
         .catch((err)=>{
             //console.log(JSON.stringify(err))
-
              if(err.response){
                  if(err.response.status==409) alert("이미 존재하는 이메일 입니다.")
                  else alert('오류가 발생하였습니다. 다시 시도해주세요')
@@ -98,6 +99,32 @@ class Login extends Component{
             this.setState({valid_email:false})
         })
         //TO DO: err 뜨면 무조건 409라고 간주, 상태 코드 수정할지, 코드상으로 변경할지..?
+    }
+
+    registerSuccessfulLoginForJwt = (token) => {
+
+        localStorage.setItem('token', token)
+        this.setupAxiosInterceptors()
+    }
+
+    setupAxiosInterceptors = () => {
+        //api.defaults.headers.TOKEN = token
+        //console.log(api.defaults.headers)
+
+        api.interceptors.request.use(
+            config => {
+                const token = localStorage.getItem('token')
+
+                if (token) {
+                    config.headers['TOKEN'] = token;
+                    console.log(config.headers)
+                }
+                // config.headers['Content-Type'] = 'application/json';
+                return config;
+            },
+            error => {
+                Promise.reject(error)
+            });
     }
 
     login_click_handler=()=>{
@@ -117,26 +144,25 @@ class Login extends Component{
                 { 
                         email: email,
                         password:password
-                    
                 }
             )
         })
-        .then(res=>{
-            console.log(res)
-
-            if(res.status == 200){
-                alert("로그인 성공!")
-                
-                //link to main
-                //api.get(`/user`)
-                this.props.history.push('/main')
-                
+        .then(res => res.text())
+        .then(token => {
+            if(token != undefined){
+                console.log(token)
+                this.registerSuccessfulLoginForJwt(token)
+                alert("로그인 성공")
+                this.props.history.push('/main')   
             }
             else{
-                alert("아이디/비밀번호를 확인해주세요")
+                alert("이메일 또는 비밀번호를 확인해주세요.")
                 this.props.history.push('/')
             }
         })
+
+
+
     }
 
     open_signup_modal=()=>{
@@ -161,7 +187,10 @@ class Login extends Component{
                 <div className="row">
                     <div className="col-6 card login_wrapper m-auto"> 
                         <div className="my-3">
-                            <h4 className="card-title text-center mb-1">Login</h4><hr></hr>   
+                            <div className="row">
+                            <img className="mx-auto my-0 card-title" height="30" id="login_img" src={login}/>
+                            </div>
+                            <hr></hr>   
                             <div className="form-group">
                                 <label className="form-control-label text-muted">Username</label>
                                 <input name="Login_id" className="loginId input_e form-control" type="text" placeholder="ID" />

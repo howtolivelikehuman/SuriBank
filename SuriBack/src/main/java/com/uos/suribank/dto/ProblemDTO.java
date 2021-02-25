@@ -1,6 +1,8 @@
 package com.uos.suribank.dto;
 
 import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
 import java.util.Date;
 
 import lombok.AllArgsConstructor;
@@ -15,14 +17,20 @@ public class ProblemDTO {
     public static class problemShortDTO{
         private Long id;
         String title;
-        String subject;
+        Long subject;
         String professor;
         String uploader;
         int type; //0 for 
         float score;
         int hit;
 
+        public problemShortDTO(int hit, float score){
+            this.score = score;
+            this.hit = hit;
+        }
     }
+    
+
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
@@ -40,9 +48,17 @@ public class ProblemDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class problemAddDTO{
+        List<MultipartFile> a_img;
+        List<MultipartFile> q_img;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class problemAddinfoDTO{
         private Long uploader_id;
         String title;
-        String subject;
+        Long subject;
         int type;
         String professor;
         String question;
@@ -55,7 +71,7 @@ public class ProblemDTO {
     public static class problemInfoDTO{
         private Long id;
         String title;
-        String subject;
+        Long subject;
         String professor;
         String question;
         String answer;
@@ -64,6 +80,16 @@ public class ProblemDTO {
         int type; //0 for 
         float score;
         int hit;
+        //List<problemImageDTO> images;
+    }
 
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class problemImageDTO{
+        private Long id;
+        Long problemTable;
+        int type;
+        String path;
     }
 }

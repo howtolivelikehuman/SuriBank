@@ -2,10 +2,12 @@ package com.uos.suribank.dto;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -23,17 +25,24 @@ public class UserDTO implements Serializable{
     }
 
     @Data
+    @Builder
+    public static class usertokenDTO{
+        private Long id;
+        List<String> type;
+        String password;
+    }
+
+    @Data
     @AllArgsConstructor
     @NoArgsConstructor
     //@JsonFilter("userInfo")
     public static class infoDTO{
         private Long id;
         String email;
-        //String password;
         String name;
         String nickname;
         String major;
-        String type;
+        List<String> type;
         Date registerdate;
         int point;
     }

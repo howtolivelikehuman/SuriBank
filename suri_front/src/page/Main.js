@@ -1,67 +1,122 @@
-import React, { Component } from 'react';
-import Modal from 'react-modal'
+import React, { Component } from 'react'
 import api from '../util/API'
+import Filter from '../component/problem_filter/Filter'
 import SubHeader from '../component/SubHeader'
+import {Link} from 'react-router-dom'
 
 class Main extends Component{
     state={
+        subject_data:null,
         now_page:0,
         total_page: 5,
-        type:"ALL",
-        subject:"ALL",
+        type:{
+            prev:false,
+            non_prev:false, 
+        },
+        subject:{
+
+        },
+        professor:{
+            hwang:false,
+            kim:false,
+            gyuzzzang:false
+        },
         pb_list:null
     }
+
     get_problem_list_data_for_test = () => {
         let problem=[
             {
-                pb_id:"1", 
-                pb_title:"첫 번째 문제 예제", 
+                id:"1", 
+                title:"첫 번째 문제 예제", 
                 subject:"수미방", 
                 uploader:"카와잇규짱", 
+                professor:"김민호",
                 score:3
             },
             {
-                pb_id:"2", 
-                pb_title:"디비에 빨리 문제 테이블 만들쟈", 
+                id:"2", 
+                title:"디비에 빨리 문제 테이블 만들쟈", 
                 subject:"데이터베이스설계", 
                 uploader:"엄대장", 
+                professor:"홍의경",
                 score:5
             },
             {
-                pb_id:"3", 
-                pb_title:"오늘 야식은 치킨이닭", 
+                id:"3", 
+                title:"오늘 야식은 치킨이닭", 
                 subject:"웹정보시스템", 
                 uploader:"문초코", 
+                professor:"황혜수",
                 score:1
             },
         ]
 
-        return this.set_problem_list(problem)
+        this.setState({pb_list:problem})
     }
-
-    get_problem_list_data = () =>{
-        api
-        .get(`/problem/list?page=${this.state.now_page}&sort=registerdate,desc&size=1`)
-        // {
-        //     "filter": {
-        //         "type": this.state.type,
-        //         "subject": this.state.subject,
-        //     },
-        //     "pagination": {
-        //         "total_pages": this.state.total_page,
-        //         "total_elements": 1,
-        //         "current_page": this.state.now_page,
-        //         "current_elements": 1
-        //     }
-        // })
+    get_subject_data = () => {
+        console.log(api.defaults)
+        api.get('problem/subjectList')
         .then(res => {
+            this.setState({subject_data:res.data})
+            let subject_list = new Object()
+            res.data.map(subject => subject_list[subject['name']]=false)
+            this.setState({subject:subject_list})
+        })
+        .catch(err => console.log(api.defaults.headers)
+        )
+
+    }
+    get_subject_name = (code) => {
+        const subject = this.state.subject_data.find(subject => subject['code'] === code)
+        return subject['name']
+    }
+    get_subject_code = (n) => {
+        console.log(n)
+        const subject = this.state.subject_data.find(subject => subject['name'] === n)
+        return subject['code']
+    } 
+    get_problem_list_data = () =>{
+        //TO DO: get으로 하는 방법?
+        let type = []
+        let subject = []
+        let professor =[]
+        for(var key in this.state.type){
+            if(this.state.type[key]) type.push(key)
+        }
+        if (type.length === 0 || type.length === 2) type = ""
+        else if(type[0] == 'prev') type = "1"
+        else type = "0"
+
+        for(var key in this.state.subject){
+            if(this.state.subject[key]) subject.push(this.get_subject_code(key))
+        }
+        for(var key in this.state.professor){
+            if(this.state.professor[key]) professor.push(key)
+        }
+        console.log(type, subject, professor)
+        api
+        .post('/problem/list',
+        {
+            page:this.state.now_page,
+            size:20,
+            sort:"registerdate",
+            order:"desc",
+            filter: {
+                type: type,
+                subject: subject,
+                professor:professor
+            }
+        })
+        .then(res => {
+            console.log(res.data)
             if(res.status!=200){
                 alert("문제 불러오기 실패")
                 console.log(res)
                 return null
             }
             else{
-                console.log(res)
+                //console.log(res)
                 this.setState({
                     total_page:res.data.totalPages,
                     pb_list:res.data.probleminfo
@@ -80,24 +135,37 @@ class Main extends Component{
         let problem_list = []
         problem_list = this.state.pb_list.map(problem => {
             return(
-                <a href="#" className="list-group-item list-group-item-action">
+                <Link to={{pathname: '/problem', data : {id: problem.id}}} className="list-group-item list-group-item-action">
                     <div className="row">
                     <div className="col-1">{problem.id}</div>
                     <div className="col-3">{problem.title}</div>
-                    <div className="col-3">{problem.subject}</div>
+                    <div className="col-3">{this.get_subject_name(problem.subject)}</div>
                     <div className="col-2">{problem.professor}</div>
                     <div className="col-2">{problem.uploader}</div>
                     <div className="col-1">{problem.score}</div>
                     </div>
-                </a>
+                </Link>
             )
         })
 
         return problem_list
     }
+    set_filter = (title, filter_element) => {
+        console.log(title,filter_element)
+        var filter = this.state[title]
+        if(title === 'type') filter_element = (filter_element === '기출' ? 'prev' : 'non_prev')
+        filter[filter_element] = !filter[filter_element]
+        if(title === 'subject') this.setState({subject:filter})
+        else if(title === 'professor') this.setState({professor:filter})
+        else if(title === 'type') this.setState({type:filter})
+    }
     
 
     render(){
+        if(this.state.subject_data===null){
+            this.get_subject_data()
+            return null
+        }
         if(this.state.pb_list==null){
             this.get_problem_list_data()
             return null
@@ -117,60 +185,21 @@ class Main extends Component{
                 <div className="container-fluid">
                     <SubHeader />
                     <div className="main_body row">
-                        <nav id="sidebar" className="col-md-3 mx-3">
+                        <nav id="sidebar" className="col-md-3 ">
                             <div className="sidebar-header">
                             </div>
-                            <div className="filter card">
-                                <div className="filter_header card-header">
-                                    <button className="btn btn-link row mw-100" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseFilterSubject">
-                                        <span className="col-5">과목</span>
-                                    </button>
-                                </div>
-                                <ul className="filter_list card-body filter_subject collapse show" id="collapseFilterSubject">
-                                    <li className="checkbox-wrap">
-                                        <input type="checkbox" id="test1" data-filter="" data-filter-type=""></input>
-                                        <label className="ml-3" for="test1"><span>test1</span></label>
-                                    </li>
-                                    <li className="checkbox-wrap">
-                                        <input type="checkbox" id="test2" data-filter="" data-filter-type=""></input>
-                                        <label className="ml-3" for="test2"><span>test2</span></label>
-                                    </li>
-                                    <li className="checkbox-wrap">
-                                        <input type="checkbox" id="test3" data-filter="" data-filter-type=""></input>
-                                        <label className="ml-3" for="test3"><span>test3</span></label>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div className="filter card">
-                                <div className="filter_header card-header">
-                                    <button className="btn btn-link row mw-100" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseFilterSubject">
-                                        <span className="col-5">문제 유형</span>
-                                    </button>
-                                </div>
-                                <ul className="filter_list card-body filter_subject collapse show" id="collapseFilterSubject">
-                                    <li className="checkbox-wrap">
-                                        <input type="checkbox" id="test1" data-filter="" data-filter-type=""></input>
-                                        <label className="ml-3" for="test1"><span>기출</span></label>
-                                    </li>
-                                    <li className="checkbox-wrap">
-                                        <input type="checkbox" id="test2" data-filter="" data-filter-type=""></input>
-                                        <label className="ml-3" for="test2"><span>기출 X</span></label>
-                                    </li>
-                                </ul>
+                            <Filter filter_list={['기출','예제']} title={'TYPE'} setFilter={this.set_filter}/>
+                            <Filter filter_list={['컴퓨터개론','객체지향프로그래밍','논리회로및실습']} title={'SUBJECT'} setFilter={this.set_filter}/>
+                            <Filter filter_list={['hwang','kim','gyuzzzang']} title={'PROFESSOR'} setFilter={this.set_filter}/>
+                            <div className="row">
+                                <button className="p-2 col-10 mx-auto border-0 bg-light rounded rounded-pill shadow-sm my-4" onClick={this.get_problem_list_data}>조건 검색</button>
                             </div>
                         </nav>
-                        <div className="col-md-8" id="content">
-                            <nav className="navbar ml-auto navbar-expand-sm">
-                                <ul class="navbar-nav">
-                                    <li class="nav-item">
-                                    <a class="nav-link" onClick={()=>this.props.history.push('../makePB')}>+</a>
-                                    </li>
-                                    <li class="nav-item">
-                                    <a class="nav-link" href="#">nav 2</a>
-                                    </li>
-
-                                </ul>
-                            </nav>
+                        <div className="col-md-9" id="content">
+                            
+                            <div className="row ">
+                                <button className="p-2 col-10 mx-auto border-0 bg-light rounded rounded-pill shadow-sm mb-4" onClick={()=>this.props.history.push('../makePB')}>+</button>
+                            </div>   
                             <div>
                                 <ul class="list-group list-group-flush">
                                 <div className="list-group-item">
