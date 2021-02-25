@@ -3,17 +3,17 @@ import FilterElement from './FilterElement'
 
 function Filter({title, filter_list,setFilter}){
     const filters = filter_list.map(filter => {
-        console.log(filter)
-        return <FilterElement filter_element={filter} setFilter={setFilter}/>
+        //console.log(filter)
+        let filter_name = filter
+        //if(title === 'type') filter_name = (filter === '기출' ? 'prev' : 'non_prev')
+        return <FilterElement title={title} filter_element={filter_name} setFilter={setFilter}/>
     })
     return(
-        <div className="filter card">
+        <div className="filter card my-2">
             <div className="filter_header card-header">
-                <button className="btn btn-link row mw-100" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseFilterSubject">
-                    <span className="col-5">{title}</span>
-                </button>
+                <div className="row"><span className="col-10 mx-auto">{title}</span></div>
             </div>
-            <ul className="filter_list card-body filter_subject collapse show" id="collapseFilterSubject">
+            <ul className="filter_list list-unstyled card-body filter_subject collapse show" id="collapseFilterSubject">
                 {filters}
             </ul>
         </div>
