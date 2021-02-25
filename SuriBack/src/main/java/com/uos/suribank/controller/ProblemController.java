@@ -72,8 +72,6 @@ public class ProblemController {
         pAddinfoDTO.setUploader_id(Long.parseLong(authentication.getName()));
 
 
-
-
         boolean result = false;
         try{
             result = problemService.addProblem(pAddinfoDTO, q_img, a_img);
