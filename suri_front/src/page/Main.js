@@ -9,11 +9,21 @@ class Main extends Component{
         subject_data:null,
         now_page:0,
         total_page: 5,
-        type:"",
-        subject:[],
-        professor:[],
+        type:{
+            prev:false,
+            non_prev:false, 
+        },
+        subject:{
+
+        },
+        professor:{
+            hwang:false,
+            kim:false,
+            gyuzzzang:false
+        },
         pb_list:null
     }
+
     get_problem_list_data_for_test = () => {
         let problem=[
             {
@@ -49,6 +59,9 @@ class Main extends Component{
         api.get('problem/subjectList')
         .then(res => {
             this.setState({subject_data:res.data})
+            let subject_list = new Object()
+            res.data.map(subject => subject_list[subject['name']]=false)
+            this.setState({subject:subject_list})
         })
         .catch(err => console.log(api.defaults.headers)
         )
@@ -58,8 +71,30 @@ class Main extends Component{
         const subject = this.state.subject_data.find(subject => subject['code'] === code)
         return subject['name']
     }
+    get_subject_code = (n) => {
+        console.log(n)
+        const subject = this.state.subject_data.find(subject => subject['name'] === n)
+        return subject['code']
+    } 
     get_problem_list_data = () =>{
         //TO DO: get으로 하는 방법?
+        let type = []
+        let subject = []
+        let professor =[]
+        for(var key in this.state.type){
+            if(this.state.type[key]) type.push(key)
+        }
+        if (type.length === 0 || type.length === 2) type = ""
+        else if(type[0] == 'prev') type = "1"
+        else type = "0"
+
+        for(var key in this.state.subject){
+            if(this.state.subject[key]) subject.push(this.get_subject_code(key))
+        }
+        for(var key in this.state.professor){
+            if(this.state.professor[key]) professor.push(key)
+        }
+        console.log(type, subject, professor)
         api
         .post('/problem/list',
         {
@@ -68,12 +103,13 @@ class Main extends Component{
             sort:"registerdate",
             order:"desc",
             filter: {
-                type: this.state.type,
-                subject: this.state.subject,
-                professor:this.state.professor
+                type: type,
+                subject: subject,
+                professor:professor
             }
         })
         .then(res => {
+            console.log(res.data)
             if(res.status!=200){
                 alert("문제 불러오기 실패")
                 console.log(res)
@@ -115,7 +151,9 @@ class Main extends Component{
         return problem_list
     }
     set_filter = (title, filter_element) => {
+        console.log(title,filter_element)
         var filter = this.state[title]
+        if(title === 'type') filter_element = (filter_element === '기출' ? 'prev' : 'non_prev')
         filter[filter_element] = !filter[filter_element]
         if(title === 'subject') this.setState({subject:filter})
         else if(title === 'professor') this.setState({professor:filter})
@@ -147,24 +185,21 @@ class Main extends Component{
                 <div className="container-fluid">
                     <SubHeader />
                     <div className="main_body row">
-                        <nav id="sidebar" className="col-md-4 ">
+                        <nav id="sidebar" className="col-md-3 ">
                             <div className="sidebar-header">
                             </div>
-                            <Filter filter_list={['기출','예제']} title={'type'} setFilter={this.set_filter}/>
-                            <Filter filter_list={['컴퓨터개론','객체지향프로그래밍','논리회로및실습']} title={'subject'} setFilter={this.set_filter}/>
+                            <Filter filter_list={['기출','예제']} title={'TYPE'} setFilter={this.set_filter}/>
+                            <Filter filter_list={['컴퓨터개론','객체지향프로그래밍','논리회로및실습']} title={'SUBJECT'} setFilter={this.set_filter}/>
+                            <Filter filter_list={['hwang','kim','gyuzzzang']} title={'PROFESSOR'} setFilter={this.set_filter}/>
+                            <div className="row">
+                                <button className="p-2 col-10 mx-auto border-0 bg-light rounded rounded-pill shadow-sm my-4" onClick={this.get_problem_list_data}>조건 검색</button>
+                            </div>
                         </nav>
-                        <div className="col-md-8" id="content">
-                            <nav className="navbar ml-auto navbar-expand-sm">
-                                <ul class="navbar-nav">
-                                    <li class="nav-item">
-                                    <a class="nav-link" onClick={()=>this.props.history.push('../makePB')}>+</a>
-                                    </li>
-                                    <li class="nav-item">
-                                    <a class="nav-link" href="#">nav 2</a>
-                                    </li>
-
-                                </ul>
-                            </nav>
+                        <div className="col-md-9" id="content">
+                            
+                            <div className="row ">
+                                <button className="p-2 col-10 mx-auto border-0 bg-light rounded rounded-pill shadow-sm mb-4" onClick={()=>this.props.history.push('../makePB')}>+</button>
+                            </div>   
                             <div>
                                 <ul class="list-group list-group-flush">
                                 <div className="list-group-item">
