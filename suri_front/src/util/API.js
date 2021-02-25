@@ -1,12 +1,19 @@
 import axios from 'axios'
 
+const { token } = window.localStorage;
 
 const api = axios.create({
     baseURL: 'http://localhost:8081/api/',
     headers:{
         'Content-Type': 'application/json',
-        //Authorization : token && token.length > 0 ? `Bearer ${token}` : ''
+        TOKEN : token && token.length > 0 ? token : ''
     }
 })
 
-export default api;
+const set_token = (token) => {
+    api.defaults.headers['TOKEN'] = token;
+}
+
+
+
+export default api

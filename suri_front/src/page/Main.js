@@ -45,11 +45,14 @@ class Main extends Component{
         this.setState({pb_list:problem})
     }
     get_subject_data = () => {
+        console.log(api.defaults)
         api.get('problem/subjectList')
         .then(res => {
             this.setState({subject_data:res.data})
         })
-        .catch(err => console.log(err))
+        .catch(err => console.log(api.defaults.headers)
+        )
+
     }
     get_subject_name = (code) => {
         const subject = this.state.subject_data.find(subject => subject['code'] === code)

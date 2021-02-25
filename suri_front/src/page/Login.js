@@ -101,6 +101,32 @@ class Login extends Component{
         //TO DO: err 뜨면 무조건 409라고 간주, 상태 코드 수정할지, 코드상으로 변경할지..?
     }
 
+    registerSuccessfulLoginForJwt = (token) => {
+
+        localStorage.setItem('token', token)
+        this.setupAxiosInterceptors()
+    }
+
+    setupAxiosInterceptors = () => {
+        //api.defaults.headers.TOKEN = token
+        //console.log(api.defaults.headers)
+
+        api.interceptors.request.use(
+            config => {
+                const token = localStorage.getItem('token')
+
+                if (token) {
+                    config.headers['TOKEN'] = token;
+                    console.log(config.headers)
+                }
+                // config.headers['Content-Type'] = 'application/json';
+                return config;
+            },
+            error => {
+                Promise.reject(error)
+            });
+    }
+
     login_click_handler=()=>{
 
         //this.props.history.push('/main')
@@ -121,20 +147,22 @@ class Login extends Component{
                 }
             )
         })
-        .then(res=>{
-            console.log(res)
-
-            if(res.status == 200){
-                alert("로그인 성공!")
-                
-                this.props.history.push('/main')
-                
+        .then(res => res.text())
+        .then(token => {
+            if(token != undefined){
+                console.log(token)
+                this.registerSuccessfulLoginForJwt(token)
+                alert("로그인 성공")
+                this.props.history.push('/main')   
             }
             else{
-                alert("아이디/비밀번호를 확인해주세요")
+                alert("이메일 또는 비밀번호를 확인해주세요.")
                 this.props.history.push('/')
             }
         })
+
+
+
     }
 
     open_signup_modal=()=>{
