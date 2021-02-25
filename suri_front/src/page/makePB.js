@@ -26,7 +26,8 @@ class makePB extends Component{
     }
 
     get_user_id = () => {
-        api.get('/user/')
+
+        api.get(`/user`)
         .then(res => {
             console.log(res.data)
             this.setState({id: res.data.id})
@@ -57,6 +58,7 @@ class makePB extends Component{
 
         formData.append('q_img',this.state.q_img)
         formData.append('a_img',this.state.a_img)
+
 
         for(var key in this.state.pb_data){
             console.log(document.getElementsByName(key)[0])
@@ -91,6 +93,7 @@ class makePB extends Component{
             this.get_user_id()
             return null
         }
+
          if(this.state.subject_data === null){
             this.get_subject_data()
             return null
