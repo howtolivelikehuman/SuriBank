@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.transaction.Transactional;
 
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
@@ -12,6 +13,7 @@ import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.uos.suribank.dto.SubjectDTO;
 import com.uos.suribank.dto.ProblemDTO.problemAddDTO;
+import com.uos.suribank.dto.ProblemDTO.problemAddinfoDTO;
 import com.uos.suribank.dto.ProblemDTO.problemInfoDTO;
 import com.uos.suribank.dto.ProblemDTO.problemShortDTO;
 import com.uos.suribank.dto.ProblemDTO.problemTableDTO;
@@ -86,15 +88,16 @@ public class ProblemReopository extends QuerydslRepositorySupport {
         return null;
     }
 
+    @Transactional
     public void addImages(String[] q_path, String[] a_path, Long problemId) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         String sql = "insert into problem_image (problem_id, type, path) values(:a, :b, :c)";
 
         try {
-            entityManager.getTransaction().begin();
             if (q_path != null) {
                 // add Question Image
                 for (int i = 0; i < q_path.length; i++) {
+                    entityManager.getTransaction().begin();
                     entityManager.createNativeQuery(sql).setParameter("a", problemId).setParameter("b", 0)
                             .setParameter("c", q_path[i]).executeUpdate();
                     entityManager.getTransaction().commit();
@@ -103,6 +106,7 @@ public class ProblemReopository extends QuerydslRepositorySupport {
             if (a_path != null) {
                 // add Answer Image
                 for (int i = 0; i < a_path.length; i++) {
+                    entityManager.getTransaction().begin();
                     entityManager.createNativeQuery(sql).setParameter("a", problemId).setParameter("b", 1)
                             .setParameter("c", a_path[i]).executeUpdate();
                     entityManager.getTransaction().commit();
@@ -122,7 +126,7 @@ public class ProblemReopository extends QuerydslRepositorySupport {
                 .where(qProblemTable.title.eq(title).and(qProblemTable.professor.eq(professor))).fetchOne();
     }
 
-    public boolean addProblem(problemAddDTO pAddDTO) {
+    public boolean addProblem(problemAddinfoDTO pAddDTO) {
         int result = 0;
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         String sql = "insert into problem_table (title, subject, professor, answer, question, type, uploader_id)"
@@ -152,7 +156,7 @@ public class ProblemReopository extends QuerydslRepositorySupport {
                 .select(Projections.constructor(problemInfoDTO.class, problemTable.id, problemTable.title,
                         problemTable.subject.code, problemTable.professor, problemTable.question, problemTable.answer,
                         problemTable.user.name, problemTable.registerdate, problemTable.type, problemTable.score,
-                        problemTable.hit, problemTable.images))
+                        problemTable.hit))
                 .where(problemTable.id.eq(id)).fetchOne();
     }
 

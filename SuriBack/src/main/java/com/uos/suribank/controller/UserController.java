@@ -43,7 +43,25 @@ public class UserController {
 	//조회
 	@GetMapping(path = "/")
 	public ResponseEntity<?> getInfo(Authentication authentication) {
+		if(authentication == null){
+			System.out.println("왜 시발 이거 값이 없음?");
+		}
+		else{
+			System.out.println(authentication.toString());
+			System.out.println(Long.parseLong(authentication.getName()));
+		}
 		Long id = Long.parseLong(authentication.getName());
+		infoDTO info = userService.getInfo(id);
+
+		if(info == null){
+			throw new NotFoundException(String.format("ID[%s] not found", id));
+		}
+		return ResponseEntity.ok(info);
+	}
+
+	//조회
+	@GetMapping(path = "/{id}")
+	public ResponseEntity<?> getInfo2(@PathVariable Long id) {
 		infoDTO info = userService.getInfo(id);
 
 		if(info == null){
