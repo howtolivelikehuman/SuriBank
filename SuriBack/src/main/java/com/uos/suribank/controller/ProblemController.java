@@ -1,7 +1,10 @@
 package com.uos.suribank.controller;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpRequest;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,12 +21,12 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import com.uos.suribank.dto.SubjectDTO;
-import com.uos.suribank.dto.ProblemDTO.problemAddDTO;
 import com.uos.suribank.dto.ProblemDTO.problemAddinfoDTO;
 import com.uos.suribank.dto.ProblemDTO.problemInfoDTO;
 import com.uos.suribank.dto.ProblemDTO.problemTableDTO;
@@ -65,18 +68,34 @@ public class ProblemController {
 
 
     //삽입
-    @RequestMapping(path = "/add", method = RequestMethod.PUT, consumes = {"multipart/form-data"})
+    @RequestMapping(path = "/add", method = RequestMethod.PUT, consumes = "multipart/form-data")
     public void addProblem(@RequestPart("data") problemAddinfoDTO pAddinfoDTO, 
     @RequestPart("a_img") List<MultipartFile> a_img, @RequestPart("q_img") List<MultipartFile> q_img,
      Authentication authentication){
         pAddinfoDTO.setUploader_id(Long.parseLong(authentication.getName()));
 
-
-
-
         boolean result = false;
         try{
             result = problemService.addProblem(pAddinfoDTO, q_img, a_img);
+        }catch(Exception e){
+            e.printStackTrace();
+            throw new InsertErrorException("Failed to Upload Images");
+        }
+        if(!result){
+            throw new InsertErrorException("Failed to insert into DB");
+        }
+    }
+
+    //삽입
+    @RequestMapping(path = "/add2", method = RequestMethod.PUT, consumes = "multipart/form-data")
+    public void addProblem2(@RequestPart("data") problemAddinfoDTO pAddinfoDTO, 
+    @RequestPart("a_img") List<MultipartFile> a_img, @RequestPart("q_img") List<MultipartFile> q_img,
+     Authentication authentication){
+        pAddinfoDTO.setUploader_id(Long.parseLong(authentication.getName()));
+
+        boolean result = false;
+        try{
+            result = problemService.addProblem2(pAddinfoDTO, q_img, a_img);
         }catch(Exception e){
             e.printStackTrace();
             throw new InsertErrorException("Failed to Upload Images");

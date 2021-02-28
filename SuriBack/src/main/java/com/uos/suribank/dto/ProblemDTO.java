@@ -80,7 +80,23 @@ public class ProblemDTO {
         int type; //0 for 
         float score;
         int hit;
-        //List<problemImageDTO> images;
+        List<String> qimagesPath;
+        List<String> aimagesPath;
+
+        public problemInfoDTO(Long id, String title, Long subject, String professor, 
+        String question, String answer, String uploader, Date registerdate, int type, float score, int hit){
+            this.id = id;
+            this.title = title;
+            this.subject = subject;
+            this.professor = professor;
+            this.question = question;
+            this.answer = answer;
+            this.uploader = uploader;
+            this.registerdate = registerdate;
+            this.type = type;
+            this.score = score;
+            this.hit = hit;
+        }
     }
 
     @Data

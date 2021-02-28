@@ -4,9 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.transaction.Transactional;
 
-import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;
@@ -18,6 +16,7 @@ import com.uos.suribank.dto.ProblemDTO.problemInfoDTO;
 import com.uos.suribank.dto.ProblemDTO.problemShortDTO;
 import com.uos.suribank.dto.ProblemDTO.problemTableDTO;
 import com.uos.suribank.entity.ProblemTable;
+import com.uos.suribank.entity.QProblemImage;
 import com.uos.suribank.entity.QProblemTable;
 import com.uos.suribank.entity.QSubject;
 import com.uos.suribank.pagination.FilterDTO;
@@ -28,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public class ProblemReopository extends QuerydslRepositorySupport {
@@ -149,15 +149,20 @@ public class ProblemReopository extends QuerydslRepositorySupport {
         return result > 0 ? true : false;
     }
 
+    @Transactional
     public problemInfoDTO getProblemInfo(Long id) {
         problemTable = QProblemTable.problemTable;
+        QProblemImage problemImage = QProblemImage.problemImage;
 
-        return queryFactory.from(problemTable)
+        problemInfoDTO pinfo = queryFactory.from(problemTable)
                 .select(Projections.constructor(problemInfoDTO.class, problemTable.id, problemTable.title,
                         problemTable.subject.code, problemTable.professor, problemTable.question, problemTable.answer,
                         problemTable.user.name, problemTable.registerdate, problemTable.type, problemTable.score,
                         problemTable.hit))
                 .where(problemTable.id.eq(id)).fetchOne();
+        pinfo.setQimagesPath(from(problemImage).select(problemImage.path).where(problemImage.type.eq(0),problemImage.problemTable.id.eq(id)).fetch());
+        pinfo.setAimagesPath(from(problemImage).select(problemImage.path).where(problemImage.type.eq(1),problemImage.problemTable.id.eq(id)).fetch());
+        return pinfo;
     }
 
     public List<SubjectDTO> getSubjectList() {
