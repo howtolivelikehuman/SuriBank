@@ -21,10 +21,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.InputStream;
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
 
 import com.uos.suribank.dto.SubjectDTO;
 import com.uos.suribank.dto.ProblemDTO.problemAddinfoDTO;
@@ -86,7 +83,7 @@ public class ProblemController {
         }
     }
 
-    //삽입
+    //삽입2 - t상
     @RequestMapping(path = "/add2", method = RequestMethod.PUT, consumes = "multipart/form-data")
     public void addProblem2(@RequestPart("data") problemAddinfoDTO pAddinfoDTO, 
     @RequestPart("a_img") List<MultipartFile> a_img, @RequestPart("q_img") List<MultipartFile> q_img,
