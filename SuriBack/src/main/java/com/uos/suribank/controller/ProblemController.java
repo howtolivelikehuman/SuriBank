@@ -64,7 +64,7 @@ public class ProblemController {
     }
 
 
-    //삽입
+    //삽입 - 절대주소
     @RequestMapping(path = "/add", method = RequestMethod.PUT, consumes = "multipart/form-data")
     public void addProblem(@RequestPart("data") problemAddinfoDTO pAddinfoDTO, 
     @RequestPart("a_img") List<MultipartFile> a_img, @RequestPart("q_img") List<MultipartFile> q_img,
@@ -83,7 +83,7 @@ public class ProblemController {
         }
     }
 
-    //삽입2 - t상
+    //삽입2 - 상대주소
     @RequestMapping(path = "/add2", method = RequestMethod.PUT, consumes = "multipart/form-data")
     public void addProblem2(@RequestPart("data") problemAddinfoDTO pAddinfoDTO, 
     @RequestPart("a_img") List<MultipartFile> a_img, @RequestPart("q_img") List<MultipartFile> q_img,
