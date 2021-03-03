@@ -24,44 +24,13 @@ class Main extends Component{
         pb_list:null
     }
 
-    get_problem_list_data_for_test = () => {
-        let problem=[
-            {
-                id:"1", 
-                title:"첫 번째 문제 예제", 
-                subject:"수미방", 
-                uploader:"카와잇규짱", 
-                professor:"김민호",
-                score:3
-            },
-            {
-                id:"2", 
-                title:"디비에 빨리 문제 테이블 만들쟈", 
-                subject:"데이터베이스설계", 
-                uploader:"엄대장", 
-                professor:"홍의경",
-                score:5
-            },
-            {
-                id:"3", 
-                title:"오늘 야식은 치킨이닭", 
-                subject:"웹정보시스템", 
-                uploader:"문초코", 
-                professor:"황혜수",
-                score:1
-            },
-        ]
-
-        this.setState({pb_list:problem})
-    }
     get_subject_data = () => {
         console.log(api.defaults)
         api.get('problem/subjectList')
         .then(res => {
-            this.setState({subject_data:res.data})
             let subject_list = new Object()
             res.data.map(subject => subject_list[subject['name']]=false)
-            this.setState({subject:subject_list})
+            this.setState({subject:subject_list, subject_data:res.data})
         })
         .catch(err => console.log(api.defaults.headers)
         )
@@ -78,6 +47,7 @@ class Main extends Component{
     } 
     get_problem_list_data = () =>{
         //TO DO: get으로 하는 방법?
+        console.log(this.state.type, this.state.subject, this.state.professor)
         let type = []
         let subject = []
         let professor =[]
@@ -152,12 +122,23 @@ class Main extends Component{
     }
     set_filter = (title, filter_element) => {
         console.log(title,filter_element)
-        var filter = this.state[title]
-        if(title === 'type') filter_element = (filter_element === '기출' ? 'prev' : 'non_prev')
-        filter[filter_element] = !filter[filter_element]
-        if(title === 'subject') this.setState({subject:filter})
-        else if(title === 'professor') this.setState({professor:filter})
-        else if(title === 'type') this.setState({type:filter})
+        var filter
+        if(title === 'TYPE') {
+            filter_element = (filter_element === '기출' ? 'prev' : 'non_prev')
+            filter = this.state.type
+            filter[filter_element] = !filter[filter_element]
+            this.setState({type:filter})
+        }
+        else if(title === 'SUBJECT') {
+            filter = this.state.subject
+            filter[filter_element] = !filter[filter_element]
+            this.setState({subject:filter})
+        }
+        else if(title === 'PROFESSOR') {
+            filter = this.state.professor
+            filter[filter_element] = !filter[filter_element]
+            this.setState({professor:filter})
+        }
     }
     
 
