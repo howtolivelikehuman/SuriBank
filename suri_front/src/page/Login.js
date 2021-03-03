@@ -147,24 +147,26 @@ class Login extends Component{
                 }
             )
         })
-        .then(res => res.text())
+        .then(res => {
+            if(res.status===200) {
+                return res.text()
+            }
+            else {
+                alert("이메일 또는 비밀번호를 확인해주세요.")
+                this.props.history.push('/')
+                return null
+            }
+        })
         .then(token => {
-            if(token != undefined){
+            if(token){
                 console.log(token)
                 this.registerSuccessfulLoginForJwt(token)
                 alert("로그인 성공")
                 this.props.history.push('/main')   
             }
-            else{
-                alert("이메일 또는 비밀번호를 확인해주세요.")
-                this.props.history.push('/')
-            }
         })
-
-
-
     }
-
+    
     open_signup_modal=()=>{
         this.setState({modalOpen:true})
     }    
