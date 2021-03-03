@@ -1,18 +1,12 @@
 package com.uos.suribank.controller;
 
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.http.HttpRequest;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -32,7 +26,6 @@ import com.uos.suribank.exception.NotFoundException;
 import com.uos.suribank.pagination.PageableDTO;
 import com.uos.suribank.service.ProblemService;
 
-@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(value = "/api/problem")
 public class ProblemController {
@@ -64,7 +57,7 @@ public class ProblemController {
     }
 
 
-    //삽입
+    //삽입 - 절대주소
     @RequestMapping(path = "/add", method = RequestMethod.PUT, consumes = "multipart/form-data")
     public void addProblem(@RequestPart("data") problemAddinfoDTO pAddinfoDTO, 
     @RequestPart("a_img") List<MultipartFile> a_img, @RequestPart("q_img") List<MultipartFile> q_img,
@@ -83,7 +76,7 @@ public class ProblemController {
         }
     }
 
-    //삽입2 - t상
+    //삽입2 - 상대주소
     @RequestMapping(path = "/add2", method = RequestMethod.PUT, consumes = "multipart/form-data")
     public void addProblem2(@RequestPart("data") problemAddinfoDTO pAddinfoDTO, 
     @RequestPart("a_img") List<MultipartFile> a_img, @RequestPart("q_img") List<MultipartFile> q_img,
