@@ -42,7 +42,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
 		// We don't need CSRF for this example
-		httpSecurity.csrf().disable()
+		httpSecurity
+                .csrf().disable()
                 .httpBasic().disable()
                 // 토큰 기반 인증이므로 세션 X
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) 

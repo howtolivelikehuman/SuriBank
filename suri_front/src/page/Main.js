@@ -13,9 +13,7 @@ class Main extends Component{
             prev:false,
             non_prev:false, 
         },
-        subject:{
-
-        },
+        subject:{},
         professor:{
             hwang:false,
             kim:false,
@@ -34,17 +32,19 @@ class Main extends Component{
         })
         .catch(err => console.log(api.defaults.headers)
         )
-
     }
+
     get_subject_name = (code) => {
         const subject = this.state.subject_data.find(subject => subject['code'] === code)
         return subject['name']
     }
+
     get_subject_code = (n) => {
         console.log(n)
         const subject = this.state.subject_data.find(subject => subject['name'] === n)
         return subject['code']
     } 
+
     get_problem_list_data = () =>{
         //TO DO: get으로 하는 방법?
         console.log(this.state.type, this.state.subject, this.state.professor)
@@ -94,6 +94,7 @@ class Main extends Component{
             }
         })
     }
+
     page_item_click_handler = (i) => {
         if(i>=0 && i<this.state.total_page)
             this.setState({now_page:i},() => {
@@ -120,6 +121,7 @@ class Main extends Component{
 
         return problem_list
     }
+
     set_filter = (title, filter_element) => {
         console.log(title,filter_element)
         var filter
@@ -140,10 +142,9 @@ class Main extends Component{
             this.setState({professor:filter})
         }
     }
-    
 
     render(){
-        if(this.state.subject_data===null){
+        if(this.state.subject_data === null){
             this.get_subject_data()
             return null
         }
@@ -176,8 +177,7 @@ class Main extends Component{
                                 <button className="p-2 col-10 mx-auto border-0 bg-light rounded rounded-pill shadow-sm my-4" onClick={this.get_problem_list_data}>조건 검색</button>
                             </div>
                         </nav>
-                        <div className="col-md-9" id="content">
-                            
+                        <div className="col-md-9" id="content">                            
                             <div className="row ">
                                 <button className="p-2 col-10 mx-auto border-0 bg-light rounded rounded-pill shadow-sm mb-4" onClick={()=>this.props.history.push('../makePB')}>+</button>
                             </div>   
