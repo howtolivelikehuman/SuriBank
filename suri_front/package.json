@@ -18,6 +18,7 @@
     "react-icons": "4.1.0",
     "react-modal": "3.12.1",
     "react-native": "0.63.4",
+    "react-rating-stars-component": "2.2.0",
     "react-router": "5.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",
@@ -48,5 +49,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "pretty-rating-react": "1.1.0"
   }
 }
