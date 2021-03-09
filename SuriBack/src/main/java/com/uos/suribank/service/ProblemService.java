@@ -38,50 +38,6 @@ public class ProblemService {
 
     
     @Transactional
-    public boolean addProblem2(problemAddinfoDTO pAddinfoDTO, 
-    List<MultipartFile> q_img, List<MultipartFile> a_img) throws Exception{
-       
-        boolean result = problemRepository.addProblem(pAddinfoDTO);
-        Long problem_id = problemRepository.getProblemId(pAddinfoDTO.getTitle(), pAddinfoDTO.getProfessor());
-
-        String a_path[] = null;
-        String q_path[] = null;
-
-        if(q_img != null){
-            q_path = uploadImage(q_img, 'Q', problem_id);
-        }
-
-        if(a_img != null){
-            a_path = uploadImage(a_img, 'A', problem_id);
-        }
-        
-        problemRepository.addImages(q_path,a_path,problem_id);
-        return result;
-    }
-
-    public String[] uploadImage2(List<MultipartFile> files, char type, Long id) throws Exception {
-        String[] pathList = new String[files.size()];
-        String absolutepath = System.getProperty("user.dir")+"/src/main/resources";
-        String path = "/images/" + id;
-
-        File folder = new File(absolutepath+path);
-        if(!folder.exists()){
-            folder.mkdir();
-        }
-
-        for(int i=0; i< files.size(); i++){
-            String name = ""+id+type+i;
-
-            //absolute path in this project
-            String filename = path +"/"+name+".jpg";
-            pathList[i] = filename;
-            files.get(i).transferTo(new File(absolutepath + filename));
-        }
-        return pathList;
-    }
-
-    
-    @Transactional
     public boolean addProblem(problemAddinfoDTO pAddinfoDTO, 
     List<MultipartFile> q_img, List<MultipartFile> a_img) throws Exception{
        
@@ -105,7 +61,6 @@ public class ProblemService {
 
     public String[] uploadImage(List<MultipartFile> files, char type, Long id) throws Exception {
         String[] pathList = new String[files.size()];
-
         String absolutepath = System.getProperty("user.dir")+"/src/main/resources";
         String path = "/images/" + id;
 
@@ -119,7 +74,7 @@ public class ProblemService {
 
             //absolute path in this project
             String filename = path +"/"+name+".jpg";
-            pathList[i] = absolutepath+filename;
+            pathList[i] = filename;
             files.get(i).transferTo(new File(absolutepath + filename));
         }
         return pathList;
