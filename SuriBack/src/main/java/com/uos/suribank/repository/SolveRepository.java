@@ -4,14 +4,18 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.uos.suribank.dto.SolveDTO.solveDTO;
+import com.uos.suribank.dto.SolveDTO.solveInfoDTO;
 import com.uos.suribank.dto.SolveDTO.solveProblemDTO;
+import com.uos.suribank.dto.SolveDTO.solveTableDTO;
 import com.uos.suribank.entity.QUserProblemSolve;
 import com.uos.suribank.entity.UserProblemSolve;
 
 import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 
@@ -25,27 +29,29 @@ public class SolveRepository extends QuerydslRepositorySupport{
     @Autowired
     private EntityManagerFactory entityManagerFactory;
 
+    QUserProblemSolve qProblemSolve;
+
     @Autowired
     private JPAQueryFactory queryFactory;
 
 
     public void updateAnswer(Long user_id, solveProblemDTO sProblemDTO){
-        QUserProblemSolve problemSolve = QUserProblemSolve.userProblemSolve;
-        queryFactory.update(problemSolve)
-                    .where(problemSolve.user.id.eq(user_id)
-                        .and(problemSolve.problem.id.eq(sProblemDTO.getProblem())))
-                    .set(problemSolve.userAnswer,sProblemDTO.getUserAnswer())
+        qProblemSolve = QUserProblemSolve.userProblemSolve;
+        queryFactory.update(qProblemSolve)
+                    .where(qProblemSolve.user.id.eq(user_id)
+                        .and(qProblemSolve.problem.id.eq(sProblemDTO.getProblem_id())))
+                    .set(qProblemSolve.userAnswer,sProblemDTO.getUserAnswer())
                     .execute();
     }
 
     public solveDTO getAnswer(Long user_id, Long problem_id){
-        QUserProblemSolve qproblemSolve = QUserProblemSolve.userProblemSolve;
+        qProblemSolve = QUserProblemSolve.userProblemSolve;
 
-        return queryFactory.from(qproblemSolve)
-                     .select(Projections.constructor(solveDTO.class, qproblemSolve.id, qproblemSolve.user.id, 
-                                                    qproblemSolve.problem.id, qproblemSolve.userAnswer))
-                    .where(qproblemSolve.user.id.eq(user_id)
-                        .and(qproblemSolve.problem.id.eq(problem_id))).fetchOne();
+        return queryFactory.from(qProblemSolve)
+                     .select(Projections.constructor(solveDTO.class, qProblemSolve.id, qProblemSolve.user.id,
+                                                    qProblemSolve.problem.id, qProblemSolve.userAnswer))
+                    .where(qProblemSolve.user.id.eq(user_id)
+                        .and(qProblemSolve.problem.id.eq(problem_id))).fetchOne();
     } 
 
     public void insertAnswer(Long user_id, solveProblemDTO solveProblemDTO){
@@ -55,7 +61,7 @@ public class SolveRepository extends QuerydslRepositorySupport{
         try{
             entityManager.getTransaction().begin();
             entityManager.createNativeQuery(sql)
-                    .setParameter("a", solveProblemDTO.getProblem())
+                    .setParameter("a", solveProblemDTO.getProblem_id())
                     .setParameter("b", user_id)
                     .setParameter("c", solveProblemDTO.getUserAnswer()).executeUpdate();
             entityManager.getTransaction().commit();
@@ -66,5 +72,37 @@ public class SolveRepository extends QuerydslRepositorySupport{
         } finally {
             entityManager.close();
         }
+    }
+
+    public solveTableDTO getSolvedAnswerList(Pageable pageable,int type, Long id){
+        qProblemSolve = QUserProblemSolve.userProblemSolve;
+        solveTableDTO solvetableDTO = new solveTableDTO();
+
+        JPQLQuery<solveInfoDTO> query = from(qProblemSolve)
+                                        .select(Projections.constructor(solveInfoDTO.class,
+                                            qProblemSolve.id, qProblemSolve.problem.id, qProblemSolve.problem.title, 
+                                            qProblemSolve.user.id, qProblemSolve.user.nickname));
+        switch(type){
+            //user's solved answer
+            case 1:
+                query = query.where(qProblemSolve.user.id.eq(id));
+                break;
+            //problem's solved answer
+            case 2:
+                query = query.where(qProblemSolve.problem.id.eq(id));
+                break;
+            default:
+                break;
+        }
+        
+        //setting solveTable
+        solvetableDTO.setSolvedInfo(getQuerydsl().applyPagination(pageable, query).fetch());
+        solvetableDTO.setPage(pageable.getPageNumber());
+        solvetableDTO.setSize(pageable.getPageSize());
+        solvetableDTO.setSort(pageable.getSort().toString());
+        solvetableDTO.setNumberofElements(solvetableDTO.getSolvedInfo().size());
+        solvetableDTO.setTotalElements((int) query.fetchCount());
+        solvetableDTO.setTotalPages((solvetableDTO.getTotalElements() + solvetableDTO.getSize() - 1) / solvetableDTO.getSize());
+        return solvetableDTO;
     }
 }

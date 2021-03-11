@@ -1,10 +1,7 @@
 package com.uos.suribank.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.QAbstractPersistable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,10 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.util.List;
 
-import javax.servlet.ServletContext;
-
 import com.uos.suribank.dto.SubjectDTO;
-import com.uos.suribank.dto.ProblemDTO.problemAddDTO;
 import com.uos.suribank.dto.ProblemDTO.problemAddinfoDTO;
 import com.uos.suribank.dto.ProblemDTO.problemInfoDTO;
 import com.uos.suribank.dto.ProblemDTO.problemShortDTO;

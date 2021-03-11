@@ -2,8 +2,10 @@ package com.uos.suribank.controller;
 
 import com.uos.suribank.dto.SolveDTO.solveDTO;
 import com.uos.suribank.dto.SolveDTO.solveProblemDTO;
+import com.uos.suribank.dto.SolveDTO.solveTableDTO;
 import com.uos.suribank.exception.InsertErrorException;
 import com.uos.suribank.exception.NotFoundException;
+import com.uos.suribank.pagination.PageableDTO;
 import com.uos.suribank.service.SolveService;
 
 import org.springframework.security.core.Authentication;
@@ -22,6 +24,27 @@ public class SolveController {
     
     @Autowired
     private SolveService solveService;
+
+    //User가 푼 답
+    @GetMapping(path = "/list/user/{user_id}")
+    public ResponseEntity<?> getUserSolvedList(@RequestBody PageableDTO page, @PathVariable Long user_id){
+        solveTableDTO stableDTO  = solveService.getUserSolvedList(page, user_id);
+        if(stableDTO == null){
+			throw new NotFoundException("Page not found");
+		}
+        return ResponseEntity.ok(stableDTO);
+    }
+
+    //Problem에 따른 풀이
+    @GetMapping(path = "/list/problem/{problem_id}")
+    public ResponseEntity<?> getProblemSolvedList(@RequestBody PageableDTO page, @PathVariable Long problem_id){
+        solveTableDTO stableDTO  = solveService.getProblemSolvedList(page, problem_id);
+        if(stableDTO == null){
+			throw new NotFoundException("Page not found");
+		}
+        return ResponseEntity.ok(stableDTO);
+    }
+
 
     @PostMapping(value = "/{problem_no}")
     public void solveProblem(Authentication authentication, @RequestBody solveProblemDTO solveproblemdto){

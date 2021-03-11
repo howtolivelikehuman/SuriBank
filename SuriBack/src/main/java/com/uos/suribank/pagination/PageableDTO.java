@@ -17,5 +17,5 @@ public class PageableDTO {
     //ASC or DESC
     String order;
     //Filter
-    FilterDTO filter;
+    ProblemListFilter filter;
 }
