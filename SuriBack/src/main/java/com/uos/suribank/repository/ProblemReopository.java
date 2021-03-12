@@ -19,7 +19,7 @@ import com.uos.suribank.entity.ProblemTable;
 import com.uos.suribank.entity.QProblemImage;
 import com.uos.suribank.entity.QProblemTable;
 import com.uos.suribank.entity.QSubject;
-import com.uos.suribank.pagination.FilterDTO;
+import com.uos.suribank.pagination.ProblemListFilter;
 
 import org.apache.ibatis.annotations.Select;
 import org.hibernate.HibernateException;
@@ -44,7 +44,7 @@ public class ProblemReopository extends QuerydslRepositorySupport {
         super(ProblemTable.class);
     }
 
-    public problemTableDTO getPage(FilterDTO filter, Pageable pageable) {
+    public problemTableDTO getPage(ProblemListFilter filter, Pageable pageable) {
 
         problemTable = QProblemTable.problemTable;
         problemTableDTO pDto = new problemTableDTO();
@@ -52,10 +52,13 @@ public class ProblemReopository extends QuerydslRepositorySupport {
         JPQLQuery<problemShortDTO> query = from(problemTable).select(Projections.constructor(problemShortDTO.class,
                 problemTable.id, problemTable.title, problemTable.subject.code, problemTable.professor,
                 problemTable.user.name, problemTable.type, problemTable.score, problemTable.hit));
-        // set filter
-        query = query.where(eqType(filter.getType()), eqSubject(filter.getSubject()),
-                eqProfessor(filter.getProfessor()));
 
+        if(filter != null){
+            // set filter
+            query = query.where(eqType(filter.getType()), eqSubject(filter.getSubject()),
+            eqProfessor(filter.getProfessor()));
+        }
+        
         // setting pDto
         pDto.setProbleminfo(getQuerydsl().applyPagination(pageable, query).fetch());
         pDto.setPage(pageable.getPageNumber());

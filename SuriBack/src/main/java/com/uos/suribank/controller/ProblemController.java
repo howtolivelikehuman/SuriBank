@@ -3,7 +3,6 @@ package com.uos.suribank.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -56,8 +55,7 @@ public class ProblemController {
         return ResponseEntity.ok(sList);
     }
 
-
-    //삽입 - 절대주소
+    //삽입 - 상대주소
     @RequestMapping(path = "/add", method = RequestMethod.PUT, consumes = "multipart/form-data")
     public void addProblem(@RequestPart("data") problemAddinfoDTO pAddinfoDTO, 
     @RequestPart("a_img") List<MultipartFile> a_img, @RequestPart("q_img") List<MultipartFile> q_img,
@@ -67,25 +65,6 @@ public class ProblemController {
         boolean result = false;
         try{
             result = problemService.addProblem(pAddinfoDTO, q_img, a_img);
-        }catch(Exception e){
-            e.printStackTrace();
-            throw new InsertErrorException("Failed to Upload Images");
-        }
-        if(!result){
-            throw new InsertErrorException("Failed to insert into DB");
-        }
-    }
-
-    //삽입2 - 상대주소
-    @RequestMapping(path = "/add2", method = RequestMethod.PUT, consumes = "multipart/form-data")
-    public void addProblem2(@RequestPart("data") problemAddinfoDTO pAddinfoDTO, 
-    @RequestPart("a_img") List<MultipartFile> a_img, @RequestPart("q_img") List<MultipartFile> q_img,
-     Authentication authentication){
-        pAddinfoDTO.setUploader_id(Long.parseLong(authentication.getName()));
-
-        boolean result = false;
-        try{
-            result = problemService.addProblem2(pAddinfoDTO, q_img, a_img);
         }catch(Exception e){
             e.printStackTrace();
             throw new InsertErrorException("Failed to Upload Images");
@@ -107,7 +86,7 @@ public class ProblemController {
     }
 
     //평가하기
-    @PostMapping(path = "score/{id}", produces = "application/json")
+    @PostMapping(path = "score/{id}")
     public void scoreProblem(@PathVariable Long id, @RequestParam("score") int score){
         try{
             problemService.scoreProblem(id, score);

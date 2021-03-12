@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class FilterDTO {
+public class ProblemListFilter {
     String type;
     String[] professor;
     Long[] subject;
