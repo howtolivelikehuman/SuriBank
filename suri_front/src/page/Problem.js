@@ -2,17 +2,30 @@ import React, { Component } from 'react';
 import api from '../util/API'
 import SubHeader from '../component/SubHeader'
 import { IoTimeSharp } from 'react-icons/io5';
-
+import ProblemScore from '../component/ProblemScore'
 class Problem extends Component{
     state={
         data:null,
-        subject_list:null
+        subject_list:null,
+        rate:5
+    }
+    post_score = () => {
+        let score = new FormData()
+        score.append('score',this.state.rate)
+        api.post(`problem/score/${this.props.location.data.id}`, score )
+        .then(res => {
+            if(res.status===200) 
+                alert('별점이 반영되었습니다!')
+        })
     }
     get_pb_data = () => {
         api.get(`problem/${this.props.location.data.id}`)
         .then(res => {
             this.setState({data:res.data})
         })
+    }
+    set_rate=rate=>{
+        this.setState({rate:rate})
     }
     get_pb_data_for_test =()=>{
         let problem=
@@ -102,6 +115,8 @@ class Problem extends Component{
                                 <button type="button" className="btn btn-secondary" onClick={()=>this.view_answer_handler()}>view answer</button>
                             </div>
                         </div>
+                        <ProblemScore rate={this.state.rate} set_rate={this.set_rate}/>
+                        <div className="row"><button onClick={this.post_score} className="btn btn-primary mx-3 mw-100">별점주기</button></div>
                     </div>
                     
                 </div>

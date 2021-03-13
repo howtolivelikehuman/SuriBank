@@ -25,8 +25,8 @@ import lombok.RequiredArgsConstructor;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private final JwtTokenProvider jwtTokenProvider;
-
     // 암호화에 필요한 PasswordEncoder 를 Bean 등록합니다.
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
@@ -45,9 +45,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		httpSecurity
                 .csrf().disable()
                 .httpBasic().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 토큰 기반 인증이므로 세션 역시 사용하지 않습니다.
+                // 토큰 기반 인증이므로 세션 X
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) 
                 .and()
-				// dont authenticate this particular request
+				// don`t authenticate this particular request
 				.authorizeRequests()
                 //.antMatchers("/admin/**").hasRole("T5")
                 .antMatchers("/*/user/login", "/*/user/signup", "/*/user/checkId").permitAll()
