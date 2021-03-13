@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.transaction.Transactional;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -179,6 +180,23 @@ public class ProblemReopository extends QuerydslRepositorySupport {
         problemTable = QProblemTable.problemTable;
         return queryFactory.from(problemTable).select(Projections.constructor(problemShortDTO.class, problemTable.hit, problemTable.score))
                 .where(problemTable.id.eq(id)).fetchOne();
+    }
+
+    public void updateScore(Long id, int nhit, float nscore){
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try{
+            entityManager.getTransaction().begin();
+            ProblemTable pTable = entityManager.find(ProblemTable.class, id);
+            pTable.setHit(nhit);
+            pTable.setScore(nscore);
+            entityManager.getTransaction().commit();
+        }catch (HibernateException ex) {
+            ex.printStackTrace();
+            throw ex;
+
+        } finally {
+            entityManager.close();
+        }
     }
 
     public void updateScore(Long id, int nhit, float nscore){

@@ -1,9 +1,11 @@
 package com.uos.suribank.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +27,7 @@ import com.uos.suribank.exception.NotFoundException;
 import com.uos.suribank.pagination.PageableDTO;
 import com.uos.suribank.service.ProblemService;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(value = "/api/problem")
 public class ProblemController {
@@ -61,7 +64,6 @@ public class ProblemController {
     @RequestPart("a_img") List<MultipartFile> a_img, @RequestPart("q_img") List<MultipartFile> q_img,
      Authentication authentication){
         pAddinfoDTO.setUploader_id(Long.parseLong(authentication.getName()));
-
         boolean result = false;
         try{
             result = problemService.addProblem(pAddinfoDTO, q_img, a_img);

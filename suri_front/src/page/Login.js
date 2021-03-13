@@ -165,6 +165,9 @@ class Login extends Component{
                 this.props.history.push('/main')   
             }
         })
+
+
+
     }
     
     open_signup_modal=()=>{
