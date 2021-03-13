@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,45 +26,26 @@ public class SolveController {
     @Autowired
     private SolveService solveService;
 
-    //User가 푼 답
-    @GetMapping(path = "/list/user/{user_id}")
-    public ResponseEntity<?> getUserSolvedList(@RequestBody PageableDTO page, @PathVariable Long user_id){
-        solveTableDTO stableDTO  = solveService.getUserSolvedList(page, user_id);
-        if(stableDTO == null){
-			throw new NotFoundException("Page not found");
-		}
-        return ResponseEntity.ok(stableDTO);
-    }
 
-    //Problem에 따른 풀이
-    @GetMapping(path = "/list/problem/{problem_id}")
-    public ResponseEntity<?> getProblemSolvedList(@RequestBody PageableDTO page, @PathVariable Long problem_id){
-        solveTableDTO stableDTO  = solveService.getProblemSolvedList(page, problem_id);
-        if(stableDTO == null){
-			throw new NotFoundException("Page not found");
-		}
-        return ResponseEntity.ok(stableDTO);
-    }
-
-
-    @PostMapping(value = "/{problem_no}")
-    public void solveProblem(Authentication authentication, @RequestBody solveProblemDTO solveproblemdto){
+    //문제 풀기
+    @PostMapping(value = "/{problem_id}")
+    public void solveProblem(Authentication authentication,@PathVariable Long problem_id, @RequestBody solveProblemDTO solveproblemdto){
         Long user_id = Long.parseLong(authentication.getName());
         try{
-            solveService.solve(user_id, solveproblemdto);
+            solveService.solve(user_id, problem_id, solveproblemdto);
         }catch(Exception e){
             e.printStackTrace();
             throw new InsertErrorException("Failed to Insert Answer");
         }
     } 
 
-    @GetMapping(value = "/{problem_id}/{user_id}")
-    public ResponseEntity<solveDTO> getAnswer(@PathVariable Long user_id, @PathVariable Long problem_id){
+    //세세 정답 확인2
+    @GetMapping(value = "/{user_id}/{problem_id}")
+    public ResponseEntity<solveDTO> findAnswer(@PathVariable Long user_id, @PathVariable Long problem_id){
         solveDTO answer;
 
         try{
-            System.out.println(user_id + " " + problem_id);
-            answer =  solveService.getAnswer(user_id, problem_id);
+            answer =  solveService.findAnswer(user_id, problem_id);
         }
         catch(Exception e){
             e.printStackTrace();
@@ -71,7 +53,42 @@ public class SolveController {
         }
         return ResponseEntity.ok(answer);
     }
+    
+    //세세 정답 확인
+    @GetMapping(value = "/{solve_id}")
+    public ResponseEntity<solveDTO> getAnswer(@PathVariable Long solve_id){
+        solveDTO answer;
+
+        try{
+            answer =  solveService.getAnswer(solve_id);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            throw new NotFoundException("Cannot find answer for id =" + solve_id);
+        }
+        return ResponseEntity.ok(answer);
+    }
 
 
+    //User가 푼 답
+    @GetMapping(path = "/list/user/{user_id}")
+    public ResponseEntity<?> getUserSolvedList(@ModelAttribute PageableDTO page, @PathVariable Long user_id){
+        solveTableDTO stableDTO  = solveService.getUserSolvedList(page, user_id);
+        if(stableDTO == null){
+			throw new NotFoundException("Page not found");
+		}
+        return ResponseEntity.ok(stableDTO);
+    }
 
+
+   
+    //Problem에 따른 풀이
+    @GetMapping(path = "/list/problem/{problem_id}")
+    public ResponseEntity<?> getProblemSolvedList(@ModelAttribute PageableDTO page, @PathVariable Long problem_id){
+        solveTableDTO stableDTO  = solveService.getProblemSolvedList(page, problem_id);
+        if(stableDTO == null){
+			throw new NotFoundException("Page not found");
+		}
+        return ResponseEntity.ok(stableDTO);
+    }
 }

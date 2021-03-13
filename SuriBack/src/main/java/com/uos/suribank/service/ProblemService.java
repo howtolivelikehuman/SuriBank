@@ -86,24 +86,5 @@ public class ProblemService {
         return problemRepository.getSubjectList();
     }
 
-    public void scoreProblem(Long id, int score){
-        problemShortDTO psdto = problemRepository.getScoreAndHit(id);
-        int nhit = psdto.getHit()+1;
-        float nscore = ((nhit-1) * psdto.getScore() + score)/(nhit);
-        
-        problemRepository.updateScore(id, nhit, nscore);
-    }
-
-    public List<SubjectDTO> getSubjectList(){
-        return problemRepository.getSubjectList();
-    }
-
-    public void scoreProblem(Long id, int score){
-        problemShortDTO psdto = problemRepository.getScoreAndHit(id);
-        int nhit = psdto.getHit()+1;
-        float nscore = ((nhit-1) * psdto.getScore() + score)/(nhit);
-        
-        problemRepository.updateScore(id, nhit, nscore);
-    }
-
+    
 }

@@ -198,21 +198,4 @@ public class ProblemReopository extends QuerydslRepositorySupport {
             entityManager.close();
         }
     }
-
-    public void updateScore(Long id, int nhit, float nscore){
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        try{
-            entityManager.getTransaction().begin();
-            ProblemTable pTable = entityManager.find(ProblemTable.class, id);
-            pTable.setHit(nhit);
-            pTable.setScore(nscore);
-            entityManager.getTransaction().commit();
-        }catch (HibernateException ex) {
-            ex.printStackTrace();
-            throw ex;
-
-        } finally {
-            entityManager.close();
-        }
-    }
 }

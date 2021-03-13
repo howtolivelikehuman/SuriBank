@@ -1,5 +1,6 @@
 package com.uos.suribank.dto;
 
+import java.util.Date;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -12,8 +13,8 @@ public class SolveDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class solveProblemDTO{
-        Long problem_id;
         String userAnswer;
+        int score;
     }
 
     @Data
@@ -24,6 +25,7 @@ public class SolveDTO {
         Long problem_id;
         Long user_id;
         String userAnswer;
+        Date solveDate;
     }
 
     @Data
