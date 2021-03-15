@@ -1,7 +1,10 @@
 package com.uos.suribank.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.QAbstractPersistable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -83,12 +86,5 @@ public class ProblemService {
         return problemRepository.getSubjectList();
     }
 
-    public void scoreProblem(Long id, int score){
-        problemShortDTO psdto = problemRepository.getScoreAndHit(id);
-        int nhit = psdto.getHit()+1;
-        float nscore = ((nhit-1) * psdto.getScore() + score)/(nhit);
-        
-        problemRepository.updateScore(id, nhit, nscore);
-    }
-
+    
 }

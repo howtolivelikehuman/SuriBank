@@ -33,12 +33,22 @@ class Main extends Component{
         .catch(err => console.log(api.defaults.headers)
         )
     }
+    get_subject_data = () => {
+        console.log(api.defaults)
+        api.get('problem/subjectList')
+        .then(res => {
+            this.setState({subject_data:res.data})
+            let subject_list = new Object()
+            res.data.map(subject => subject_list[subject['name']]=false)
+            this.setState({subject:subject_list})
+        })
+        .catch(err => console.log(api.defaults.headers)
+        )
 
     get_subject_name = (code) => {
         const subject = this.state.subject_data.find(subject => subject['code'] === code)
         return subject['name']
     }
-
     get_subject_code = (n) => {
         console.log(n)
         const subject = this.state.subject_data.find(subject => subject['name'] === n)

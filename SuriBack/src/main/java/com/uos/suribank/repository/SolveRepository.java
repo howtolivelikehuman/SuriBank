@@ -35,33 +35,42 @@ public class SolveRepository extends QuerydslRepositorySupport{
     private JPAQueryFactory queryFactory;
 
 
-    public void updateAnswer(Long user_id, solveProblemDTO sProblemDTO){
+    public void updateAnswer(Long user_id, Long problem_id, solveProblemDTO sProblemDTO){
         qProblemSolve = QUserProblemSolve.userProblemSolve;
         queryFactory.update(qProblemSolve)
                     .where(qProblemSolve.user.id.eq(user_id)
-                        .and(qProblemSolve.problem.id.eq(sProblemDTO.getProblem_id())))
+                        .and(qProblemSolve.problem.id.eq(problem_id)))
                     .set(qProblemSolve.userAnswer,sProblemDTO.getUserAnswer())
                     .execute();
     }
 
-    public solveDTO getAnswer(Long user_id, Long problem_id){
+    public solveDTO findAnswer(Long user_id, Long problem_id){
         qProblemSolve = QUserProblemSolve.userProblemSolve;
 
         return queryFactory.from(qProblemSolve)
                      .select(Projections.constructor(solveDTO.class, qProblemSolve.id, qProblemSolve.user.id,
-                                                    qProblemSolve.problem.id, qProblemSolve.userAnswer))
+                                                    qProblemSolve.problem.id, qProblemSolve.userAnswer, qProblemSolve.solveDate))
                     .where(qProblemSolve.user.id.eq(user_id)
                         .and(qProblemSolve.problem.id.eq(problem_id))).fetchOne();
     } 
 
-    public void insertAnswer(Long user_id, solveProblemDTO solveProblemDTO){
+    public solveDTO getAnswer(Long solve_id){
+        qProblemSolve = QUserProblemSolve.userProblemSolve;
+
+        return queryFactory.from(qProblemSolve)
+                     .select(Projections.constructor(solveDTO.class, qProblemSolve.id, qProblemSolve.user.id,
+                                                    qProblemSolve.problem.id, qProblemSolve.userAnswer, qProblemSolve.solveDate))
+                    .where(qProblemSolve.id.eq(solve_id)).fetchOne();
+    } 
+
+    public void insertAnswer(Long user_id,Long problem_id, solveProblemDTO solveProblemDTO){
         EntityManager entityManager= entityManagerFactory.createEntityManager();
         String sql = "insert into user_solve (problem, user, user_answer) values (:a, :b, :c)";
     
         try{
             entityManager.getTransaction().begin();
             entityManager.createNativeQuery(sql)
-                    .setParameter("a", solveProblemDTO.getProblem_id())
+                    .setParameter("a", problem_id)
                     .setParameter("b", user_id)
                     .setParameter("c", solveProblemDTO.getUserAnswer()).executeUpdate();
             entityManager.getTransaction().commit();
