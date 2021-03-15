@@ -8,6 +8,7 @@ class SuribankApplicationTests {
 
 	@Test
 	void contextLoads() {
+		
 	}
 
 }

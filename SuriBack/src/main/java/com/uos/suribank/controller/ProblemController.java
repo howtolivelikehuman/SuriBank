@@ -1,9 +1,11 @@
 package com.uos.suribank.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,8 +35,8 @@ public class ProblemController {
     private ProblemService problemService;
 
     //목록 조회
-    @PostMapping(path = "/list")
-    public ResponseEntity<?> getList(@RequestBody PageableDTO pageableDTO) {
+    @GetMapping(path = "/list")
+    public ResponseEntity<?> getList(@ModelAttribute PageableDTO pageableDTO) {
         
         problemTableDTO pDto = problemService.getProblemList(pageableDTO);
 
@@ -61,7 +63,6 @@ public class ProblemController {
     @RequestPart("a_img") List<MultipartFile> a_img, @RequestPart("q_img") List<MultipartFile> q_img,
      Authentication authentication){
         pAddinfoDTO.setUploader_id(Long.parseLong(authentication.getName()));
-
         boolean result = false;
         try{
             result = problemService.addProblem(pAddinfoDTO, q_img, a_img);
@@ -83,16 +84,5 @@ public class ProblemController {
 			throw new NotFoundException("Page not found");
 		}
         return ResponseEntity.ok(pIDTO);
-    }
-
-    //평가하기
-    @PostMapping(path = "score/{id}")
-    public void scoreProblem(@PathVariable Long id, @RequestParam("score") int score){
-        try{
-            problemService.scoreProblem(id, score);
-        }catch(Exception e){
-            e.printStackTrace();
-            throw new InsertErrorException("Failed to Update score");
-        }
     }
 }
