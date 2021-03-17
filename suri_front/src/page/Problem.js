@@ -1,33 +1,41 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import api from '../util/API'
-import SubHeader from '../component/SubHeader'
 import { IoTimeSharp } from 'react-icons/io5';
+import SubHeader from '../component/SubHeader'
 import ProblemScore from '../component/ProblemScore'
-class Problem extends Component{
-    state={
-        data:null,
-        subject_list:null,
-        rate:5
-    }
-    post_score = () => {
-        let score = new FormData()
-        score.append('score',this.state.rate)
-        api.post(`problem/score/${this.props.location.data.id}`, score )
+import ProblemView from '../component/ProblemView'
+import SolveList from '../component/SolveList'
+import SolveInput from '../component/SolveInput'
+
+const Problem = (props) => {
+    const [data, setData] = useState(null)
+    const [subjectList, setSubjectList] = useState(null)
+    const [rate, setRate] = useState(5)
+    const [solveInput, setSolveInput] = useState(null)
+    const problemId = props.location.data.id
+    console.log(problemId)
+
+    const post_solve = () => {
+        api.post(`solve/${problemId}`, {
+            score: rate,
+            userAnswer: solveInput,
+        })
         .then(res => {
             if(res.status===200) 
-                alert('별점이 반영되었습니다!')
+                alert('별점 및 답안이 반영되었습니다!')
         })
+        .catch(err => alert(err))
     }
-    get_pb_data = () => {
-        api.get(`problem/${this.props.location.data.id}`)
+
+    const get_pb_data = () => {
+        api.get(`problem/${problemId}`)
         .then(res => {
-            this.setState({data:res.data})
+            console.log('pb:',res.data)
+            setData(res.data)
         })
     }
-    set_rate=rate=>{
-        this.setState({rate:rate})
-    }
-    get_pb_data_for_test =()=>{
+
+    const get_pb_data_for_test =()=>{
         let problem=
             {
                 "uploader":"카와잇규짱",
@@ -42,88 +50,34 @@ class Problem extends Component{
                 "hit": 12
             }
 
-        this.setState({data:problem})
+        setData(problem)
     }
-    view_answer_handler = () => {
-        let isVisible = document.getElementsByName('answer')[0].className
-        if(isVisible === "invisible") document.getElementsByName('answer')[0].className = 'visible'
-        else document.getElementsByName('answer')[0].className = 'invisible'
-    }
-    get_subject_list = () => {
+
+    const get_subject_list = () => {
         api.get('/problem/subjectList')
         .then(res => {
-            //console.log(res)
-            this.setState({subject_list:res.data})
+            setSubjectList(res.data)
         })
     }
-    get_subject_name = (code) => {
-        const subject = this.state.subject_list.find(subject => subject['code'] === code)
-        return subject['name']
-    }
 
-    render(){
-        if(this.state.data===null || this.state.subject_list===null){
-            this.get_pb_data()
-            this.get_subject_list()
-            return null
-        }
+    useEffect(()=>{
+        get_pb_data()
+        get_subject_list()
+    },[])
 
-        else{
-            let problem =[]
-            let value
-            for(var key in this.state.data){
-                if (key==='title'||key ==='question' || key === 'answer' || key === 'id') continue
-                if (key==='subject'){
-                    value=this.get_subject_name(this.state.data[key])
-                }
-                else value=this.state.data[key]
-                problem.push(
-                    <div className="row info_element mb-3">
-                        <div className="col-sm-5 key">
-                            {key}
-                        </div>
-                        <div className="col-sm-7 value">
-                            {value}
-                        </div>
-                    </div>
-                )
-            }
-            return(
-                <div>
-                    <SubHeader/>
-                    <div className="container">
-                        <div className="card mb-5">
-                            <div className="card-header">
-                                <div className="row">
-                                    <h2 className="col-11">{this.state.data['title']}</h2>
-                                </div>
-                            </div>
-                            <div className="card-body px-5">
-                                {problem}
-                                <div className="my-3">
-                                    <div className="key">question</div>
-                                    <div className="value my-2">
-                                        {this.state.data['question']}
-                                    </div>
-                                </div>
-                                <div name="answer" className="invisible">
-                                    <div className="key">answer</div>
-                                    <div className="value my-2">
-                                        {this.state.data['answer']}
-                                    </div>
-                                </div>
-                                <button type="button" className="btn btn-secondary" onClick={()=>this.view_answer_handler()}>view answer</button>
-                            </div>
-                        </div>
-                        <ProblemScore rate={this.state.rate} set_rate={this.set_rate}/>
-                        <div className="row"><button onClick={this.post_score} className="btn btn-primary mx-3 mw-100">별점주기</button></div>
-                    </div>
-                    
-                </div>
 
-            )
-        }
-    }
+    return(
+        <div>
+            <SubHeader/>
+            <div className="container">
+                <ProblemView data={data} subjectList={subjectList} />
+                <ProblemScore rate={rate} set_rate={setRate}/>
+                <SolveInput solveInput={solveInput} setSolveInput={setSolveInput}/>
+                <div className="row"><button onClick={post_solve} className="btn btn-primary mx-3 mw-100">별점주기</button></div>
+                <SolveList problemId={problemId}/>
+            </div>
+        </div>
+    )
 }
 
 export default Problem
