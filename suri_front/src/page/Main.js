@@ -44,7 +44,8 @@ class Main extends Component{
         })
         .catch(err => console.log(api.defaults.headers)
         )
-
+    }
+    
     get_subject_name = (code) => {
         const subject = this.state.subject_data.find(subject => subject['code'] === code)
         return subject['name']
@@ -76,16 +77,18 @@ class Main extends Component{
         }
         console.log(type, subject, professor)
         api
-        .post('/problem/list',
+        .get('/problem/list',
         {
-            page:this.state.now_page,
-            size:20,
-            sort:"registerdate",
-            order:"desc",
-            filter: {
-                type: type,
-                subject: subject,
-                professor:professor
+            params:{        
+                page:this.state.now_page,
+                size:20,
+                sort:"registerdate",
+                order:"desc",
+                // filter: {
+                //     type: type,
+                //     subject: subject,
+                //     professor:professor
+                // }
             }
         })
         .then(res => {
