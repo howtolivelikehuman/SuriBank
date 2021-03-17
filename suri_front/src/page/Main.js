@@ -153,7 +153,8 @@ class Main extends Component{
         }
     }
 
-    render(){
+    render()
+    {
         if(this.state.subject_data === null){
             this.get_subject_data()
             return null
