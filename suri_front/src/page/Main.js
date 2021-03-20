@@ -84,12 +84,13 @@ class Main extends Component{
                 size:20,
                 sort:"registerdate",
                 order:"desc",
-                // filter: {
+                //filter: {
                 //     type: type,
                 //     subject: subject,
                 //     professor:professor
                 // }
             }
+            
         })
         .then(res => {
             console.log(res.data)
@@ -99,7 +100,7 @@ class Main extends Component{
                 return null
             }
             else{
-                //console.log(res)
+                console.log(res)
                 this.setState({
                     total_page:res.data.totalPages,
                     pb_list:res.data.probleminfo
