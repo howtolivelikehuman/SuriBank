@@ -31,7 +31,7 @@ public class SolveDTO {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class solveInfoDTO{
+    public static class solveUserInfoDTO{
         private Long id;
         Long problem_id;
         String problemName;
@@ -43,7 +43,7 @@ public class SolveDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class solveTableDTO{
-        List<solveInfoDTO> solvedInfo;
+        List<?> solvedInfo;
         int totalElements;
         int numberofElements;
         int totalPages;
@@ -52,4 +52,14 @@ public class SolveDTO {
         String sort;
     }
 
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class solveProblemInfoDTO{
+        private Long id;
+        Long user_id;
+        String userName;
+        String userAnswer;
+        Date solveDate;
+    }
 }

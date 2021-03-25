@@ -7,9 +7,10 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.uos.suribank.dto.SolveDTO.solveDTO;
-import com.uos.suribank.dto.SolveDTO.solveInfoDTO;
 import com.uos.suribank.dto.SolveDTO.solveProblemDTO;
+import com.uos.suribank.dto.SolveDTO.solveProblemInfoDTO;
 import com.uos.suribank.dto.SolveDTO.solveTableDTO;
+import com.uos.suribank.dto.SolveDTO.solveUserInfoDTO;
 import com.uos.suribank.entity.QUserProblemSolve;
 import com.uos.suribank.entity.UserProblemSolve;
 
@@ -44,12 +45,11 @@ public class SolveRepository extends QuerydslRepositorySupport{
                     .execute();
     }
 
-    public solveDTO findAnswer(Long user_id, Long problem_id){
+    public Long findAnswer(Long user_id, Long problem_id){
         qProblemSolve = QUserProblemSolve.userProblemSolve;
 
         return queryFactory.from(qProblemSolve)
-                     .select(Projections.constructor(solveDTO.class, qProblemSolve.id, qProblemSolve.user.id,
-                                                    qProblemSolve.problem.id, qProblemSolve.userAnswer, qProblemSolve.solveDate))
+                    .select(qProblemSolve.id)
                     .where(qProblemSolve.user.id.eq(user_id)
                         .and(qProblemSolve.problem.id.eq(problem_id))).fetchOne();
     } 
@@ -86,19 +86,22 @@ public class SolveRepository extends QuerydslRepositorySupport{
     public solveTableDTO getSolvedAnswerList(Pageable pageable,int type, Long id){
         qProblemSolve = QUserProblemSolve.userProblemSolve;
         solveTableDTO solvetableDTO = new solveTableDTO();
+        JPQLQuery<?> query = from(qProblemSolve);
 
-        JPQLQuery<solveInfoDTO> query = from(qProblemSolve)
-                                        .select(Projections.constructor(solveInfoDTO.class,
-                                            qProblemSolve.id, qProblemSolve.problem.id, qProblemSolve.problem.title, 
-                                            qProblemSolve.user.id, qProblemSolve.user.nickname));
         switch(type){
             //user's solved answer
             case 1:
-                query = query.where(qProblemSolve.user.id.eq(id));
+                query = query.select(Projections.constructor(solveUserInfoDTO.class,
+                                            qProblemSolve.id, qProblemSolve.problem.id, qProblemSolve.problem.title, 
+                                            qProblemSolve.user.id, qProblemSolve.user.nickname))
+                                        .where(qProblemSolve.user.id.eq(id));
                 break;
             //problem's solved answer
             case 2:
-                query = query.where(qProblemSolve.problem.id.eq(id));
+                query = query.select(Projections.constructor(solveProblemInfoDTO.class,
+                                            qProblemSolve.id, qProblemSolve.user.id, qProblemSolve.user.nickname, 
+                                            qProblemSolve.userAnswer, qProblemSolve.solveDate))
+                                            .where(qProblemSolve.problem.id.eq(id));
                 break;
             default:
                 break;
