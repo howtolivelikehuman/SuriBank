@@ -37,30 +37,34 @@ public class SolveController {
             e.printStackTrace();
             throw new InsertErrorException("Failed to Insert Answer");
         }
-    } 
+    }
 
-    //세세 정답 확인2
-    @GetMapping(value = "/{user_id}/{problem_id}")
-    public ResponseEntity<solveDTO> findAnswer(@PathVariable Long user_id, @PathVariable Long problem_id){
-        solveDTO answer;
-
+    //정답 입력 여부 확인
+    @GetMapping(value = "/check/{problem_id}")
+    public ResponseEntity<Long> checkProblem(Authentication authentication,@PathVariable Long problem_id){
+        Long user_id = Long.parseLong(authentication.getName());
+        Long solvedId = -1L;
         try{
-            answer =  solveService.findAnswer(user_id, problem_id);
-        }
-        catch(Exception e){
+            solvedId = solveService.findAnswer(user_id, problem_id);
+            if(solvedId == null){
+                solvedId = -1l;
+            }
+        }catch(Exception e){
             e.printStackTrace();
-            throw new NotFoundException("Cannot find answer for id =" + user_id + " problem = " + problem_id);
+            throw new InsertErrorException("Failed to Check Answer");
         }
-        return ResponseEntity.ok(answer);
+        return ResponseEntity.ok(solvedId);
     }
     
     //세세 정답 확인
     @GetMapping(value = "/{solve_id}")
     public ResponseEntity<solveDTO> getAnswer(@PathVariable Long solve_id){
-        solveDTO answer;
-
+        solveDTO answer = null;
         try{
-            answer =  solveService.getAnswer(solve_id);
+            answer = solveService.getAnswer(solve_id);
+            if(answer == null){
+                throw new NotFoundException("Cannot find answer for id =" + solve_id);
+            }
         }
         catch(Exception e){
             e.printStackTrace();

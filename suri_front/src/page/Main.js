@@ -84,11 +84,11 @@ class Main extends Component{
                 size:20,
                 sort:"registerdate",
                 order:"desc",
-                //filter: {
-                //     type: type,
-                //     subject: subject,
-                //     professor:professor
-                // }
+                /*filter: {
+                     type: type,
+                     subject: subject,
+                     professor:professor
+                 }*/
             }
             
         })
