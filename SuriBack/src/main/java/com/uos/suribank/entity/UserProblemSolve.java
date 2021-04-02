@@ -46,7 +46,6 @@ public class UserProblemSolve{
     @Column(length  = 500, name = "user_answer")
     String userAnswer;
 
-
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")

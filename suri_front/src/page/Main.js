@@ -56,7 +56,9 @@ class Main extends Component{
                 sort:"registerdate",
                 order:"desc",
                 filter: filters,
+
             }
+            
         })
         .then(res => {
             console.log(res.data)
@@ -66,7 +68,7 @@ class Main extends Component{
                 return null
             }
             else{
-                //console.log(res)
+                console.log(res)
                 this.setState({
                     total_page:res.data.totalPages,
                     pb_list:res.data.probleminfo
@@ -115,7 +117,8 @@ class Main extends Component{
         }
     }
 
-    render(){
+    render()
+    {
         if(this.state.subject_data === null){
             this.get_subject_data()
             return null

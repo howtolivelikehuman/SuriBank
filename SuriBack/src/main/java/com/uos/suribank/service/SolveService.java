@@ -62,8 +62,8 @@ public class SolveService {
         return solveRepository.getAnswer(solve_id);
     }
 
-    //풀이 보기2
-    public solveDTO findAnswer(Long user_id, Long problem_id){
+    //풀었는지 확인
+    public Long findAnswer(Long user_id, Long problem_id){
         return solveRepository.findAnswer(user_id, problem_id);
     }
     
