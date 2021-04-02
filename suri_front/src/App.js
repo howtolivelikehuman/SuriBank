@@ -5,6 +5,7 @@ import Main from './page/Main'
 import MyInfo from './page/MyInfo'
 import makePB from './page/makePB'
 import Problem from './page/Problem'
+import SolveList from './page/SolveList'
 import {
   BrowserRouter as Router,
   Switch,
@@ -20,7 +21,8 @@ class App extends Component{
           <Route exact path="/main" component={Main}/>
           <Route exact path="/myInfo" component={MyInfo}/>
           <Route exact path="/makePB" component={makePB}/>
-          <Route exact path="/problem" component={Problem}/>          
+          <Route exact path="/problem" component={Problem}/>  
+          <Route exact path="/solveList" component={SolveList}/>     
         </Switch>
       </Router>  
     )

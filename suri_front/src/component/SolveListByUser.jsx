@@ -1,8 +1,9 @@
 import React from 'react'
-import api from '../util/API'
 import {Link} from 'react-router-dom'
 
-class SolveList extends React.Component{
+import api from '../util/API'
+
+class SolveListByUser extends React.Component{
     state = {
         solveList:[],
         totalPage:0,
@@ -21,8 +22,7 @@ class SolveList extends React.Component{
 
     get_solve_list = () => {
         const {page, size, sort, order} = this.state
-        const {problemId} = this.props;
-        api.get(`/solve/list/problem/${problemId}`,
+        api.get(`/solve/list/user/${this.props.userId}`,
         {
             params:{
                 page,
@@ -30,32 +30,26 @@ class SolveList extends React.Component{
                 sort,
                 order,
             }
-        })  
+        })
         .then(res => {
             console.log(res)
             this.setState({solveList:res.data.solvedInfo})
-        })
-        .catch(e => {
-            console.log(e)
         })
     }
 
     get_solve_list_mock = () => {
        this.setState({ solveList: [
             {
-                userName: "test gyuhee",
-                userAnswer: "기나긴 답변 기나긴 답변 기나긴 답변 기나긴 답변 기나긴 답변 기나긴 답변 기나긴 답변 기나긴 답변 기나긴 답변 ",
-                solveDate : "2020-03-11",
+                problemId: 124435,
+                problemName: '문제 제목 1'
             },
             {
-                userName: "현식님",
-                userAnswer: "문제 풀이입니다!!!",
-                solveDate : "2020-03-01", 
+                problemId: 1245,
+                problemName: '문제 제목 2'
             },
             {
-                userName: "오잉또잉",
-                userAnswer: "어렵습니다 ㅠㅠㅠㅠㅠㅠ 잘 모르겠어요ㅠㅡㅠ",
-                solveDate : "2020-03-01", 
+                problemId: 1111,
+                problemName: '문제 제목 3'
             },
         ]})
     }
@@ -75,18 +69,29 @@ class SolveList extends React.Component{
                 pageView.push(<li className="page-item" onClick={()=>this.page_item_click_handler(i)}><a className="page-link" href="javascript:void(0);">{i}</a></li>)
         }
 
+
         const solveViewList = solveList.map(solve => 
             <SolveView 
-                userId = {solve.user_id}
-                userName = {solve.userName}
-                userAnswer = {solve.userAnswer}
-                solveDate = {solve.solveDate}
+                solveId = {solve.id}
+                problemId = {solve.problem_id}
+                problemName = {solve.problemName}
             />
         )
 
         return(
-            <div>
-                {solveViewList}
+            <div class="container">
+                <div>
+                    <ul class="list-group list-group-flush">
+                    <div className="list-group-item">
+                        <div className="row">
+                        <div className="col">문제 번호</div>
+                        <div className="col">문제 제목</div>
+                        </div>
+                    </div>
+                        {solveViewList}
+                    </ul>
+
+                </div>
                 <div className="my-10"> 
                     <ul class="pagination justify-content-center">
                         <li className="page-item">
@@ -107,20 +112,16 @@ class SolveList extends React.Component{
     }
 }
 
-const SolveView = ({ userName, userAnswer, solveDate, userId }) =>{
+const SolveView = ({ solveId, problemId, problemName }) =>{
     return(
-        <div class="mt-5">
-            <div class="row mt-4">
-                <Link to={{pathname: '/solveList', data : {userId: userId}}}>
-                    <h5 class="col-8">{userName}</h5>
-                </Link>
-                <div class="col"><p class=" text-right text-muted">{solveDate}</p></div>
+        <Link to={{pathname: '/solve', data : {id: solveId}}} className="list-group-item list-group-item-action">
+            <div className="row">
+            <div className="col">{problemId}</div>
+            <div className="col">{problemName}</div>
+
             </div>
-            <div class="row mb-4 border rounded p-3">
-                {userAnswer}
-            </div>
-        </div>
+        </Link>
     )
 }
 
-export default SolveList
+export default SolveListByUser
