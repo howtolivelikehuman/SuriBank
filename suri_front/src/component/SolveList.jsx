@@ -4,12 +4,20 @@ import api from '../util/API'
 class SolveList extends React.Component{
     state = {
         solveList:[],
+        totalPage:0,
         page:0,
-        size:5,
+        size:2,
         sort:"",
         order:""
     }
     
+    page_item_click_handler = (i) => {
+        if(i>=0 && i<this.state.totalPage)
+            this.setState({page:i},() => {
+                this.get_solve_list()
+            })
+    }
+
     get_solve_list = () => {
         const {page, size, sort, order} = this.state
         api.get(`/solve/list/problem/${this.props.problemId}`,
@@ -20,30 +28,88 @@ class SolveList extends React.Component{
                 sort,
                 order,
             }
-
         })
         .then(res => {
             this.setState({solveList:res.data.solvedInfo})
         })
     }
 
+    get_solve_list_mock = () => {
+       this.setState({ solveList: [
+            {
+                userName: "test gyuhee",
+                userAnswer: "기나긴 답변 기나긴 답변 기나긴 답변 기나긴 답변 기나긴 답변 기나긴 답변 기나긴 답변 기나긴 답변 기나긴 답변 ",
+                solveDate : "2020-03-11",
+            },
+            {
+                userName: "현식님",
+                userAnswer: "문제 풀이입니다!!!",
+                solveDate : "2020-03-01", 
+            },
+            {
+                userName: "오잉또잉",
+                userAnswer: "어렵습니다 ㅠㅠㅠㅠㅠㅠ 잘 모르겠어요ㅠㅡㅠ",
+                solveDate : "2020-03-01", 
+            },
+        ]})
+    }
+
     componentDidMount(){
-        this.get_solve_list()
+        this.get_solve_list_mock()
     }
 
     render(){
+        const {  page, totalPage, solveList } = this.state
+        let pageView = []
+
+        for(let i = 0; i < totalPage; i++){
+            if(page === i)
+                pageView.push(<li className="page-item active" onClick={()=>this.page_item_click_handler(i)}><a className="page-link" href="javascript:void(0);">{i}</a></li>)
+            else 
+                pageView.push(<li className="page-item" onClick={()=>this.page_item_click_handler(i)}><a className="page-link" href="javascript:void(0);">{i}</a></li>)
+        }
+
+        const solveViewList = solveList.map(solve => 
+            <SolveView 
+                userName = {solve.userName}
+                userAnswer = {solve.userAnswer}
+                solveDate = {solve.solveDate}
+            />
+        )
+
         return(
             <div>
-                here
+                {solveViewList}
+                <div className="my-10"> 
+                    <ul class="pagination justify-content-center">
+                        <li className="page-item">
+                            <a className="page-link" onClick={()=> this.page_item_click_handler(page-1)}>
+                                Previous
+                            </a>
+                        </li>
+                        {pageView}
+                        <li className="page-item">
+                            <a className="page-link" onClick={()=> this.page_item_click_handler(page+1)}>
+                                Next
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         )
     }
 }
 
-const SolveView = () =>{
+const SolveView = ({ userName, userAnswer, solveDate }) =>{
     return(
-        <div>
-
+        <div class="mt-5">
+            <div class="row mt-4">
+                <h5 class="col-8">{userName}</h5>
+                <div class="col"><p class=" text-right text-muted">{solveDate}</p></div>
+            </div>
+            <div class="row mb-4 border rounded p-3">
+                {userAnswer}
+            </div>
         </div>
     )
 }

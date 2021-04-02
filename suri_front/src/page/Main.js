@@ -23,7 +23,6 @@ class Main extends Component{
     }
 
     get_subject_data = () => {
-        console.log(api.defaults)
         api.get('problem/subjectList')
         .then(res => {
             let subject_list = new Object()
@@ -33,6 +32,7 @@ class Main extends Component{
         .catch(err => console.log(api.defaults.headers)
         )
     }
+    
     get_subject_data = () => {
         console.log(api.defaults)
         api.get('problem/subjectList')
