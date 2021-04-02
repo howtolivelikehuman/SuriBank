@@ -55,8 +55,7 @@ class Main extends Component{
                 size:20,
                 sort:"registerdate",
                 order:"desc",
-                filter: filters,
-
+                //filter: filters,
             }
             
         })
