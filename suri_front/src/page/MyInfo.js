@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import api from '../util/API'
 import SubHeader from '../component/SubHeader'
 import InfoElement from '../component/InfoElement'
+import SolveListByUser from '../component/SolveListByUser'
+
 class MyInfo extends Component{
     state={
         data:null,
@@ -62,6 +64,7 @@ class MyInfo extends Component{
 
     render(){
         let MyInfoList=[]
+        const {data} = this.state
         if(this.state.data == null) {
             this.getMyInfo()
             return null
@@ -103,7 +106,8 @@ class MyInfo extends Component{
                         </div>
                     </div>
                 </div>
-                
+                <SolveListByUser userId={data.id}/>
+        
             </div>
         )
         }

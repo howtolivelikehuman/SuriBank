@@ -9,6 +9,7 @@ class Main extends Component{
         subject_data:null,
         now_page:0,
         total_page: 5,
+        filters:[],
         type:{
             prev:false,
             non_prev:false, 
@@ -23,18 +24,6 @@ class Main extends Component{
     }
 
     get_subject_data = () => {
-        console.log(api.defaults)
-        api.get('problem/subjectList')
-        .then(res => {
-            let subject_list = new Object()
-            res.data.map(subject => subject_list[subject['name']]=false)
-            this.setState({subject:subject_list, subject_data:res.data})
-        })
-        .catch(err => console.log(api.defaults.headers)
-        )
-    }
-    get_subject_data = () => {
-        console.log(api.defaults)
         api.get('problem/subjectList')
         .then(res => {
             this.setState({subject_data:res.data})
@@ -57,25 +46,7 @@ class Main extends Component{
     } 
 
     get_problem_list_data = () =>{
-        //TO DO: get으로 하는 방법?
-        console.log(this.state.type, this.state.subject, this.state.professor)
-        let type = []
-        let subject = []
-        let professor =[]
-        for(var key in this.state.type){
-            if(this.state.type[key]) type.push(key)
-        }
-        if (type.length === 0 || type.length === 2) type = ""
-        else if(type[0] == 'prev') type = "1"
-        else type = "0"
-
-        for(var key in this.state.subject){
-            if(this.state.subject[key]) subject.push(this.get_subject_code(key))
-        }
-        for(var key in this.state.professor){
-            if(this.state.professor[key]) professor.push(key)
-        }
-        console.log(type, subject, professor)
+        const filters = this.state.filters.join();
         api
         .get('/problem/list',
         {
@@ -84,11 +55,7 @@ class Main extends Component{
                 size:20,
                 sort:"registerdate",
                 order:"desc",
-                /*filter: {
-                     type: type,
-                     subject: subject,
-                     professor:professor
-                 }*/
+                filter: filters,
             }
             
         })
@@ -137,23 +104,15 @@ class Main extends Component{
     }
 
     set_filter = (title, filter_element) => {
-        console.log(title,filter_element)
-        var filter
-        if(title === 'TYPE') {
-            filter_element = (filter_element === '기출' ? 'prev' : 'non_prev')
-            filter = this.state.type
-            filter[filter_element] = !filter[filter_element]
-            this.setState({type:filter})
+        const {filters} = this.state
+        const element =`${title}:${filter_element}`
+        const removeFilters = filters.filter(i => i != element)
+        if(removeFilters.length<filters.length){
+            this.setState({filters: removeFilters})
         }
-        else if(title === 'SUBJECT') {
-            filter = this.state.subject
-            filter[filter_element] = !filter[filter_element]
-            this.setState({subject:filter})
-        }
-        else if(title === 'PROFESSOR') {
-            filter = this.state.professor
-            filter[filter_element] = !filter[filter_element]
-            this.setState({professor:filter})
+        else {
+            filters.push(element)
+            this.setState({filters: filters})
         }
     }
 
