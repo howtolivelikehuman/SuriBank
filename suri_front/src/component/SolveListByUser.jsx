@@ -72,6 +72,7 @@ class SolveListByUser extends React.Component{
 
         const solveViewList = solveList.map(solve => 
             <SolveView 
+                solveId = {solve.id}
                 problemId = {solve.problem_id}
                 problemName = {solve.problemName}
             />
@@ -111,9 +112,9 @@ class SolveListByUser extends React.Component{
     }
 }
 
-const SolveView = ({ problemId, problemName }) =>{
+const SolveView = ({ solveId, problemId, problemName }) =>{
     return(
-        <Link to={{pathname: '/problem', data : {id: problemId}}} className="list-group-item list-group-item-action">
+        <Link to={{pathname: '/solve', data : {id: solveId}}} className="list-group-item list-group-item-action">
             <div className="row">
             <div className="col">{problemId}</div>
             <div className="col">{problemName}</div>
