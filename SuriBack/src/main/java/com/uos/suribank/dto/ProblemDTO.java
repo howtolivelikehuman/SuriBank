@@ -18,7 +18,7 @@ public class ProblemDTO {
         private Long id;
         String title;
         Long subject;
-        String professor;
+        Long professor;
         String uploader;
         int type; //0 for 
         float score;
@@ -60,7 +60,7 @@ public class ProblemDTO {
         String title;
         Long subject;
         int type;
-        String professor;
+        Long professor;
         String question;
         String answer;
     }
@@ -72,7 +72,7 @@ public class ProblemDTO {
         private Long id;
         String title;
         Long subject;
-        String professor;
+        Long professor;
         String question;
         String answer;
         String uploader;
@@ -83,7 +83,7 @@ public class ProblemDTO {
         List<String> qimagesPath;
         List<String> aimagesPath;
 
-        public problemInfoDTO(Long id, String title, Long subject, String professor, 
+        public problemInfoDTO(Long id, String title, Long subject, Long professor,
         String question, String answer, String uploader, Date registerdate, int type, float score, int hit){
             this.id = id;
             this.title = title;

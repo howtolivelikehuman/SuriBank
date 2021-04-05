@@ -1,33 +1,27 @@
 package com.uos.suribank.repository;
 
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.transaction.Transactional;
-
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.uos.suribank.dto.SubjectDTO;
-import com.uos.suribank.dto.ProblemDTO.problemAddDTO;
 import com.uos.suribank.dto.ProblemDTO.problemAddinfoDTO;
 import com.uos.suribank.dto.ProblemDTO.problemInfoDTO;
 import com.uos.suribank.dto.ProblemDTO.problemShortDTO;
 import com.uos.suribank.dto.ProblemDTO.problemTableDTO;
-import com.uos.suribank.entity.ProblemTable;
-import com.uos.suribank.entity.QProblemImage;
-import com.uos.suribank.entity.QProblemTable;
-import com.uos.suribank.entity.QSubject;
-import com.uos.suribank.pagination.ProblemListFilter;
-
-import org.apache.ibatis.annotations.Select;
+import com.uos.suribank.dto.ProfessorDTO;
+import com.uos.suribank.dto.SubjectDTO;
+import com.uos.suribank.entity.*;
+import com.uos.suribank.pagination.FilterDTO;
 import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.transaction.Transactional;
+import java.util.List;
 
 @Repository
 public class ProblemReopository extends QuerydslRepositorySupport {
@@ -44,13 +38,13 @@ public class ProblemReopository extends QuerydslRepositorySupport {
         super(ProblemTable.class);
     }
 
-    public problemTableDTO getPage(ProblemListFilter filter, Pageable pageable) {
+    public problemTableDTO getPage(FilterDTO filter, Pageable pageable) {
 
         problemTable = QProblemTable.problemTable;
         problemTableDTO pDto = new problemTableDTO();
 
         JPQLQuery<problemShortDTO> query = from(problemTable).select(Projections.constructor(problemShortDTO.class,
-                problemTable.id, problemTable.title, problemTable.subject.code, problemTable.professor,
+                problemTable.id, problemTable.title, problemTable.subject.code, problemTable.professor.code,
                 problemTable.user.name, problemTable.type, problemTable.score, problemTable.hit));
 
         if(filter != null){
@@ -70,23 +64,23 @@ public class ProblemReopository extends QuerydslRepositorySupport {
         return pDto;
     }
 
-    private BooleanExpression eqType(String type) {
-        if (type.length() > 0) {
-            return problemTable.type.intValue().eq(Integer.parseInt(type));
+    private BooleanExpression eqType(List<Long> type) {
+        if (type.size() > 0) {
+            return problemTable.type.longValue().in(type);
         }
         return null;
     }
 
-    private BooleanExpression eqSubject(Long[] subject) {
-        if (subject.length > 0) {
+    private BooleanExpression eqSubject(List<Long> subject) {
+        if (subject.size() > 0) {
             return problemTable.subject.code.in(subject);
         }
         return null;
     }
 
-    private BooleanExpression eqProfessor(String[] professor) {
-        if (professor.length > 0) {
-            return problemTable.professor.stringValue().in(professor);
+    private BooleanExpression eqProfessor(List<Long> professor) {
+        if (professor.size() > 0) {
+            return problemTable.professor.code.in(professor);
         }
         return null;
     }
@@ -123,15 +117,16 @@ public class ProblemReopository extends QuerydslRepositorySupport {
         }
     }
 
-    public Long getProblemId(String title, String professor) {
+    public Long getProblemId(problemAddinfoDTO pAddDTO) {
         QProblemTable qProblemTable = QProblemTable.problemTable;
         return queryFactory.from(qProblemTable).select(qProblemTable.id)
-                .where(qProblemTable.title.eq(title).and(qProblemTable.professor.eq(professor))).fetchOne();
+                .where(qProblemTable.title.eq(pAddDTO.getTitle()).and(qProblemTable.professor.code.eq(pAddDTO.getProfessor()))).fetchOne();
     }
 
     public boolean addProblem(problemAddinfoDTO pAddDTO) {
         int result = 0;
         EntityManager entityManager = entityManagerFactory.createEntityManager();
+
         String sql = "insert into problem_table (title, subject, professor, answer, question, type, uploader_id)"
                 + "values( :a, :b, :c, :d, :e, :f, :g)";
 
@@ -159,7 +154,7 @@ public class ProblemReopository extends QuerydslRepositorySupport {
 
         problemInfoDTO pinfo = queryFactory.from(problemTable)
                 .select(Projections.constructor(problemInfoDTO.class, problemTable.id, problemTable.title,
-                        problemTable.subject.code, problemTable.professor, problemTable.question, problemTable.answer,
+                        problemTable.subject.code, problemTable.professor.code, problemTable.question, problemTable.answer,
                         problemTable.user.name, problemTable.registerdate, problemTable.type, problemTable.score,
                         problemTable.hit))
                 .where(problemTable.id.eq(id)).fetchOne();
@@ -172,6 +167,13 @@ public class ProblemReopository extends QuerydslRepositorySupport {
         QSubject subject = QSubject.subject;
 
         return queryFactory.from(subject).select(Projections.constructor(SubjectDTO.class, subject.code, subject.name))
+                .fetch();
+    }
+
+    public List<ProfessorDTO> getProfessorList() {
+        QProfessor professor = QProfessor.professor;
+
+        return queryFactory.from(professor).select(Projections.constructor(ProfessorDTO.class, professor.code, professor.name))
                 .fetch();
     }
 

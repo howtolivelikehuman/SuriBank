@@ -24,14 +24,14 @@ public class SolveService {
     private ProblemReopository problemRepository;
 
     //문제풀이
-    public solveTableDTO getUserSolvedList(PageableDTO page, Long id){
+    public solveTableDTO getUserSolvedList(PageableDTO page, Long userId, Long problemId){
         Pageable pageable = ProblemPageable.makePageable(page);
-        return solveRepository.getSolvedAnswerList(pageable, 1, id);
+        return solveRepository.getSolvedAnswerList(pageable, 1, userId, problemId);
     }
 
-    public solveTableDTO getProblemSolvedList(PageableDTO page, Long id){
+    public solveTableDTO getProblemSolvedList(PageableDTO page, Long userId, Long problemId){
         Pageable pageable = ProblemPageable.makePageable(page);
-        return solveRepository.getSolvedAnswerList(pageable, 2, id);
+        return solveRepository.getSolvedAnswerList(pageable, 2, userId, problemId);
     }
 
 
@@ -63,7 +63,7 @@ public class SolveService {
     }
 
     //풀었는지 확인
-    public Long findAnswer(Long user_id, Long problem_id){
+    public solveDTO findAnswer(Long user_id, Long problem_id){
         return solveRepository.findAnswer(user_id, problem_id);
     }
     

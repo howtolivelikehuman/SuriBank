@@ -41,19 +41,19 @@ public class SolveController {
 
     //정답 입력 여부 확인
     @GetMapping(value = "/check/{problem_id}")
-    public ResponseEntity<Long> checkProblem(Authentication authentication,@PathVariable Long problem_id){
+    public ResponseEntity<solveDTO> checkProblem(Authentication authentication,@PathVariable Long problem_id){
         Long user_id = Long.parseLong(authentication.getName());
-        Long solvedId = -1L;
+        solveDTO answer = null;
         try{
-            solvedId = solveService.findAnswer(user_id, problem_id);
-            if(solvedId == null){
-                solvedId = -1l;
+            answer =solveService.findAnswer(user_id, problem_id);
+            if(answer == null){
+                return ResponseEntity.notFound().build();
             }
         }catch(Exception e){
             e.printStackTrace();
             throw new InsertErrorException("Failed to Check Answer");
         }
-        return ResponseEntity.ok(solvedId);
+        return ResponseEntity.ok(answer);
     }
     
     //세세 정답 확인
@@ -76,8 +76,8 @@ public class SolveController {
 
     //User가 푼 답
     @GetMapping(path = "/list/user/{user_id}")
-    public ResponseEntity<?> getUserSolvedList(@ModelAttribute PageableDTO page, @PathVariable Long user_id){
-        solveTableDTO stableDTO  = solveService.getUserSolvedList(page, user_id);
+    public ResponseEntity<?> getUserSolvedList(@ModelAttribute PageableDTO page, @PathVariable("user_id") Long userId){
+        solveTableDTO stableDTO  = solveService.getUserSolvedList(page,userId, -1l);
         if(stableDTO == null){
 			throw new NotFoundException("Page not found");
 		}
@@ -88,11 +88,19 @@ public class SolveController {
    
     //Problem에 따른 풀이
     @GetMapping(path = "/list/problem/{problem_id}")
-    public ResponseEntity<?> getProblemSolvedList(@ModelAttribute PageableDTO page, @PathVariable Long problem_id){
-        solveTableDTO stableDTO  = solveService.getProblemSolvedList(page, problem_id);
-        if(stableDTO == null){
-			throw new NotFoundException("Page not found");
-		}
+    public ResponseEntity<?> getProblemSolvedList(Authentication authentication,
+                                                  @ModelAttribute PageableDTO page, @PathVariable("problem_id") Long problemId){
+
+        solveTableDTO stableDTO  = null;
+        try {
+            stableDTO = solveService.getProblemSolvedList(page, Long.parseLong(authentication.getName()), problemId);
+            if(stableDTO == null){
+                throw new NotFoundException("Page not found");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return ResponseEntity.ok(stableDTO);
     }
 }

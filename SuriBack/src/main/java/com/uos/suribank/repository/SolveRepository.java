@@ -45,11 +45,12 @@ public class SolveRepository extends QuerydslRepositorySupport{
                     .execute();
     }
 
-    public Long findAnswer(Long user_id, Long problem_id){
+    public solveDTO findAnswer(Long user_id, Long problem_id){
         qProblemSolve = QUserProblemSolve.userProblemSolve;
 
         return queryFactory.from(qProblemSolve)
-                    .select(qProblemSolve.id)
+                .select(Projections.constructor(solveDTO.class, qProblemSolve.id, qProblemSolve.user.id,
+                        qProblemSolve.problem.id, qProblemSolve.userAnswer, qProblemSolve.solveDate))
                     .where(qProblemSolve.user.id.eq(user_id)
                         .and(qProblemSolve.problem.id.eq(problem_id))).fetchOne();
     } 
@@ -83,7 +84,7 @@ public class SolveRepository extends QuerydslRepositorySupport{
         }
     }
 
-    public solveTableDTO getSolvedAnswerList(Pageable pageable,int type, Long id){
+    public solveTableDTO getSolvedAnswerList(Pageable pageable,int type, Long userId, Long problemId){
         qProblemSolve = QUserProblemSolve.userProblemSolve;
         solveTableDTO solvetableDTO = new solveTableDTO();
         JPQLQuery<?> query = from(qProblemSolve);
@@ -94,21 +95,23 @@ public class SolveRepository extends QuerydslRepositorySupport{
                 query = query.select(Projections.constructor(solveUserInfoDTO.class,
                                             qProblemSolve.id, qProblemSolve.problem.id, qProblemSolve.problem.title, 
                                             qProblemSolve.user.id, qProblemSolve.user.nickname))
-                                        .where(qProblemSolve.user.id.eq(id));
+                                        .where(qProblemSolve.user.id.eq(userId));
                 break;
             //problem's solved answer
             case 2:
+                System.out.println(userId);
                 query = query.select(Projections.constructor(solveProblemInfoDTO.class,
                                             qProblemSolve.id, qProblemSolve.user.id, qProblemSolve.user.nickname, 
                                             qProblemSolve.userAnswer, qProblemSolve.solveDate))
-                                            .where(qProblemSolve.problem.id.eq(id));
+                                            .where(qProblemSolve.problem.id.eq(problemId)
+                                            .and(qProblemSolve.user.id.ne(userId)));
                 break;
             default:
                 break;
         }
         
         //setting solveTable
-        solvetableDTO.setSolvedInfo(getQuerydsl().applyPagination(pageable, query).fetch());
+        solvetableDTO.setSolvedInfo(getQuerydsl().applyPagination(pageable,query).fetch());
         solvetableDTO.setPage(pageable.getPageNumber());
         solvetableDTO.setSize(pageable.getPageSize());
         solvetableDTO.setSort(pageable.getSort().toString());
