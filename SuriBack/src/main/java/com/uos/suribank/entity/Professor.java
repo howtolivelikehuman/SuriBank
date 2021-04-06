@@ -1,25 +1,21 @@
 package com.uos.suribank.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
-@Data
-@AllArgsConstructor
+
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @DynamicUpdate
 @DynamicInsert
-public class Subject {
-    
+public class Professor {
     @Id
     @Column(updatable = false, nullable = false, columnDefinition = "INT(11)")
     Long code;

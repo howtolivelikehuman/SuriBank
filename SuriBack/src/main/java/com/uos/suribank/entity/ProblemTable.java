@@ -50,8 +50,9 @@ public class ProblemTable{
     @JoinColumn(name = "subject")
     Subject subject;
 
-    @Column(nullable = false, columnDefinition = "VARCHAR(10) DEFAULT \"미지의 교수님\"")
-    String professor;
+    @ManyToOne(targetEntity = Professor.class)
+    @JoinColumn(name = "professor")
+    Professor professor;
 
     @Column(nullable = false, columnDefinition = "Float(3,2) DEFAULT 0")
     float score;

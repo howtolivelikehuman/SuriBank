@@ -1,5 +1,6 @@
 package com.uos.suribank.controller;
 
+import com.uos.suribank.dto.ProfessorDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
@@ -37,12 +38,17 @@ public class ProblemController {
     //목록 조회
     @GetMapping(path = "/list")
     public ResponseEntity<?> getList(@ModelAttribute PageableDTO pageableDTO) {
-        
-        problemTableDTO pDto = problemService.getProblemList(pageableDTO);
+        problemTableDTO pDto = null;
+        try{
+            pDto = problemService.getProblemList(pageableDTO);
 
-        if(pDto == null){
-			throw new NotFoundException("Page not found");
-		}
+            if(pDto == null){
+                throw new NotFoundException("Page not found");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         return ResponseEntity.ok(pDto);
     }
 
@@ -55,6 +61,17 @@ public class ProblemController {
             throw new NotFoundException("Subject not found");
 		}
         return ResponseEntity.ok(sList);
+    }
+
+    //교수-코드 리스트 받아오기
+    @GetMapping(path = "/professorList")
+    public ResponseEntity<?> getProfessorList(){
+        List<ProfessorDTO> pList = problemService.getProfessorList();
+
+        if(pList == null){
+            throw new NotFoundException("Professor not found");
+        }
+        return ResponseEntity.ok(pList);
     }
 
     //삽입 - 상대주소
