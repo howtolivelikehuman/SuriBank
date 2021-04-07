@@ -26,7 +26,7 @@ public class ProblemService {
 
     public problemTableDTO getProblemList(PageableDTO page){
         Pageable pageable = ProblemPageable.makePageable(page);
-        if(page.getFilter() != null){
+        if(page.getFilter().length() > 0){
             page.setFilters();
         }
         return problemRepository.getPage(page.getFilters(), pageable);
@@ -57,10 +57,14 @@ public class ProblemService {
 
     public String[] uploadImage(List<MultipartFile> files, char type, Long id) throws Exception {
         String[] pathList = new String[files.size()];
-        String absolutepath = System.getProperty("user.dir")+"/src/main/resources";
+        String absolutepath = System.getProperty("user.dir")+"/src/main/resources/";
         String path = "/images/" + id;
 
-        File folder = new File(absolutepath+path);
+        File folder = new File(absolutepath+"/images/");
+        if(!folder.exists()){
+            folder.mkdir();
+        }
+        folder = new File(absolutepath + path);
         if(!folder.exists()){
             folder.mkdir();
         }
