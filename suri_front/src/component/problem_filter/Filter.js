@@ -2,12 +2,9 @@ import React, { Component } from 'react'
 import FilterElement from './FilterElement'
 
 function Filter({title, filter_list,setFilter}){
-    const filters = filter_list.map(filter => {
-        //console.log(filter)
-        let filter_name = filter
-        //if(title === 'type') filter_name = (filter === '기출' ? 'prev' : 'non_prev')
-        return <FilterElement title={title} filter_element={filter_name} setFilter={setFilter}/>
-    })
+    const filters = filter_list ? filter_list.map(filter => {
+        return <FilterElement title={title} filter_element={filter.name} filter_code={filter.code} setFilter={setFilter}/>
+    }) : []
     return(
         <div className="filter card my-2">
             <div className="filter_header card-header">

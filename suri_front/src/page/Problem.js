@@ -26,7 +26,7 @@ const Problem = (props) => {
         })
         .catch(err => alert(err))
     }
-
+    
     const get_pb_data = () => {
         api.get(`problem/${problemId}`)
         .then(res => {
