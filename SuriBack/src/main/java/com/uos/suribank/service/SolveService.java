@@ -41,12 +41,16 @@ public class SolveService {
         //최초 정답 입력
         if(findAnswer(user_id, problem_id) == null){
             solveRepository.insertAnswer(user_id, problem_id, sPDTO);
+            //점수 입력
+            scoreProblem(problem_id, sPDTO.getScore());
         }
-        else{ //수정
+        else{ //수정 -> 점수 줬던 것도 롤백해야 함 -> 답안에 내가 준 점수까지 추가해서 기록해야함.
             solveRepository.updateAnswer(user_id, problem_id, sPDTO);
+            problemShortDTO psdto = problemRepository.getScoreAndHit(problem_id);
+            //점수 입력
+            scoreProblem(problem_id, sPDTO.getScore());
         }
-        //점수 입력
-        scoreProblem(problem_id, sPDTO.getScore());
+
     }
 
     public void scoreProblem(Long id, int score){
