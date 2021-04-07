@@ -117,7 +117,6 @@ class Login extends Component{
 
                 if (token) {
                     config.headers['TOKEN'] = token;
-                    console.log(config.headers)
                 }
                 // config.headers['Content-Type'] = 'application/json';
                 return config;
