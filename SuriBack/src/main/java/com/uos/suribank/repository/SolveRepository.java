@@ -30,50 +30,53 @@ public class SolveRepository extends QuerydslRepositorySupport{
     @Autowired
     private EntityManagerFactory entityManagerFactory;
 
-    QUserProblemSolve qProblemSolve;
+    QUserProblemSolve qUserPSolve;
 
     @Autowired
     private JPAQueryFactory queryFactory;
 
 
     public void updateAnswer(Long user_id, Long problem_id, solveProblemDTO sProblemDTO){
-        qProblemSolve = QUserProblemSolve.userProblemSolve;
-        queryFactory.update(qProblemSolve)
-                    .where(qProblemSolve.user.id.eq(user_id)
-                        .and(qProblemSolve.problem.id.eq(problem_id)))
-                    .set(qProblemSolve.userAnswer,sProblemDTO.getUserAnswer())
+        qUserPSolve = QUserProblemSolve.userProblemSolve;
+        queryFactory.update(qUserPSolve)
+                    .where(qUserPSolve.user.id.eq(user_id)
+                        .and(qUserPSolve.problem.id.eq(problem_id)))
+                    .set(qUserPSolve.userAnswer,sProblemDTO.getUserAnswer())
+                    .set(qUserPSolve.score, sProblemDTO.getScore())
                     .execute();
     }
 
     public solveDTO findAnswer(Long user_id, Long problem_id){
-        qProblemSolve = QUserProblemSolve.userProblemSolve;
+        qUserPSolve = QUserProblemSolve.userProblemSolve;
 
-        return queryFactory.from(qProblemSolve)
-                .select(Projections.constructor(solveDTO.class, qProblemSolve.id, qProblemSolve.user.id,
-                        qProblemSolve.problem.id, qProblemSolve.userAnswer, qProblemSolve.solveDate))
-                    .where(qProblemSolve.user.id.eq(user_id)
-                        .and(qProblemSolve.problem.id.eq(problem_id))).fetchOne();
+        return queryFactory.from(qUserPSolve)
+                .select(Projections.constructor(solveDTO.class, qUserPSolve.id, qUserPSolve.user.id,
+                        qUserPSolve.problem.id, qUserPSolve.userAnswer, qUserPSolve.score, qUserPSolve.solveDate))
+                    .where(qUserPSolve.user.id.eq(user_id)
+                        .and(qUserPSolve.problem.id.eq(problem_id))).fetchOne();
     } 
 
     public solveDTO getAnswer(Long solve_id){
-        qProblemSolve = QUserProblemSolve.userProblemSolve;
+        qUserPSolve = QUserProblemSolve.userProblemSolve;
 
-        return queryFactory.from(qProblemSolve)
-                     .select(Projections.constructor(solveDTO.class, qProblemSolve.id, qProblemSolve.user.id,
-                                                    qProblemSolve.problem.id, qProblemSolve.userAnswer, qProblemSolve.solveDate))
-                    .where(qProblemSolve.id.eq(solve_id)).fetchOne();
+        return queryFactory.from(qUserPSolve)
+                     .select(Projections.constructor(solveDTO.class, qUserPSolve.id, qUserPSolve.user.id,
+                                                    qUserPSolve.problem.id, qUserPSolve.userAnswer, qUserPSolve.score, qUserPSolve.solveDate))
+                    .where(qUserPSolve.id.eq(solve_id)).fetchOne();
     } 
 
     public void insertAnswer(Long user_id,Long problem_id, solveProblemDTO solveProblemDTO){
         EntityManager entityManager= entityManagerFactory.createEntityManager();
-        String sql = "insert into user_solve (problem, user, user_answer) values (:a, :b, :c)";
+        String sql = "insert into user_solve (problem, user, user_answer, score) values (:a, :b, :c, :d)";
     
         try{
             entityManager.getTransaction().begin();
             entityManager.createNativeQuery(sql)
                     .setParameter("a", problem_id)
                     .setParameter("b", user_id)
-                    .setParameter("c", solveProblemDTO.getUserAnswer()).executeUpdate();
+                    .setParameter("c", solveProblemDTO.getUserAnswer())
+                    .setParameter("d",solveProblemDTO.getScore())
+                    .executeUpdate();
             entityManager.getTransaction().commit();
 
         } catch (HibernateException ex) {
@@ -85,26 +88,26 @@ public class SolveRepository extends QuerydslRepositorySupport{
     }
 
     public solveTableDTO getSolvedAnswerList(Pageable pageable,int type, Long userId, Long problemId){
-        qProblemSolve = QUserProblemSolve.userProblemSolve;
+        qUserPSolve = QUserProblemSolve.userProblemSolve;
         solveTableDTO solvetableDTO = new solveTableDTO();
-        JPQLQuery<?> query = from(qProblemSolve);
+        JPQLQuery<?> query = from(qUserPSolve);
 
         switch(type){
             //user's solved answer
             case 1:
                 query = query.select(Projections.constructor(solveUserInfoDTO.class,
-                                            qProblemSolve.id, qProblemSolve.problem.id, qProblemSolve.problem.title, 
-                                            qProblemSolve.user.id, qProblemSolve.user.nickname))
-                                        .where(qProblemSolve.user.id.eq(userId));
+                                            qUserPSolve.id, qUserPSolve.problem.id, qUserPSolve.problem.title,
+                                            qUserPSolve.user.id, qUserPSolve.user.nickname))
+                                        .where(qUserPSolve.user.id.eq(userId));
                 break;
             //problem's solved answer
             case 2:
                 System.out.println(userId);
                 query = query.select(Projections.constructor(solveProblemInfoDTO.class,
-                                            qProblemSolve.id, qProblemSolve.user.id, qProblemSolve.user.nickname, 
-                                            qProblemSolve.userAnswer, qProblemSolve.solveDate))
-                                            .where(qProblemSolve.problem.id.eq(problemId)
-                                            .and(qProblemSolve.user.id.ne(userId)));
+                                            qUserPSolve.id, qUserPSolve.user.id, qUserPSolve.user.nickname,
+                                            qUserPSolve.userAnswer, qUserPSolve.solveDate))
+                                            .where(qUserPSolve.problem.id.eq(problemId)
+                                            .and(qUserPSolve.user.id.ne(userId)));
                 break;
             default:
                 break;

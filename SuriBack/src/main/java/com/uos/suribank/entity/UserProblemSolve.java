@@ -1,26 +1,14 @@
 package com.uos.suribank.entity;
 
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
-
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
+import javax.persistence.*;
+import java.util.Date;
 
 @Data
 @AllArgsConstructor
@@ -45,6 +33,9 @@ public class UserProblemSolve{
 
     @Column(length  = 500, name = "user_answer")
     String userAnswer;
+
+    @Column(nullable = false, columnDefinition = "Float(3,2) DEFAULT 0")
+    float score;
 
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	@Temporal(TemporalType.TIMESTAMP)
