@@ -50,7 +50,7 @@ public class SolveRepository extends QuerydslRepositorySupport{
         qUserPSolve = QUserProblemSolve.userProblemSolve;
 
         return queryFactory.from(qUserPSolve)
-                .select(Projections.constructor(solveDTO.class, qUserPSolve.id, qUserPSolve.user.id,
+                .select(Projections.constructor(solveDTO.class, qUserPSolve.id, qUserPSolve.user.id,qUserPSolve.user.nickname,
                         qUserPSolve.problem.id, qUserPSolve.userAnswer, qUserPSolve.score, qUserPSolve.solveDate))
                     .where(qUserPSolve.user.id.eq(user_id)
                         .and(qUserPSolve.problem.id.eq(problem_id))).fetchOne();
@@ -60,7 +60,7 @@ public class SolveRepository extends QuerydslRepositorySupport{
         qUserPSolve = QUserProblemSolve.userProblemSolve;
 
         return queryFactory.from(qUserPSolve)
-                     .select(Projections.constructor(solveDTO.class, qUserPSolve.id, qUserPSolve.user.id,
+                     .select(Projections.constructor(solveDTO.class, qUserPSolve.id, qUserPSolve.user.id,qUserPSolve.user.nickname,
                                                     qUserPSolve.problem.id, qUserPSolve.userAnswer, qUserPSolve.score, qUserPSolve.solveDate))
                     .where(qUserPSolve.id.eq(solve_id)).fetchOne();
     } 

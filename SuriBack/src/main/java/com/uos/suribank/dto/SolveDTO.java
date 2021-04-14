@@ -24,6 +24,7 @@ public class SolveDTO {
         private Long id;
         Long problem_id;
         Long user_id;
+        String userName;
         String userAnswer;
         float score;
         Date solveDate;
