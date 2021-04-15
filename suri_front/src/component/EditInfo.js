@@ -22,7 +22,7 @@ class EditInfo extends Component{
     edit_handler = () => {
         //console.log(this.state.data)
         var id = 'admin' //test용
-        api.put(`/user/`, this.state.data)
+        api.put(`/user`, this.state.data)
 
         .then(res => {
             console.log(res);

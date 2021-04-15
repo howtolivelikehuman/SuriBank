@@ -21,7 +21,7 @@ class App extends Component{
           <Route exact path="/main" component={Main}/>
           <Route exact path="/myInfo" component={MyInfo}/>
           <Route exact path="/makePB" component={makePB}/>
-          <Route exact path="/problem" component={Problem}/>  
+          <Route exact path="/problem/:id" component={Problem}/>  
           <Route exact path="/solveList" component={SolveList}/>     
         </Switch>
       </Router>  
