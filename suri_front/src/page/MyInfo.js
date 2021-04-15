@@ -48,7 +48,7 @@ class MyInfo extends Component{
         }
         console.log(data)
 
-        api.put(`/user/${this.state.no}`, data )
+        api.put(`/user/`, data )
         .then(res => {
             console.log(res);
             if(res.status==200){
