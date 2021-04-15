@@ -111,10 +111,10 @@ const SolveView = ({ userName, userAnswer, solveDate, userId }) =>{
     return(
         <div class="mt-5">
             <div class="row mt-4">
-                <Link to={{pathname: '/solveList', data : {userId: userId}}}>
-                    <h5 class="col-8">{userName}</h5>
+                <Link class="col-5" to={{pathname: '/solveList', data : {userId: userId}}}>
+                    <h5>{userName}</h5>
                 </Link>
-                <div class="col"><p class=" text-right text-muted">{solveDate}</p></div>
+                <div class="col-7"><p class=" text-right text-muted">{solveDate}</p></div>
             </div>
             <div class="row mb-4 border rounded p-3">
                 {userAnswer}

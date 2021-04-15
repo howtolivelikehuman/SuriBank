@@ -6,14 +6,16 @@ import ProblemScore from '../component/ProblemScore'
 import ProblemView from '../component/ProblemView'
 import SolveList from '../component/SolveList'
 import SolveInput from '../component/SolveInput'
+import MySolveView from '../component/MySolveView'
+import { Route } from 'react-router';
 
-const Problem = (props) => {
+const Problem = ({match}) => {
     const [data, setData] = useState(null)
     const [subjectList, setSubjectList] = useState(null)
     const [rate, setRate] = useState(5)
     const [solveInput, setSolveInput] = useState(null)
-    const problemId = props.location.data.id
-    console.log(problemId)
+    const [mySolveData, setMySolveData] = useState(null)
+    const problemId = match.params.id
 
     const post_solve = () => {
         api.post(`solve/${problemId}`, {
@@ -21,10 +23,22 @@ const Problem = (props) => {
             userAnswer: solveInput,
         })
         .then(res => {
-            if(res.status===200) 
+            if(res.status===200){ 
                 alert('별점 및 답안이 반영되었습니다!')
+                getMySolve()
+                //window.location.reload(); 
+            }
         })
         .catch(err => alert(err))
+    }
+
+    const getMySolve = () => {
+        api.get(`solve/check/${problemId}`)
+        .then(res => {
+            console.log(res.data)
+            setMySolveData(res.data)
+        })
+        .catch(err => console.log(err))
     }
     
     const get_pb_data = () => {
@@ -63,6 +77,7 @@ const Problem = (props) => {
     useEffect(()=>{
         get_pb_data()
         get_subject_list()
+        getMySolve()
     },[])
 
 
@@ -71,9 +86,10 @@ const Problem = (props) => {
             <SubHeader/>
             <div className="container">
                 <ProblemView data={data} subjectList={subjectList} />
-                <ProblemScore rate={rate} set_rate={setRate}/>
-                <SolveInput solveInput={solveInput} setSolveInput={setSolveInput}/>
-                <div className="row"><button onClick={post_solve} className="btn btn-primary mx-3 mw-100">별점주기</button></div>
+                {!mySolveData && <ProblemScore rate={rate} set_rate={setRate}/>}
+                {!mySolveData && <SolveInput solveInput={solveInput} setSolveInput={setSolveInput}/>}
+                {mySolveData && <MySolveView mySolveData = {mySolveData}/>}
+                {!mySolveData && <div className="row"><button onClick={post_solve} className="btn btn-primary mx-3 mw-100">별점 및 풀이 제출</button></div>}
                 <SolveList problemId={problemId}/>
             </div>
         </div>

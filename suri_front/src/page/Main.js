@@ -54,7 +54,6 @@ class Main extends Component{
         return subject['name']
     }
     get_subject_code = (n) => {
-        console.log(n)
         const subject = this.state.subject_data.find(subject => subject['name'] === n)
         return subject['code']
     } 
@@ -102,7 +101,7 @@ class Main extends Component{
         const {pb_list} =this.state
         problem_list = pb_list? pb_list.map(problem => {
             return(
-                <Link to={{pathname: '/problem', data : {id: problem.id}}} className="list-group-item list-group-item-action">
+                <Link to={{pathname: `/problem/${problem.id}`}} className="list-group-item list-group-item-action">
                     <div className="row">
                     <div className="col-1">{problem.id}</div>
                     <div className="col-3">{problem.title}</div>
