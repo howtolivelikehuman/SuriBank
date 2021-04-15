@@ -37,23 +37,27 @@ public class SolveService {
 
     @Transactional
     public void solve(Long user_id, Long problem_id, solveProblemDTO sPDTO){
-
-        //최초 정답 입력
-        if(findAnswer(user_id, problem_id) == null){
-            solveRepository.insertAnswer(user_id, problem_id, sPDTO);
-            //점수 입력
-            scoreProblem(problem_id, sPDTO.getScore());
-        }
-        else{ //수정 -> 점수 줬던 것도 롤백해야 함 -> 답안에 내가 준 점수까지 추가해서 기록해야함.
-            solveRepository.updateAnswer(user_id, problem_id, sPDTO);
-            problemShortDTO psdto = problemRepository.getScoreAndHit(problem_id);
-            //점수 입력
-            scoreProblem(problem_id, sPDTO.getScore());
-        }
-
+        solveRepository.insertAnswer(user_id, problem_id, sPDTO);
+        //점수 입력
+        insertScore(problem_id, sPDTO.getScore());
     }
 
-    public void scoreProblem(Long id, int score){
+    //수정 -> 점수 줬던 것도 롤백
+    @Transactional
+    public void update(Long user_id, Long problem_id, solveProblemDTO sPDTO){
+        float lastScore = solveRepository.findAnswer(user_id,problem_id).getScore();
+        solveRepository.updateAnswer(user_id, problem_id, sPDTO);
+        updateScore(problem_id,sPDTO.getScore(), lastScore);
+    }
+
+    public void updateScore(Long id, float score, float lastScore){
+        problemShortDTO psdto = problemRepository.getScoreAndHit(id);
+        int nhit = psdto.getHit();
+        float nscore = ((nhit) * psdto.getScore() - lastScore + score)/(nhit);
+        problemRepository.updateScore(id,nhit,nscore);
+    }
+
+    public void insertScore(Long id, float score){
         problemShortDTO psdto = problemRepository.getScoreAndHit(id);
         int nhit = psdto.getHit()+1;
         float nscore = ((nhit-1) * psdto.getScore() + score)/(nhit);
