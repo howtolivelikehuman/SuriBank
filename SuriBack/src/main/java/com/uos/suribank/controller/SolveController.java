@@ -11,13 +11,7 @@ import com.uos.suribank.service.SolveService;
 import org.springframework.security.core.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/api/solve")
@@ -29,13 +23,25 @@ public class SolveController {
 
     //문제 풀기
     @PostMapping(value = "/{problem_id}")
-    public void solveProblem(Authentication authentication,@PathVariable Long problem_id, @RequestBody solveProblemDTO solveproblemdto){
+    public void insertAnswer(Authentication authentication,@PathVariable Long problem_id, @RequestBody solveProblemDTO solveproblemdto){
         Long user_id = Long.parseLong(authentication.getName());
         try{
             solveService.solve(user_id, problem_id, solveproblemdto);
         }catch(Exception e){
             e.printStackTrace();
             throw new InsertErrorException("Failed to Insert Answer");
+        }
+    }
+
+    //정답 수정
+    @PutMapping (value = "/{problem_id}")
+    public void updateAnswer(Authentication authentication,@PathVariable Long problem_id, @RequestBody solveProblemDTO solveproblemdto){
+        Long user_id = Long.parseLong(authentication.getName());
+        try{
+            solveService.update(user_id, problem_id, solveproblemdto);
+        }catch(Exception e){
+            e.printStackTrace();
+            throw new InsertErrorException("Failed to Update Answer");
         }
     }
 

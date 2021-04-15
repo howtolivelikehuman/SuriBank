@@ -14,7 +14,7 @@ public class SolveDTO {
     @NoArgsConstructor
     public static class solveProblemDTO{
         String userAnswer;
-        int score;
+        float score;
     }
 
     @Data
@@ -24,7 +24,9 @@ public class SolveDTO {
         private Long id;
         Long problem_id;
         Long user_id;
+        String userName;
         String userAnswer;
+        float score;
         Date solveDate;
     }
 
