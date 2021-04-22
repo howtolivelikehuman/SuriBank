@@ -26,6 +26,8 @@ public class ProblemService {
 
     public problemTableDTO getProblemList(PageableDTO page){
         Pageable pageable = ProblemPageable.makePageable(page);
+        
+        
         if(page.getFilter().length() > 0){
             page.setFilters();
         }

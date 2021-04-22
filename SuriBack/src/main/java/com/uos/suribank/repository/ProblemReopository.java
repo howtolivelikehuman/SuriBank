@@ -49,8 +49,7 @@ public class ProblemReopository extends QuerydslRepositorySupport {
 
         if(filter != null){
             // set filter
-            query = query.where(eqType(filter.getType()), eqSubject(filter.getSubject()),
-            eqProfessor(filter.getProfessor()));
+            query = query.where(eqType(filter.getType()), eqSubject(filter.getSubject()), eqProfessor(filter.getProfessor()));
         }
         
         // setting pDto

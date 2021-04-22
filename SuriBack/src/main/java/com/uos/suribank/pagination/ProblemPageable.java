@@ -4,6 +4,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.util.Locale;
+
 public class ProblemPageable {
 
     public static Pageable makePageable(PageableDTO page){
@@ -18,6 +20,7 @@ public class ProblemPageable {
             Sort sort = getSortOrders(page.getSort(), page.getOrder());
             pageable = PageRequest.of(page.getPage(), page.getSize(), sort);
         }
+
         return pageable;
     }
 
@@ -34,6 +37,7 @@ public class ProblemPageable {
     }
 
     public static Sort getSortOrders(String sort, String order){
+        order = order.toUpperCase(Locale.ROOT);
         try{
             if(order.equals("DESC")){
                 return Sort.by(Sort.Direction.DESC, sort);
