@@ -76,9 +76,9 @@ public class ProblemController {
 
     //삽입 - 상대주소
     @RequestMapping(path = "/add", method = RequestMethod.PUT, consumes = "multipart/form-data")
-    public void addProblem(@RequestPart("data") problemAddinfoDTO pAddinfoDTO, 
-    @RequestPart("a_img") List<MultipartFile> a_img, @RequestPart("q_img") List<MultipartFile> q_img,
-     Authentication authentication){
+    public void addProblem(@RequestPart("data") problemAddinfoDTO pAddinfoDTO,
+                           @RequestPart(name = "a_img", required = false) List<MultipartFile> a_img,
+                           @RequestPart(name = "q_img", required = false) List<MultipartFile> q_img, Authentication authentication){
         pAddinfoDTO.setUploader_id(Long.parseLong(authentication.getName()));
         boolean result = false;
         try{
